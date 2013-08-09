@@ -31,12 +31,12 @@
 /*----------------------------------------------------------
 	Engine Global Data
 ----------------------------------------------------------*/
-extern audio_wave_t wavetab[AUDIO_MAX_WAVES];
-extern audio_patch_t patchtab[AUDIO_MAX_PATCHES];
-extern audio_group_t grouptab[AUDIO_MAX_GROUPS];
-extern audio_channel_t channeltab[AUDIO_MAX_CHANNELS];
-extern audio_voice_t voicetab[AUDIO_MAX_VOICES];
-extern audio_bus_t bustab[AUDIO_MAX_BUSSES];
+audio_wave_t wavetab[AUDIO_MAX_WAVES];
+audio_patch_t patchtab[AUDIO_MAX_PATCHES];
+audio_group_t grouptab[AUDIO_MAX_GROUPS];
+audio_channel_t channeltab[AUDIO_MAX_CHANNELS];
+audio_voice_t voicetab[AUDIO_MAX_VOICES];
+audio_bus_t bustab[AUDIO_MAX_BUSSES];
 
 void _audio_init(void);
 
