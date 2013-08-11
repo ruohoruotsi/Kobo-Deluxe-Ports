@@ -70,6 +70,12 @@ extern "C" {
 #define DEFAULT_JOY_FIRE	0	// Default fire button on joystick
 #define DEFAULT_JOY_START	1
 
+/* IOHAVOC: PATHS */
+#define KOBO_DATA_DIR "$HOME/Library/Preferences"
+#define KOBO_SCORE_DIR "/Library/Preferences/KoboDeluxe/scores"
+#define KOBO_CONFIG_DIR "$HOME/Library/Preferences"
+#define SYSCONF_DIR "$HOME/Library/Preferences"
+#define KOBO_CONFIG_FILE "KoboDeluxe Preferences"
 
 /*----------------------------------------------------------
 	Singletons

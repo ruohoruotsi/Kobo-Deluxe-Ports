@@ -315,7 +315,7 @@ inline int timestamp(void)
 #	  include <time.h>
 #	 endif
 #	endif
-inline int timestamp(void)
+int timestamp(void)         // IOHAVOC -- remove inline specifier
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
