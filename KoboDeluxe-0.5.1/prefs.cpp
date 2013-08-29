@@ -30,7 +30,7 @@
 void prefs_t::init()
 {
 	comment("--------------------------------------------");
-	comment(" Kobo Deluxe "VERSION" Configuration File");
+	comment(" Kobo Deluxe " VERSION" Configuration File");
 	comment("--------------------------------------------");
 	comment(" Switches - [no]<switch>");
 	comment(" Values - <key> [<value>|\"<string>\"]");

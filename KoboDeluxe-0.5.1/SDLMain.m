@@ -86,14 +86,32 @@ static NSString *getApplicationName(void)
 {
     if (shouldChdir)
     {
+        
+#if USE_RESOURCE_WORKING_DIR // IOHAVOC -- instead since we're building an app bundle ... we want to be located in the resource folder
+      
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+        char path[PATH_MAX];
+        if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+        {
+            // error!
+        }
+        CFRelease(resourcesURL);
+        chdir(path);
+        
+#else
+        
         char parentdir[MAXPATHLEN];
         CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
         CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+        
         if (CFURLGetFileSystemRepresentation(url2, 1, (UInt8 *)parentdir, MAXPATHLEN)) {
             chdir(parentdir);   /* chdir to the binary app's parent */
         }
         CFRelease(url);
         CFRelease(url2);
+#endif
+        
     }
 }
 
