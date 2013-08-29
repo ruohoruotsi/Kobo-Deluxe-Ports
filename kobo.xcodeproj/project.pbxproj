@@ -1248,7 +1248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "cp -r $SRCROOT/KoboDeluxe-0.5.1/data $BUILT_PRODUCTS_DIR";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
