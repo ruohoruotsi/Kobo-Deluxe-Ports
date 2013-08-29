@@ -84,23 +84,23 @@ static NSString *getApplicationName(void)
 /* Set the working directory to the .app's parent directory */
 - (void) setupWorkingDirectory:(BOOL)shouldChdir
 {
-    if (shouldChdir)
-    {
         
 #if USE_RESOURCE_WORKING_DIR // IOHAVOC -- instead since we're building an app bundle ... we want to be located in the resource folder
-      
-        CFBundleRef mainBundle = CFBundleGetMainBundle();
-        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-        char path[PATH_MAX];
-        if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-        {
-            // error!
-        }
-        CFRelease(resourcesURL);
-        chdir(path);
-        
+    
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+    {
+        // error!
+    }
+    CFRelease(resourcesURL);
+    chdir(path);
+    
 #else
-        
+    
+    if (shouldChdir)
+    {
         char parentdir[MAXPATHLEN];
         CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
         CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
@@ -110,9 +110,10 @@ static NSString *getApplicationName(void)
         }
         CFRelease(url);
         CFRelease(url2);
-#endif
-        
     }
+    
+#endif
+
 }
 
 #if SDL_USE_NIB_FILE
