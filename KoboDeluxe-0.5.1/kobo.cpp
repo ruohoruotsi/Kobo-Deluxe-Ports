@@ -152,6 +152,8 @@ static void setup_dirs(char *xpath)
 	fmap->addpath("GFX", "DATA>>gfx");
 	/* Current dir */
 	fmap->addpath("GFX", "./gfx");
+    fmap->addpath("GFX", "./");
+
 
 	/*
 	 * Sound data
@@ -162,6 +164,13 @@ static void setup_dirs(char *xpath)
 	fmap->addpath("SFX", "DATA>>sfx");
 	/* Current dir */
 	fmap->addpath("SFX", "./sfx");
+    
+    // When running as a standalone .app bundle, the Resources directory is our
+    // current location (per SDLMain.m)  Add it to the SFX/GFX path
+#if USE_RESOURCE_WORKING_DIR
+    fmap->addpath("GFX", "./");
+    fmap->addpath("SFX", "./");
+#endif
 
 	/*
 	 * Score files (user and global)

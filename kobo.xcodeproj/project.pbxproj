@@ -587,7 +587,7 @@
 		D9AC1DBA17CF2C3D00342A50 /* trance1.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = trance1.mid; sourceTree = "<group>"; };
 		D9AC1DBB17CF2C3D00342A50 /* trance1_c.agw */ = {isa = PBXFileReference; lastKnownFileType = text; path = trance1_c.agw; sourceTree = "<group>"; };
 		D9AC1DBC17CF2C3D00342A50 /* zapp1.agw */ = {isa = PBXFileReference; lastKnownFileType = text; path = zapp1.agw; sourceTree = "<group>"; };
-		D9AC1E2B17CFCA8000342A50 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
+		D9AC1E2B17CFCA8000342A50 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = ../Icon.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -640,13 +640,12 @@
 		D9751B021578B0E20053D889 = {
 			isa = PBXGroup;
 			children = (
-				D9AC1E2B17CFCA8000342A50 /* Icon.icns */,
 				D9AC1D4517CF2C3C00342A50 /* data */,
 				D9751CEC15796CC00053D889 /* sound */,
 				D9751BAB1578B19F0053D889 /* graphics */,
 				D9751B6C1578B1930053D889 /* eel */,
 				D9751B101578B0E20053D889 /* kobo */,
-				D9AC1BAC17CF12C600342A50 /* Kobo Deluxe */,
+				D9AC1BAC17CF12C600342A50 /* Kobo Deluxe App */,
 				D946DBC017B2015F00CEACD9 /* Frameworks */,
 				D9751B0E1578B0E20053D889 /* Products */,
 			);
@@ -854,7 +853,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		D9AC1BAC17CF12C600342A50 /* Kobo Deluxe */ = {
+		D9AC1BAC17CF12C600342A50 /* Kobo Deluxe App */ = {
 			isa = PBXGroup;
 			children = (
 				D9AC1BB817CF12C600342A50 /* AppDelegate.h */,
@@ -862,12 +861,14 @@
 				D9AC1BBB17CF12C700342A50 /* MainMenu.xib */,
 				D9AC1BAD17CF12C600342A50 /* Supporting Files */,
 			);
+			name = "Kobo Deluxe App";
 			path = "Kobo Deluxe";
 			sourceTree = "<group>";
 		};
 		D9AC1BAD17CF12C600342A50 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D9AC1E2B17CFCA8000342A50 /* Icon.icns */,
 				D9AC1BAE17CF12C600342A50 /* Kobo Deluxe-Info.plist */,
 				D9AC1BAF17CF12C600342A50 /* InfoPlist.strings */,
 				D9AC1BB217CF12C600342A50 /* main.m */,
@@ -1471,7 +1472,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1494,6 +1495,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -1636,6 +1638,7 @@
 				D9AC1BBF17CF12C700342A50 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
