@@ -279,6 +279,7 @@
 		D9AC1E2917CF2C8E00342A50 /* tiles-green.png in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1D7517CF2C3D00342A50 /* tiles-green.png */; };
 		D9AC1E2A17CF2C8E00342A50 /* tiles-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1D7617CF2C3D00342A50 /* tiles-metal.png */; };
 		D9AC1E2C17CFCA8000342A50 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1E2B17CFCA8000342A50 /* Icon.icns */; };
+		D9AC1EA517CFE34C00342A50 /* kobosfx.h in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1D9D17CF2C3D00342A50 /* kobosfx.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1224,6 +1225,7 @@
 				D9AC1DFC17CF2C6D00342A50 /* trance1_c.agw in Resources */,
 				D9AC1DFD17CF2C6D00342A50 /* zapp1.agw in Resources */,
 				D9AC1BB117CF12C600342A50 /* InfoPlist.strings in Resources */,
+				D9AC1EA517CFE34C00342A50 /* kobosfx.h in Resources */,
 				D9AC1BB717CF12C600342A50 /* Credits.rtf in Resources */,
 				D9AC1BBD17CF12C700342A50 /* MainMenu.xib in Resources */,
 				D9AC1E2C17CFCA8000342A50 /* Icon.icns in Resources */,
