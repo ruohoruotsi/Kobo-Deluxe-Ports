@@ -382,18 +382,30 @@ static int extract_sprite(s_bank_t *bank, unsigned frame,
 	SDL_UnlockSurface(src);
 
 	/* Copy palette, if any */
-	if(src->format->palette)
-		SDL_SetColors(tmp, src->format->palette->colors, 0,
-				src->format->palette->ncolors);
-
-	/* Copy alpha and colorkey */
+	if(src->format->palette) {
+		// IOHAVOC -- Update API -- note that we're changing things in TMP from SRC
+        // SDL_SetColors(tmp, src->format->palette->colors, 0, src->format->palette->ncolors);
+        SDL_SetPaletteColors(tmp->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+    }
+        
+	/* Copy alpha and colorkey -- IOHAVOC -- update API
 	if(src->flags & SDL_SRCALPHA)
-		SDL_SetAlpha(tmp, src->flags & (SDL_SRCALPHA | SDL_RLEACCEL),
-				src->format->alpha);
-	if(src->flags & SDL_SRCCOLORKEY)
-		SDL_SetColorKey(tmp, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL),
-				src->format->colorkey);
+		SDL_SetAlpha(tmp, src->flags & (SDL_SRCALPHA | SDL_RLEACCEL), src->format->alpha);
+	
+    if(src->flags & SDL_SRCCOLORKEY)
+		SDL_SetColorKey(tmp, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), src->format->colorkey); */
 
+    if(src->flags) {
+        Uint8 alphaVal = 0;
+        SDL_GetSurfaceAlphaMod(src, &alphaVal);
+		SDL_SetSurfaceAlphaMod(tmp, alphaVal);
+    }
+    if(src->flags) {
+        Uint32 colorkeyVal = 0;
+        SDL_GetColorKey(src, &colorkeyVal);
+		SDL_SetColorKey(tmp, src->flags & SDL_RLEACCEL, colorkeyVal);
+    }
+    
 	bank->sprites[frame]->surface = tmp;
 
 	DBG(log_printf(DLOG, "image %d: (%d,%d)/%dx%d @ %p\n", frame,

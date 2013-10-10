@@ -143,7 +143,9 @@ int window_t::offscreen()
 			0x0000ff00, 0x000000ff);
 	if(!s)
 		return -1;
-	surface = SDL_DisplayFormat(s);
+	
+    // surface = SDL_DisplayFormat(s); // IOHAVOC - Update API -- I'm not sure what the SDL pixel format should be, nor the correct flags
+    surface = SDL_ConvertSurfaceFormat(s, SDL_PIXELFORMAT_RGBA8888, 0);
 	SDL_FreeSurface(s);
 	if(!surface)
 		return -1;
@@ -287,7 +289,8 @@ void window_t::colorkey(Uint32 color)
 		return;
 	if(!_offscreen)
 		return;
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, color);
+//	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, color); // IOHAVOC -- Update API (use SDL_TRUE)
+	SDL_SetColorKey(surface, SDL_TRUE, color);
 }
 
 void window_t::colorkey()
@@ -309,7 +312,9 @@ void window_t::alpha(float a)
 		return;
 	if(!_offscreen)
 		return;
-	SDL_SetAlpha(surface, SDL_SRCALPHA, (int)(a * 255.0));
+	// SDL_SetAlpha(surface, SDL_SRCALPHA, (int)(a * 255.0)); // IOHAVOC
+    SDL_SetSurfaceAlphaMod(surface, (int)(a * 255.0));
+
 }
 
 

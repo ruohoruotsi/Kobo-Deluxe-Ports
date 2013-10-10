@@ -64,6 +64,8 @@
 		D903F9C0157A653B004221EC /* audiodev.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751CB215796CAC0053D889 /* audiodev.c */; };
 		D903F9C1157A653B004221EC /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751CB315796CAC0053D889 /* sfifo.c */; };
 		D903F9C2157A6585004221EC /* libsound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D903F985157A64FB004221EC /* libsound.a */; };
+		D905C2611805474E00502F10 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D905C25F1805474E00502F10 /* SDL2.framework */; };
+		D905C2621805474E00502F10 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D905C2601805474E00502F10 /* SDL2_image.framework */; };
 		D9751B531578B12D0053D889 /* cfgform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1B1578B12D0053D889 /* cfgform.cpp */; };
 		D9751B541578B12D0053D889 /* cfgparse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1C1578B12D0053D889 /* cfgparse.cpp */; };
 		D9751B551578B12D0053D889 /* dashboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1D1578B12D0053D889 /* dashboard.cpp */; };
@@ -111,16 +113,11 @@
 		D9751BF31578B19F0053D889 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751BDA1578B19F0053D889 /* window.cpp */; };
 		D9751CEF15796DAA0053D889 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CEE15796DAA0053D889 /* Cocoa.framework */; };
 		D9751CF115796DB40053D889 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CF015796DB40053D889 /* CoreFoundation.framework */; };
-		D986E29C17B75B6C00F67031 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D986E29A17B75B6C00F67031 /* SDL.framework */; };
-		D986E29D17B75B6C00F67031 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D986E29B17B75B6C00F67031 /* SDL_image.framework */; };
-		D986E29F17B75D0800F67031 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = D986E29E17B75D0800F67031 /* SDLMain.m */; };
 		D9AC1BA717CF12C600342A50 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CEE15796DAA0053D889 /* Cocoa.framework */; };
 		D9AC1BB117CF12C600342A50 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BAF17CF12C600342A50 /* InfoPlist.strings */; };
 		D9AC1BB717CF12C600342A50 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BB517CF12C600342A50 /* Credits.rtf */; };
 		D9AC1BBD17CF12C700342A50 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BBB17CF12C700342A50 /* MainMenu.xib */; };
 		D9AC1BC217CF135500342A50 /* libsound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D903F985157A64FB004221EC /* libsound.a */; };
-		D9AC1BC317CF135C00342A50 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D986E29A17B75B6C00F67031 /* SDL.framework */; };
-		D9AC1BC417CF136300342A50 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D986E29B17B75B6C00F67031 /* SDL_image.framework */; };
 		D9AC1BC517CF138000342A50 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CF015796DB40053D889 /* CoreFoundation.framework */; };
 		D9AC1BC617CF13E200342A50 /* cs.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751BB81578B19F0053D889 /* cs.c */; };
 		D9AC1BC717CF13E200342A50 /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751BBB1578B19F0053D889 /* display.cpp */; };
@@ -142,7 +139,6 @@
 		D9AC1BD717CF13E200342A50 /* e_symtab.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751B881578B1930053D889 /* e_symtab.c */; };
 		D9AC1BD817CF13E200342A50 /* e_util.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751B8B1578B1930053D889 /* e_util.c */; };
 		D9AC1BD917CF13E200342A50 /* eel.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751B901578B1930053D889 /* eel.c */; };
-		D9AC1BDA17CF13E200342A50 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = D986E29E17B75D0800F67031 /* SDLMain.m */; };
 		D9AC1BDB17CF13E200342A50 /* cfgform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1B1578B12D0053D889 /* cfgform.cpp */; };
 		D9AC1BDC17CF13E200342A50 /* cfgparse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1C1578B12D0053D889 /* cfgparse.cpp */; };
 		D9AC1BDD17CF13E200342A50 /* dashboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751B1D1578B12D0053D889 /* dashboard.cpp */; };
@@ -306,7 +302,9 @@
 
 /* Begin PBXFileReference section */
 		D903F985157A64FB004221EC /* libsound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsound.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		D9751B0D1578B0E20053D889 /* kobo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = kobo; path = kobodl; sourceTree = BUILT_PRODUCTS_DIR; };
+		D905C25F1805474E00502F10 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
+		D905C2601805474E00502F10 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
+		D9751B0D1578B0E20053D889 /* kobodl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = kobodl; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9751B1B1578B12D0053D889 /* cfgform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfgform.cpp; sourceTree = "<group>"; };
 		D9751B1C1578B12D0053D889 /* cfgparse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfgparse.cpp; sourceTree = "<group>"; };
 		D9751B1D1578B12D0053D889 /* dashboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dashboard.cpp; sourceTree = "<group>"; };
@@ -459,9 +457,6 @@
 		D9751CB315796CAC0053D889 /* sfifo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = sfifo.c; path = "KoboDeluxe-0.5.1/sound/sfifo.c"; sourceTree = "<group>"; };
 		D9751CEE15796DAA0053D889 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		D9751CF015796DB40053D889 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		D986E29A17B75B6C00F67031 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
-		D986E29B17B75B6C00F67031 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = /Library/Frameworks/SDL_image.framework; sourceTree = "<absolute>"; };
-		D986E29E17B75D0800F67031 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		D9AC1BA617CF12C600342A50 /* Kobo Deluxe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kobo Deluxe.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9AC1BA917CF12C600342A50 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		D9AC1BAA17CF12C600342A50 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -603,8 +598,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D986E29C17B75B6C00F67031 /* SDL.framework in Frameworks */,
-				D986E29D17B75B6C00F67031 /* SDL_image.framework in Frameworks */,
 				D9751CF115796DB40053D889 /* CoreFoundation.framework in Frameworks */,
 				D9751CEF15796DAA0053D889 /* Cocoa.framework in Frameworks */,
 				D903F9C2157A6585004221EC /* libsound.a in Frameworks */,
@@ -615,8 +608,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9AC1BC317CF135C00342A50 /* SDL.framework in Frameworks */,
-				D9AC1BC417CF136300342A50 /* SDL_image.framework in Frameworks */,
+				D905C2611805474E00502F10 /* SDL2.framework in Frameworks */,
+				D905C2621805474E00502F10 /* SDL2_image.framework in Frameworks */,
 				D9AC1BC517CF138000342A50 /* CoreFoundation.framework in Frameworks */,
 				D9AC1BA717CF12C600342A50 /* Cocoa.framework in Frameworks */,
 				D9AC1BC217CF135500342A50 /* libsound.a in Frameworks */,
@@ -629,8 +622,8 @@
 		D946DBC017B2015F00CEACD9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D986E29A17B75B6C00F67031 /* SDL.framework */,
-				D986E29B17B75B6C00F67031 /* SDL_image.framework */,
+				D905C25F1805474E00502F10 /* SDL2.framework */,
+				D905C2601805474E00502F10 /* SDL2_image.framework */,
 				D9751CF015796DB40053D889 /* CoreFoundation.framework */,
 				D9751CEE15796DAA0053D889 /* Cocoa.framework */,
 				D9AC1BA817CF12C600342A50 /* Other Frameworks */,
@@ -655,7 +648,7 @@
 		D9751B0E1578B0E20053D889 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D9751B0D1578B0E20053D889 /* kobo */,
+				D9751B0D1578B0E20053D889 /* kobodl */,
 				D903F985157A64FB004221EC /* libsound.a */,
 				D9AC1BA617CF12C600342A50 /* Kobo Deluxe.app */,
 			);
@@ -665,7 +658,6 @@
 		D9751B101578B0E20053D889 /* kobo */ = {
 			isa = PBXGroup;
 			children = (
-				D986E29E17B75D0800F67031 /* SDLMain.m */,
 				D9751B1B1578B12D0053D889 /* cfgform.cpp */,
 				D9751B1C1578B12D0053D889 /* cfgparse.cpp */,
 				D9751B1D1578B12D0053D889 /* dashboard.cpp */,
@@ -1063,7 +1055,7 @@
 			);
 			name = kobodl;
 			productName = kobo;
-			productReference = D9751B0D1578B0E20053D889 /* kobo */;
+			productReference = D9751B0D1578B0E20053D889 /* kobodl */;
 			productType = "com.apple.product-type.tool";
 		};
 		D9AC1BA517CF12C600342A50 /* Kobo Deluxe */ = {
@@ -1366,7 +1358,6 @@
 				D9751BEF1578B19F0053D889 /* toolkit.cpp in Sources */,
 				D9751BF11578B19F0053D889 /* vidmodes.c in Sources */,
 				D9751BF31578B19F0053D889 /* window.cpp in Sources */,
-				D986E29F17B75D0800F67031 /* SDLMain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1394,7 +1385,6 @@
 				D9AC1BD717CF13E200342A50 /* e_symtab.c in Sources */,
 				D9AC1BD817CF13E200342A50 /* e_util.c in Sources */,
 				D9AC1BD917CF13E200342A50 /* eel.c in Sources */,
-				D9AC1BDA17CF13E200342A50 /* SDLMain.m in Sources */,
 				D9AC1BDB17CF13E200342A50 /* cfgform.cpp in Sources */,
 				D9AC1BDC17CF13E200342A50 /* cfgparse.cpp in Sources */,
 				D9AC1BDD17CF13E200342A50 /* dashboard.cpp in Sources */,
@@ -1466,6 +1456,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL2.framework/Headers/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1475,6 +1466,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL2.framework/Headers/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1533,9 +1525,9 @@
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers/,
-					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers/,
 					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
+					/Library/Frameworks/SDL2_image.framework/Headers,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1553,9 +1545,9 @@
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers/,
-					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers/,
 					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
+					/Library/Frameworks/SDL2_image.framework/Headers,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1585,9 +1577,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers/,
-					/Library/Frameworks/SDL_image.framework/Headers,
 					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
+					/Library/Frameworks/SDL2.framework/Headers/,
+					/Library/Frameworks/SDL2_image.framework/Headers,
 				);
 				INFOPLIST_FILE = "Kobo Deluxe/Kobo Deluxe-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1613,9 +1605,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers/,
-					/Library/Frameworks/SDL_image.framework/Headers,
 					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
+					/Library/Frameworks/SDL2.framework/Headers/,
+					/Library/Frameworks/SDL2_image.framework/Headers,
 				);
 				INFOPLIST_FILE = "Kobo Deluxe/Kobo Deluxe-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

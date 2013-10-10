@@ -484,52 +484,80 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
 		s_sprite_t *s = s_get_sprite_b(b, first + i);
 		if(!s)
 			continue;
-
+        
 		switch(s_blitmode)
 		{
-		  case S_BLITMODE_AUTO:
-			if(s->surface->format->Amask)
-				SDL_SetAlpha(s->surface,
-						SDL_SRCALPHA |
-						SDL_RLEACCEL,
-						SDL_ALPHA_OPAQUE);
-			else
-				SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
-			break;
-		  case S_BLITMODE_OPAQUE:
-			SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
-			break;
-		  case S_BLITMODE_COLORKEY:
-			SDL_SetColorKey(s->surface,
-					SDL_SRCCOLORKEY | SDL_RLEACCEL,
-					SDL_MapRGB(s->surface->format,
-						s_colorkey.r,
-						s_colorkey.g,
-						s_colorkey.b));
-			break;
-		  case S_BLITMODE_ALPHA:
-			SDL_SetAlpha(s->surface,
-					SDL_SRCALPHA | SDL_RLEACCEL,
-					s_alpha);
-			break;
+            case S_BLITMODE_AUTO:
+                if(s->surface->format->Amask){
+            
+                    /* IOHAVOC update API
+                     SDL_SetAlpha(s->surface,
+                     SDL_SRCALPHA |
+                     SDL_RLEACCEL,
+                     SDL_ALPHA_OPAQUE); */
+                    
+                    SDL_SetSurfaceAlphaMod(s->surface, SDL_ALPHA_OPAQUE);
+                } else
+                    SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
+                break;
+            
+            case S_BLITMODE_OPAQUE:
+                SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
+                break;
+            
+            case S_BLITMODE_COLORKEY:
+                
+                /* IOHAVOC update API
+                SDL_SetColorKey(s->surface,
+                                SDL_SRCCOLORKEY | SDL_RLEACCEL,
+                                SDL_MapRGB(s->surface->format,
+                                           s_colorkey.r,
+                                           s_colorkey.g,
+                                           s_colorkey.b)); */
+                SDL_SetColorKey(s->surface,
+                                 SDL_RLEACCEL,
+                                SDL_MapRGB(s->surface->format,
+                                           s_colorkey.r,
+                                           s_colorkey.g,
+                                            s_colorkey.b));
+                break;
+            case S_BLITMODE_ALPHA:
+                
+                /* IOHAVOC update API
+                SDL_SetAlpha(s->surface,
+                             SDL_SRCALPHA | SDL_RLEACCEL,
+                             s_alpha); */
+                
+                SDL_SetSurfaceAlphaMod(s->surface, s_alpha);
+                break;
 		}
 
 		if(args->x)
 		{
 			if(s->surface->format->Amask)
 				tweak_ck(s->surface);
-			tmp = SDL_DisplayFormat(s->surface);
+			// tmp = SDL_DisplayFormat(s->surface); // IOHAVOC -- Update API -duuno what the pixel format should be
+            tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+
+            
 			if(s->surface->format->Amask)
-				SDL_SetColorKey(tmp,
+				/* IOHAVOC -- update API
+                SDL_SetColorKey(tmp,
 						SDL_SRCCOLORKEY | SDL_RLEACCEL,
-						SDL_MapRGB(tmp->format, 0,0,0));
+						SDL_MapRGB(tmp->format, 0,0,0)); */
+                
+                SDL_SetColorKey(tmp, SDL_RLEACCEL, SDL_MapRGB(tmp->format, 0,0,0));
 		}
 		else
 		{
-			if(s->surface->format->Amask)
-				tmp = SDL_DisplayFormatAlpha(s->surface);
-			else
-				tmp = SDL_DisplayFormat(s->surface);
+			if(s->surface->format->Amask) {
+				// tmp = SDL_DisplayFormatAlpha(s->surface);        // IOHAVOC -- Update API -- Pixel Format?? Also DisplayFormatALPHA (different!!) TODO
+                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+            }
+			else {
+                //	tmp = SDL_DisplayFormat(s->surface);            // IOHAVOC -- Update API -- Pixel Format??
+                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+            }
 		}
 		if(!tmp)
 			return -1;

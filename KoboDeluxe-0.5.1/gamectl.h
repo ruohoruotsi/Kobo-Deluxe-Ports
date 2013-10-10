@@ -105,7 +105,7 @@ class gamecontrol_t
 	static void init(int always_fire);
 	static void repeat(int delay, int interval);
 	static void clear();
-	static int map(SDLKey sym);
+	static int map(SDL_Keycode sym);
 	static void process();	// Call every frame!
 	static void press(int k);
 	static void release(int k);

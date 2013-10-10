@@ -335,16 +335,26 @@ void st_game_t::enter()
 				"Please, check your installation.");
 		gsm.change(&st_error);
 	}
-	if(prefs->mousecapture)
+	/* IOHAVOC -- replacement below 
+    if(prefs->mousecapture)
 		if(SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_ON)
-			SDL_WM_GrabInput(SDL_GRAB_ON);
+			SDL_WM_GrabInput(SDL_GRAB_ON); */
+    
+    if(prefs->mousecapture)
+        if(!SDL_GetWindowGrab(SDL_GetMouseFocus()))
+            SDL_SetWindowGrab(SDL_GetMouseFocus(), SDL_TRUE);
 }
 
 
 void st_game_t::leave()
 {
+    /* IOHAVOC -- replacement below
 	if(SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON)
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		SDL_WM_GrabInput(SDL_GRAB_OFF); */
+    
+    if(SDL_GetWindowGrab(SDL_GetMouseFocus()))
+        SDL_SetWindowGrab(SDL_GetMouseFocus(), SDL_FALSE);
+    
 	st_intro_title.inext = &st_intro_instructions;
 	st_intro_title.duration = INTRO_TITLE_TIME + 2000;
 	st_intro_title.mode = 0;
@@ -353,16 +363,25 @@ void st_game_t::leave()
 
 void st_game_t::yield()
 {
-	if(SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON)
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+	/*  IOHAVOC -- replacement below
+    if(SDL_WM_GrabInput(SDL_GRAB_QUERY) == SDL_GRAB_ON)
+		SDL_WM_GrabInput(SDL_GRAB_OFF); */
+    
+        if(SDL_GetWindowGrab(SDL_GetMouseFocus()))
+            SDL_SetWindowGrab(SDL_GetMouseFocus(), SDL_FALSE);
 }
 
 
 void st_game_t::reenter()
 {
+    /* IOHAVOC -- replacement below 
 	if(prefs->mousecapture)
 		if(SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_ON)
-			SDL_WM_GrabInput(SDL_GRAB_ON);
+			SDL_WM_GrabInput(SDL_GRAB_ON); */
+    
+    if(prefs->mousecapture)
+        if(!SDL_GetWindowGrab(SDL_GetMouseFocus()))
+            SDL_SetWindowGrab(SDL_GetMouseFocus(), SDL_TRUE);
 }
 
 
@@ -878,12 +897,12 @@ void new_player_t::open()
 	currentIndex = 0;
 	editing = 1;
 	build_all();
-	SDL_EnableUNICODE(1);
+	// SDL_EnableUNICODE(1);    // IOHAVOC - this is deprectated
 }
 
 void new_player_t::close()
 {
-	SDL_EnableUNICODE(0);
+	// SDL_EnableUNICODE(0);   // IOHAVOC - this is deprectated
 	clean();
 }
 

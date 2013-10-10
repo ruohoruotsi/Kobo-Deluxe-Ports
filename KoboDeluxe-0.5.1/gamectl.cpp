@@ -54,7 +54,7 @@ void gamecontrol_t::init(int always_fire)
 	down = 0;
 	shot = 0;
 	movekey_pressed = 0;
-	SDL_EnableKeyRepeat(r_delay, r_interval);
+	// SDL_EnableKeyRepeat(r_delay, r_interval);  // IOHAVOC -- deprecated in SDL2
 }
 
 
@@ -70,7 +70,7 @@ void gamecontrol_t::repeat(int delay, int interval)
 	r_interval = interval;
 	//Temporary kludge - should apply repeat to
 	//all switch inputs, not just the keyboard!
-	SDL_EnableKeyRepeat(delay, interval);
+	// SDL_EnableKeyRepeat(delay, interval);    // IOHAVOC -- deprecated in SDL2
 }
 
 
@@ -80,32 +80,32 @@ void gamecontrol_t::clear()
 }
 
 
-int gamecontrol_t::map(SDLKey sym)
+int gamecontrol_t::map(SDL_Keycode sym)
 {
 /*
 FIXME: This should be replaced by a configurable mapping system.
 */
 	switch(sym)
 	{
-	  case KEY_KP_LEFT:
+	  case SDLK_KP_4:
 	  case SDLK_LEFT:
 		return BTN_LEFT;
-	  case KEY_KP_RIGHT:
+	  case SDLK_KP_6:
 	  case SDLK_RIGHT:
 		return BTN_RIGHT;
-	  case KEY_KP_UP:
+	  case SDLK_KP_8:
 	  case SDLK_UP:
 		return BTN_UP;
-	  case KEY_KP_DOWN:
+	  case SDLK_KP_2:
 	  case SDLK_DOWN:
 		return BTN_DOWN;
-	  case KEY_KP_DL:
+	  case SDLK_KP_1:
 		return BTN_DL;
-	  case KEY_KP_DR:
+	  case SDLK_KP_3:
 		return BTN_DR;
-	  case KEY_KP_UL:
+	  case SDLK_KP_7:
 		return BTN_UL;
-	  case KEY_KP_UR:
+	  case SDLK_KP_9:
 		return BTN_UR;
 
 	  case SDLK_PAGEUP:

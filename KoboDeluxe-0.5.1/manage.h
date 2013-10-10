@@ -87,8 +87,8 @@ class _manage
 	static void lost_myship();
 	static void destroyed_a_core();
 	static void add_score(int sc);
-	static void key_down(SDLKey sym);
-	static void key_up(SDLKey sym);
+	static void key_down(SDL_Keycode sym);
+	static void key_up(SDL_Keycode sym);
 	static int title_blank()	{ return blank; }
 	static void select_next(int redraw_map = 1);
 	static void select_prev(int redraw_map = 1);
