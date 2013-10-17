@@ -347,7 +347,7 @@ inline void _enemy::move()
 	(this->*(ek->move)) ();
 
 	// Handle collisions with the player ship
-	if((hitsize >= 0) && (norm < (hitsize + HIT_MYSHIP)))
+	if((hitsize >= 0) && (norm < (hitsize + HIT_MYSHIP))) {
 		if(prefs->cmd_indicator)
 			sound.g_player_damage();
 		else if(myship.alive())
@@ -355,6 +355,7 @@ inline void _enemy::move()
 			hit(game.damage);	// Ship damages object
 			myship.hit(damage);	// Object damages ship
 		}
+    }
 
 	// Handle collisions with player bolts (Player bolts kill themselves
 	// when they hit something, so we don't need to hit them from here.)
@@ -363,11 +364,12 @@ inline void _enemy::move()
 
 	int dmg = myship.hit_bolt(CS2PIXEL(x), CS2PIXEL(y),
 				hitsize + HIT_BOLT, health);
-	if(dmg)
+	if(dmg) {
 		if(prefs->cmd_indicator)
 			sound.g_player_damage();
 		else
 			hit(dmg);	// Bolt damages object
+    }
 }
 
 inline void _enemy::move_intro()
