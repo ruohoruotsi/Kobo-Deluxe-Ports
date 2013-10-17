@@ -78,7 +78,7 @@ void _myship::state(_myship_state s)
 			gengine->free_obj(crosshair);
 		crosshair = NULL;
 		break;
-	  case normal:
+	  case normal_alive:
 		if(!object)
 			object = gengine->get_obj(LAYER_PLAYER);
 		if(object)
@@ -115,7 +115,7 @@ int _myship::init()
 	lapx = 0;
 	lapy = 0;
 	di = 1;
-	state(normal);
+	state(normal_alive);
 
 	apply_position();
 
@@ -176,7 +176,7 @@ int _myship::move()
 
 	virtx = x - (WSIZE >> 1);
 	virty = y - (WSIZE >> 1);
-	if(_state == normal)
+	if(_state == normal_alive)
 	{
 		int vd, vo;
 		if(!prefs->cmd_pushmove)
@@ -262,7 +262,7 @@ int _myship::move()
 	if(tail_temperature < 0)
 		tail_temperature = 0;
 
-	if((_state == normal) && gamecontrol.get_shot())
+	if((_state == normal_alive) && gamecontrol.get_shot())
 	{
 		if(game.skill == SKILL_CLASSIC)
 		{
@@ -337,7 +337,7 @@ int _myship::move()
 
 void _myship::hit(int dmg)
 {
-	if(_state != normal)
+	if(_state != normal_alive)
 		return;
 
 	if(!dmg)
@@ -441,7 +441,7 @@ int _myship::hit_bolt(int ex, int ey, int hitsize, int health)
 
 void _myship::put_crosshair()
 {
-	if(_state != normal)
+	if(_state != normal_alive)
 		return;
 	if(!crosshair)
 	{

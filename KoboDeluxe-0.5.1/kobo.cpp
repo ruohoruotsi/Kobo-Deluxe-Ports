@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/param.h> /* for MAXPATHLEN */
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -61,6 +62,10 @@ extern "C" {
 #include "options.h"
 #include "myship.h"
 #include "enemies.h"
+
+
+#include <CoreFoundation/CFBundle.h>
+
 
 #define	MAX_FPS_RESULTS	64
 
@@ -2064,6 +2069,40 @@ extern "C" RETSIGTYPE breakhandler(int dummy)
 #endif
 }
 
+// IOHAVOC - from SDLMain - Set the working directory to the .app's parent directory
+void setupWorkingDirectory(bool shouldChdir)
+{
+    
+#if USE_RESOURCE_WORKING_DIR // IOHAVOC -- instead since we're building an app bundle ... we want to be located in the resource folder
+    
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+    {
+        // error!
+    }
+    CFRelease(resourcesURL);
+    chdir(path);
+    
+#else
+    
+    if (shouldChdir)
+    {
+        char parentdir[MAXPATHLEN];
+        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+        CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+        
+        if (CFURLGetFileSystemRepresentation(url2, 1, (UInt8 *)parentdir, MAXPATHLEN)) {
+            chdir(parentdir);   /* chdir to the binary app's parent */
+        }
+        CFRelease(url);
+        CFRelease(url2);
+    }
+    
+#endif
+    
+}
 
 int main(int argc, char *argv[])
 {
@@ -2072,6 +2111,10 @@ int main(int argc, char *argv[])
 	signal(SIGTERM, breakhandler);
 	signal(SIGINT, breakhandler);
 
+    // gFinderLaunch
+    setupWorkingDirectory(false);
+
+    
 	SDL_Init(0);
 
 	if(main_init())

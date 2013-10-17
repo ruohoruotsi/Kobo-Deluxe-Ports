@@ -18,6 +18,8 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    int i = 0;
+    i++;
 }
 
 @end

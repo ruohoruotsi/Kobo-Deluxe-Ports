@@ -33,7 +33,7 @@
 //---------------------------------------------------------------------------//
 enum _myship_state
 {
-	normal,
+	normal_alive,
 	dead
 };
 
@@ -105,7 +105,7 @@ class _myship
 	static void health(int h)	{ _health = h; }
 	static void health_bonus(int h);
 	static void set_position(int px, int py);
-	static int alive()		{ return _state == normal; }
+	static int alive()		{ return _state == normal_alive; }
 };
 
 extern _myship    myship;
