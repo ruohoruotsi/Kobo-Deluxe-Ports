@@ -2106,7 +2106,8 @@ int main(int argc, char *argv[])
 	if(prefs->cmd_noparachute)
 	{
 		SDL_Quit();
-		SDL_Init(SDL_INIT_NOPARACHUTE);
+		SDL_Init(SDL_INIT_NOPARACHUTE);  // IOHAVOC: According to http://wiki.libsdl.org/MigrationGuide There's no SDL
+                                         // parachute anymore. What 1.2 called SDL_INIT_NOPARACHUTE is a default and only state now.
 	}
 
 	km.open_logging(prefs);

@@ -356,7 +356,6 @@
 		D9751B4B1578B12D0053D889 /* scenes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scenes.h; sourceTree = "<group>"; };
 		D9751B4C1578B12D0053D889 /* score.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = score.h; sourceTree = "<group>"; };
 		D9751B4D1578B12D0053D889 /* screen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = screen.h; sourceTree = "<group>"; };
-		D9751B4E1578B12D0053D889 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		D9751B4F1578B12D0053D889 /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound.h; sourceTree = "<group>"; };
 		D9751B501578B12D0053D889 /* states.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = states.h; sourceTree = "<group>"; };
 		D9751B511578B12D0053D889 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
@@ -709,7 +708,6 @@
 				D9751B4B1578B12D0053D889 /* scenes.h */,
 				D9751B4C1578B12D0053D889 /* score.h */,
 				D9751B4D1578B12D0053D889 /* screen.h */,
-				D9751B4E1578B12D0053D889 /* SDLMain.h */,
 				D9751B4F1578B12D0053D889 /* sound.h */,
 				D9751B501578B12D0053D889 /* states.h */,
 				D9751B511578B12D0053D889 /* version.h */,
