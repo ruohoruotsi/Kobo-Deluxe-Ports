@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 
+#include "a_agw.h"
 #include "kobolog.h"
 #include "config.h"
 #include "eel.h"

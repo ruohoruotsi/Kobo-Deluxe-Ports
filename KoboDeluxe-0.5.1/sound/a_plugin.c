@@ -25,6 +25,9 @@
 
 static int usecount = 0;
 
+// function prototypes
+int default_state(struct audio_plugin_t *p, audio_fxstates_t new_state);
+void default_control(struct audio_plugin_t *p, unsigned ctl, int arg);
 
 #define	EMULBUF_FRAMES	256
 
