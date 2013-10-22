@@ -405,7 +405,7 @@ void window_t::center_token_fxp(int _x, int _y, const char *txt, char token)
 		{
 			char *tok = strchr(txt, token);
 			if(tok)
-				tokpos = tok-txt;
+				tokpos = (int)(tok - txt);
 			else
 				tokpos = 255;
 		}
@@ -423,11 +423,11 @@ void window_t::center_token_fxp(int _x, int _y, const char *txt, char token)
 int window_t::textwidth_fxp(const char *txt, int min, int max)
 {
 	if(!engine)
-		return strlen(txt);
+		return (Uint32)strlen(txt);
 
 	SoFont *f = engine->get_font(_font);
 	if(!f)
-		return strlen(txt);
+		return (Uint32)strlen(txt);
 
 	return (f->TextWidth(txt, min, max) << 16) / xs;
 }
@@ -436,11 +436,11 @@ int window_t::textwidth_fxp(const char *txt, int min, int max)
 int window_t::textwidth(const char *txt, int min, int max)
 {
 	if(!engine)
-		return strlen(txt);
+		return (Uint32)strlen(txt);
 
 	SoFont *f = engine->get_font(_font);
 	if(!f)
-		return strlen(txt);
+		return (Uint32)strlen(txt);
 
 	return (f->TextWidth(txt, min, max) << 8) / xs;
 }

@@ -311,7 +311,7 @@ const char *eel_path(void);
 
 /* Open/Close EEL. (Keep track of nested calls!) */
 int eel_open(void);
-void eel_close();
+void eel_close(void);
 
 /*
  * Execute code inside script 'handle', starting at 'pos'.

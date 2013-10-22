@@ -90,7 +90,7 @@ int KOBO_sound::load(int (*prog)(const char *msg), int force)
 		prog(NULL);
 	}
 
-	if(prefs->use_music && !music_loaded || force)
+	if((prefs->use_music && !music_loaded) || force)
 	{
 		if(prog("Loading music"))
 			return -999;

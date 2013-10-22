@@ -26,4 +26,6 @@ int eel_load(const char *filename);
 int eel_load_from_mem(const char *script, unsigned len);
 void eel_free(int handle);
 
+int eel_script_alloc(void);
+
 #endif /*_EEL_SCRIPT_H_*/

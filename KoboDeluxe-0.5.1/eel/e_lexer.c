@@ -27,7 +27,7 @@
 #include "e_util.h"
 
 
-int eel_get_unique_token()
+int eel_get_unique_token(void)
 {
 	static int last = TK_USER;
 	return last++;

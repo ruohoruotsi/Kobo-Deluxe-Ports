@@ -99,7 +99,7 @@ double bio_strtod(bio_file_t *bio)
 	char *p = (char *)bio->data + bio->pos;
 	double val;
 	val = strtod(p, &p);
-	bio->pos = p - (char *)bio->data;
+	bio->pos = (int)(p - (char *)bio->data);
 	return val;
 }
 

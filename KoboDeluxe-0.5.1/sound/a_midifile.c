@@ -112,7 +112,8 @@ static inline void midiprintf2(int level, const char *format, ...)
 
 static inline unsigned char datalook(midi_player_t *mp, unsigned pos)
 {
-	if(pos < 0 || pos > mp->mf->flen)
+	if(/* pos < 0 || // IOHAVOC --- unsigned comparison always false */
+       pos > mp->mf->flen)
 		return 0;
 	return mp->mf->data[pos];
 }
@@ -445,8 +446,8 @@ int mp_update(midi_player_t *mp)
 				note = getnext(mp, 1) + (mp->pitch >> 16);
 				if(note > 127)
 					note = 127;
-				else if(note < 0)
-					note = 0;
+				/* else if(note < 0)
+					note = 0; // IOHAVOC --- unsigned comparison always false */
 				vel = getnext(mp, 1);
 				if(mp->sock->note_off)
 					mp->sock->note_off(c, note, vel);
@@ -456,8 +457,8 @@ int mp_update(midi_player_t *mp)
 				note = getnext(mp, 1) + (mp->pitch >> 16);
 				if(note > 127)
 					note = 127;
-				else if(note < 0)
-					note = 0;
+				/* else if(note < 0)
+					note = 0;  // IOHAVOC --- unsigned comparison always false */
 				vel = getnext(mp, 1);
 				if(mp->sock->note_on)
 					mp->sock->note_on(c, note, vel);
@@ -466,8 +467,8 @@ int mp_update(midi_player_t *mp)
 				note = getnext(mp, 1) + (mp->pitch >> 16);
 				if(note > 127)
 					note = 127;
-				else if(note < 0)
-					note = 0;
+				/* else if(note < 0)
+					note = 0; // IOHAVOC --- unsigned comparison always false */
 				vel = getnext(mp, 1);
 				if(mp->sock->poly_pressure)
 					mp->sock->poly_pressure(c, note,

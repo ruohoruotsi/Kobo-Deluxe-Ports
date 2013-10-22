@@ -454,7 +454,7 @@ int eel_open(void)
 	return 0;
 }
 
-void eel_close()
+void eel_close(void)
 {
 	int h;
 	if(!_eel_users)

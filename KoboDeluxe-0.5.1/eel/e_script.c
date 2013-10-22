@@ -37,7 +37,7 @@
 
 script_t eel_scripttab[MAX_SCRIPTS];
 
-int eel_script_alloc()
+int eel_script_alloc(void)
 {
         int h = 0;
         while(h < MAX_SCRIPTS)
@@ -78,7 +78,7 @@ int eel_load(const char *filename)
 
 	if(fseek(f, 0, SEEK_END) == 0)
 	{
-		eel_scripttab[h].len = ftell(f);
+		eel_scripttab[h].len = (unsigned int)ftell(f);
 		if(fseek(f, 0, SEEK_SET) == 0)
 		{
 			eel_scripttab[h].data = (unsigned char *)malloc(

@@ -37,7 +37,7 @@ fm_object_t::~fm_object_t()
  */
 static int strdel(char *str, int count)
 {
-	int len = strlen(str);
+	int len = (unsigned int)strlen(str);
 	memmove(str, str+count, len-count+1);
 	return len-count;
 }
@@ -58,12 +58,12 @@ static int strins(char *str, const char *ins, int pos)
 {
 	char *cpy = strdup(str+pos);
 	if(!cpy)
-		return strlen(str);	//Silly but harmless...
+		return (unsigned int)strlen(str);	//Silly but harmless...
 
 	snprintf(str+pos, FM_BUFFER_SIZE-pos-1, "%s%s", ins, cpy);
 	str[FM_BUFFER_SIZE - 1] = 0;
 	free(cpy);
-	return strlen(str);
+	return (unsigned int)strlen(str);
 }
 
 
@@ -568,7 +568,7 @@ int filemapper_t::recurse_get(char *result, const char *ref, int kind,
 	}
 
 	char kclass[9];
-	int len = obj - ref;
+	int len = (int)(obj - ref);
 	obj += 2;	// Skip the ">>"
 	if(len > 8)
 		len = 8;
@@ -840,7 +840,7 @@ void filemapper_t::print(FILE *f, const char *ref)
 		strncpy(key, ref, 8);
 	else
 	{
-		int len = obj - ref;
+		int len = (int)(obj - ref);
 		strncpy(key, ref, 8);
 		if(len > 8)
 			len = 8;

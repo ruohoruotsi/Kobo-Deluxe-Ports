@@ -475,7 +475,7 @@ int config_parser_t::read_config(char ***cv, FILE *f)
 	}
 
 	fseek(f, 0, SEEK_END);
-	int len = ftell(f);
+	int len = (int)ftell(f);
 	(*cv)[0] = (char *)malloc(len+1);
 	if(!(*cv)[0])
 	{

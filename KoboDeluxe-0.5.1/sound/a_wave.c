@@ -295,7 +295,7 @@ static int SaveRAW(const char *name, void *data, Uint32 size,
 	if(fwrite(header, sizeof(header), 1, f) != 1)
 		return -2;
 	flip_endian(data, size, format);
-	result = fwrite(data, size, 1, f);
+	result = (unsigned int)fwrite(data, size, 1, f);
 	flip_endian(data, size, format);
 	if(result != 1)
 		return -3;

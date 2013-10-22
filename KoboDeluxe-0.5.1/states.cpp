@@ -1045,8 +1045,7 @@ void st_new_player_t::press(int button)
 			break;
 
 		  default:
-			if((unicode >= 'a') && (unicode <= 'z') ||
-				(unicode >= 'A') && (unicode <= 'Z'))
+			if(((unicode >= 'a') && (unicode <= 'z')) || ((unicode >= 'A') && (unicode <= 'Z')))
 			{
 				menu.name[menu.currentIndex] = (char)unicode;
 				if(menu.currentIndex < sizeof(menu.name) - 2)

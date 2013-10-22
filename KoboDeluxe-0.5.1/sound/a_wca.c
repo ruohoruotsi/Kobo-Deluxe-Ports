@@ -719,9 +719,10 @@ static void _env_start_all(void)
 
 void wca_mod_reset(wca_modtargets_t target)
 {
-	if(target < 0)
-		return;
-	if(target >= _WCA_MODTARGETS)
+	/* if(target < 0)
+		return;  // IOHAVOC --- unsigned comparison always false */
+     
+     if(target >= _WCA_MODTARGETS)
 		return;
 	_env_reset(&env[target]);
 	wca_mod(target, 0, 0, 0);
@@ -730,8 +731,9 @@ void wca_mod_reset(wca_modtargets_t target)
 
 void wca_env(wca_modtargets_t target, float duration, float v)
 {
-	if(target < 0)
-		return;
+	/* if(target < 0)
+		return; //IOHAVOC --- unsigned comparison always false */
+
 	if(target >= _WCA_MODTARGETS)
 		return;
 	_env_add(&env[target], duration, v);
@@ -740,8 +742,8 @@ void wca_env(wca_modtargets_t target, float duration, float v)
 void wca_mod(wca_modtargets_t target, float frequency,
 		float amplitude, float depth)
 {
-	if(target < 0)
-		return;
+	/* if(target < 0)
+		return; // IOHAVOC --- unsigned comparison always false */
 	if(target >= _WCA_MODTARGETS)
 		return;
 	env[target].mod_f = frequency;

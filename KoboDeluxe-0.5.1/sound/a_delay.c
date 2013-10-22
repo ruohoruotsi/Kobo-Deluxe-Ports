@@ -386,8 +386,8 @@ static void _scale_early_taps(struct audio_plugin_t *p)
 		delay >>= 14;
 		if(delay > DELAY_BUFSIZE-2)
 			delay = DELAY_BUFSIZE-2;
-		else if(delay < 0)
-			delay = 0;
+		/* else if(delay < 0)
+			delay = 0; // IOHAVOC --- unsigned comparison always false */
 		delay &= (DELAY_MASK-1);
 		delay |= t & 1;		/* L->L, R->R, L->L, R->R,... */
 		d->tap[t].delay = delay;

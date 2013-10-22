@@ -7,37 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D903F98A157A653B004221EC /* a_agw.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C7C15796CAC0053D889 /* a_agw.h */; };
-		D903F98B157A653B004221EC /* a_bus.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C7D15796CAC0053D889 /* a_bus.h */; };
-		D903F98C157A653B004221EC /* a_channel.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C7E15796CAC0053D889 /* a_channel.h */; };
-		D903F98D157A653B004221EC /* a_commands.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C7F15796CAC0053D889 /* a_commands.h */; };
-		D903F98E157A653B004221EC /* a_control.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8015796CAC0053D889 /* a_control.h */; };
-		D903F98F157A653B004221EC /* a_delay.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8115796CAC0053D889 /* a_delay.h */; };
-		D903F990157A653B004221EC /* a_events.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8215796CAC0053D889 /* a_events.h */; };
-		D903F991157A653B004221EC /* a_filters.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8315796CAC0053D889 /* a_filters.h */; };
-		D903F992157A653B004221EC /* a_globals.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8415796CAC0053D889 /* a_globals.h */; };
-		D903F993157A653B004221EC /* a_limiter.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8515796CAC0053D889 /* a_limiter.h */; };
-		D903F994157A653B004221EC /* a_math.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8615796CAC0053D889 /* a_math.h */; };
-		D903F995157A653B004221EC /* a_midi.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8715796CAC0053D889 /* a_midi.h */; };
-		D903F996157A653B004221EC /* a_midicon.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8815796CAC0053D889 /* a_midicon.h */; };
-		D903F997157A653B004221EC /* a_midifile.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8915796CAC0053D889 /* a_midifile.h */; };
-		D903F998157A653B004221EC /* a_midisock.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8A15796CAC0053D889 /* a_midisock.h */; };
-		D903F999157A653B004221EC /* a_mixers.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8B15796CAC0053D889 /* a_mixers.h */; };
-		D903F99A157A653B004221EC /* a_patch.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8C15796CAC0053D889 /* a_patch.h */; };
-		D903F99B157A653B004221EC /* a_pitch.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8D15796CAC0053D889 /* a_pitch.h */; };
-		D903F99C157A653B004221EC /* a_plugin.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8E15796CAC0053D889 /* a_plugin.h */; };
-		D903F99D157A653B004221EC /* a_sequencer.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C8F15796CAC0053D889 /* a_sequencer.h */; };
-		D903F99E157A653B004221EC /* a_struct.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9015796CAC0053D889 /* a_struct.h */; };
-		D903F99F157A653B004221EC /* a_tools.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9115796CAC0053D889 /* a_tools.h */; };
-		D903F9A0157A653B004221EC /* a_types.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9215796CAC0053D889 /* a_types.h */; };
-		D903F9A1157A653B004221EC /* a_voice.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9315796CAC0053D889 /* a_voice.h */; };
-		D903F9A2157A653B004221EC /* a_wave.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9415796CAC0053D889 /* a_wave.h */; };
-		D903F9A3157A653B004221EC /* a_wca.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9515796CAC0053D889 /* a_wca.h */; };
-		D903F9A4157A653B004221EC /* a_wcaosc.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9615796CAC0053D889 /* a_wcaosc.h */; };
-		D903F9A5157A653B004221EC /* audio.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9715796CAC0053D889 /* audio.h */; };
-		D903F9A6157A653B004221EC /* audiodev.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9815796CAC0053D889 /* audiodev.h */; };
-		D903F9A7157A653B004221EC /* ptable.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9915796CAC0053D889 /* ptable.h */; };
-		D903F9A8157A653B004221EC /* sfifo.h in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9A15796CAC0053D889 /* sfifo.h */; };
 		D903F9A9157A653B004221EC /* a_agw.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9B15796CAC0053D889 /* a_agw.c */; };
 		D903F9AA157A653B004221EC /* a_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9C15796CAC0053D889 /* a_bus.c */; };
 		D903F9AB157A653B004221EC /* a_channel.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9D15796CAC0053D889 /* a_channel.c */; };
@@ -1248,37 +1217,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D903F98A157A653B004221EC /* a_agw.h in Sources */,
-				D903F98B157A653B004221EC /* a_bus.h in Sources */,
-				D903F98C157A653B004221EC /* a_channel.h in Sources */,
-				D903F98D157A653B004221EC /* a_commands.h in Sources */,
-				D903F98E157A653B004221EC /* a_control.h in Sources */,
-				D903F98F157A653B004221EC /* a_delay.h in Sources */,
-				D903F990157A653B004221EC /* a_events.h in Sources */,
-				D903F991157A653B004221EC /* a_filters.h in Sources */,
-				D903F992157A653B004221EC /* a_globals.h in Sources */,
-				D903F993157A653B004221EC /* a_limiter.h in Sources */,
-				D903F994157A653B004221EC /* a_math.h in Sources */,
-				D903F995157A653B004221EC /* a_midi.h in Sources */,
-				D903F996157A653B004221EC /* a_midicon.h in Sources */,
-				D903F997157A653B004221EC /* a_midifile.h in Sources */,
-				D903F998157A653B004221EC /* a_midisock.h in Sources */,
-				D903F999157A653B004221EC /* a_mixers.h in Sources */,
-				D903F99A157A653B004221EC /* a_patch.h in Sources */,
-				D903F99B157A653B004221EC /* a_pitch.h in Sources */,
-				D903F99C157A653B004221EC /* a_plugin.h in Sources */,
-				D903F99D157A653B004221EC /* a_sequencer.h in Sources */,
-				D903F99E157A653B004221EC /* a_struct.h in Sources */,
-				D903F99F157A653B004221EC /* a_tools.h in Sources */,
-				D903F9A0157A653B004221EC /* a_types.h in Sources */,
-				D903F9A1157A653B004221EC /* a_voice.h in Sources */,
-				D903F9A2157A653B004221EC /* a_wave.h in Sources */,
-				D903F9A3157A653B004221EC /* a_wca.h in Sources */,
-				D903F9A4157A653B004221EC /* a_wcaosc.h in Sources */,
-				D903F9A5157A653B004221EC /* audio.h in Sources */,
-				D903F9A6157A653B004221EC /* audiodev.h in Sources */,
-				D903F9A7157A653B004221EC /* ptable.h in Sources */,
-				D903F9A8157A653B004221EC /* sfifo.h in Sources */,
 				D903F9A9157A653B004221EC /* a_agw.c in Sources */,
 				D903F9AA157A653B004221EC /* a_bus.c in Sources */,
 				D903F9AB157A653B004221EC /* a_channel.c in Sources */,

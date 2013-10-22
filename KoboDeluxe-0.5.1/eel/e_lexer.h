@@ -45,7 +45,7 @@
 
 #define	TK_USER		1024
 
-int eel_get_unique_token();
+int eel_get_unique_token(void);
 
 
 /*----------------------------------------------------------
