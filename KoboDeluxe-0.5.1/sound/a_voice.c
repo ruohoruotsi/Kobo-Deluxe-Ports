@@ -144,7 +144,7 @@ int voice_alloc(audio_channel_t *c)
 }
 
 
-void voice_start(audio_voice_t *v, int wid)
+static void voice_start(audio_voice_t *v, int wid)
 {
 	int retrig, randtrig;
 

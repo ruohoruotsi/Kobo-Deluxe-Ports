@@ -2070,11 +2070,11 @@ extern "C" RETSIGTYPE breakhandler(int dummy)
 #endif
 }
 
-// IOHAVOC - from SDLMain - Set the working directory to the .app's parent directory
-void setupWorkingDirectory(bool shouldChdir)
+// From SDLMain - Set the working directory to the .app's parent directory
+static void setupWorkingDirectory(bool shouldChdir)
 {
     
-#if USE_RESOURCE_WORKING_DIR // IOHAVOC -- instead since we're building an app bundle ... we want to be located in the resource folder
+#if USE_RESOURCE_WORKING_DIR // For an app bundle, we want to be located in the resource folder
     
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
@@ -2082,6 +2082,7 @@ void setupWorkingDirectory(bool shouldChdir)
     if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
     {
         // error!
+        log_printf(ELOG, "Failed to setupWorkingDirectory \n");
     }
     CFRelease(resourcesURL);
     chdir(path);

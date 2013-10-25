@@ -23,7 +23,7 @@
 #include "e_symtab.h"
 #include "e_lexer.h"
 
-eel_symbol_t *_register(const char *name, eel_symtypes_t stype,
+static eel_symbol_t *_register(const char *name, eel_symtypes_t stype,
 		eel_datatypes_t type)
 {
 	eel_symbol_t *s = eel_s_new(name, stype);

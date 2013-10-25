@@ -89,7 +89,7 @@ void eel_clear_args(int first)
 }
 
 
-void eel_remove_arg(int pos)
+static void eel_remove_arg(int pos)
 {
 	int i;
 	eel_d_freestring(eel_args + pos);
@@ -106,7 +106,7 @@ void eel_remove_arg(int pos)
  * Remove all arguments in the range ]start, end[.
  * (That is, not including args 'start' or 'end'.)
  */
-void eel_collapse(int start, int end)
+static eel_collapse(int start, int end)
 {
 	int i;
 	for(i = start + 1; i < end; ++i)

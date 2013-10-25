@@ -612,7 +612,7 @@ void score_manager_t::record(s_hiscore_t *entry, int force)
 }
 
 
-int s_table_cmp(const void *_a, const void *_b)
+static int s_table_cmp(const void *_a, const void *_b)
 {
 	s_hiscore_t *a = (s_hiscore_t *)_a;
 	s_hiscore_t *b = (s_hiscore_t *)_b;
