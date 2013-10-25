@@ -527,7 +527,8 @@ int KOBO_main::open_logging(prefs_t *p)
 		log_set_target_stream(1, stderr);
 	}
 
-	log_set_target_stream(2, NULL);
+    // IOHAVOC
+	// log_set_target_stream(2, NULL);
 
 	if(p)
 		switch(p->logformat)
@@ -2107,6 +2108,7 @@ void setupWorkingDirectory(bool shouldChdir)
 int main(int argc, char *argv[])
 {
 	int cmd_exit = 0;
+    
 	atexit(emergency_close);
 	signal(SIGTERM, breakhandler);
 	signal(SIGINT, breakhandler);
@@ -2114,8 +2116,11 @@ int main(int argc, char *argv[])
     // gFinderLaunch
     setupWorkingDirectory(false);
 
-    
-	SDL_Init(0);
+    // Initialize SDL
+    if (SDL_Init(0) < 0) {
+        fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+        return (1);
+    }
 
 	if(main_init())
 	{

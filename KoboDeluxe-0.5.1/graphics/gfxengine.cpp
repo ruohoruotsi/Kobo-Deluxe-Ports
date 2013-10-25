@@ -96,6 +96,10 @@ gfxengine_t::gfxengine_t()
 	frontpage = 0;
 	backpage = 1;
 	screenshot_count = 0;
+    
+    
+    // IOHAVOC - SDL2
+    sdl2window = NULL;
 }
 
 
@@ -745,10 +749,10 @@ void gfxengine_t::title(const char *win, const char *icon)
 {
 	_title = win;
 	_icontitle = icon;
-	if(screen_surface) {
+	//if(screen_surface) {
 		// SDL_WM_SetCaption(_title, _icontitle); // IOHAVOC -- update API - what about the _icontitle
         SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
-    }
+   // }
 }
 
 
@@ -824,25 +828,71 @@ int gfxengine_t::show()
 	glSDL_VSync(_vsync);
 	flags |= xflags;
 
+    //////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
     // IOHAVOC - Update API -- per the SDL Migration Guide  - new SDL_WindowFlags below  -- ignoring legacy flags variable
     //              ::SDL_WINDOW_FULLSCREEN, ::SDL_WINDOW_OPENGL,
     //              ::SDL_WINDOW_HIDDEN,     ::SDL_WINDOW_BORDERLESS,
     //              ::SDL_WINDOW_RESIZABLE,  ::SDL_WINDOW_MAXIMIZED,
     //              ::SDL_WINDOW_MINIMIZED,  ::SDL_WINDOW_INPUT_GRABBED.
 	// screen_surface = SDL_SetVideoMode(_width, _height, _depth, flags);
-    screen_surface = SDL_GetWindowSurface(
-                                          SDL_CreateWindow("sdl_createwindow",
-                                                           SDL_WINDOWPOS_CENTERED,
-                                                           SDL_WINDOWPOS_CENTERED,
-                                                           _width,
-                                                           _height,
-                                                           /* SDL_WINDOW_FULLSCREEN |*/ SDL_WINDOW_SHOWN)); // IOHAVOC IOHAVOC -- I bet this is the problem. 20131009
-	if(!screen_surface)
+    /*
+     sdl2window = SDL_CreateWindow("sdl_createwindow",
+                                         SDL_WINDOWPOS_CENTERED,
+                                         SDL_WINDOWPOS_CENTERED,
+                                         _width,
+                                         _height,
+                                         SDL_WINDOW_SHOWN);
+    */
+    
+    
+    // IOHAVOC -- Still create the legacy "screen" surface and when we're all done, we're write to texture and render it.
+    Uint32 Rmask = 0x000000ff;
+    Uint32 Gmask = 0x0000ff00;
+    Uint32 Bmask = 0x00ff0000;
+    Uint32 Amask = 0xff000000;;
+    screen_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, //flags,
+                                          _width,
+                                          _height,
+                                          32, // depth,
+                                          Rmask,
+                                          Gmask,
+                                          Bmask,
+                                          Amask);
+
+    // SDL2 - one stop window and renderer setup
+    SDL_CreateWindowAndRenderer(_width,
+                                _height,
+                                SDL_WINDOW_SHOWN,
+                                &sdl2window,
+                                &sdlRenderer);
+
+    // SDL2 - make a texture
+    sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                   SDL_PIXELFORMAT_RGBA8888,
+                                   SDL_TEXTUREACCESS_STREAMING,
+                                   _width, _height);
+    
+    if(NULL == sdl2window ||
+       NULL == sdlRenderer ||
+       NULL == sdlTexture)
+	{
+		log_printf(ELOG, "Failed to open display -- sdlwindow or sdlRenderer!\n");
+		return -3;
+	}
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
+
+    
+    
+    
+    if(!screen_surface)
 	{
 		log_printf(ELOG, "Failed to open display!\n");
 		return -3;
 	}
-
+    /*
 	if(_driver != GFX_DRIVER_GLSDL)
 	{
 		if((screen_surface->flags)) // & SDL_DOUBLEBUF) == SDL_DOUBLEBUF)   // IOHAVOC - depcrecated
@@ -863,10 +913,10 @@ int gfxengine_t::show()
 				doublebuffer(0);
 			}
 		}
-	}
+	} */
 
-	if((screen_surface->flags)) // & SDL_HWSURFACE) == SDL_HWSURFACE)   // IOHAVOC - deprecated
-	{
+	//if((screen_surface->flags)) // & SDL_HWSURFACE) == SDL_HWSURFACE)   // IOHAVOC - deprecated
+	//{
 		if(_shadow)
 		{
 			softbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
@@ -883,8 +933,8 @@ int gfxengine_t::show()
 				shadow(0);
 			}
 		}
-	}
-	else
+	//}
+	// else
 	{
 		if(_shadow)
 			log_printf(WLOG, "Shadow buffer requested; "
@@ -1354,9 +1404,9 @@ void gfxengine_t::flip()
 	{
 		for(i = 0; i < dirtyrects[backpage]; ++i)
 			SDL_BlitSurface(softbuf,
-					&dirtytable[backpage][i],
-					screen_surface,
-					&dirtytable[backpage][i]);
+                            &dirtytable[backpage][i],
+                            screen_surface,
+                            &dirtytable[backpage][i]);
 	}
 	if(_doublebuf)
 	{
@@ -1372,18 +1422,26 @@ void gfxengine_t::flip()
 			frontpage = (frontpage + 1) % _pages;
 		}
 		
-        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead (check Migration example) IOHAVOC TODO:
-        // we'll most likely need to keep around the SDL_Window we get from CreateWindow, instead of going to a
-        // screen_surface. That window will be used to make a SDL_Renderer via SDL_CreateRenderer, then we present
-        // on the screen via SDL_RenderPresent(renderer) ... ditto below in UpdateRects
+        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead
         //SDL_Flip(screen_surface);
         
+        
+        // IOHAVOC -- SDL2 replacement.
+        
+        SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, _width * sizeof (Uint32));
+
+        SDL_RenderClear(sdlRenderer);
+        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+        SDL_RenderPresent(sdlRenderer);
 	}
 	else
 	{
-        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead (check Migration example) IOHAVOC TODO:
+        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead
 		// SDL_UpdateRects(screen_surface, dirtyrects[0], dirtytable[0]);
 		dirtyrects[0] = 0;
+        
+        // IOHAVOC -- replacement. Stuff is being collected into sdlRenderer
+        SDL_RenderPresent(sdlRenderer);
 	}
 }
 
@@ -1404,7 +1462,8 @@ void gfxengine_t::render_sprite(cs_obj_t *o)
 	dest_rect.y = CS2PIXEL((y * gfxengine->ys + 128) >> 8);
 	dest_rect.x += (gfxengine->window->x() * gfxengine->xs + 128) >> 8;
 	dest_rect.y += (gfxengine->window->y() * gfxengine->xs + 128) >> 8;
-	SDL_BlitSurface(s->surface, NULL, gfxengine->surface(), &dest_rect);
+	
+    SDL_BlitSurface(s->surface, NULL, gfxengine->surface(), &dest_rect);
 
 	if(!gfxengine->_autoinvalidate)
 	{

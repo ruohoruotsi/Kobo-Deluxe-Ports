@@ -209,6 +209,16 @@ class gfxengine_t
 	gfx_drivers_t		_driver;
 	gfx_scalemodes_t	_scalemode;
 	int			_clamping;
+    
+    // ---------------------------------------------
+    // IOHAVOC -- New ISH for SDL2
+    // ---------------------------------------------
+    SDL_Window *sdl2window;
+    SDL_Renderer *sdlRenderer;
+    
+    SDL_Texture *sdlTexture;
+    // ---------------------------------------------
+    
 	SDL_Surface	*screen_surface;
 	SDL_Surface	*softbuf;
 	int		backpage;
