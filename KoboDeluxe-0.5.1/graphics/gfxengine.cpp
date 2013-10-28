@@ -828,25 +828,13 @@ int gfxengine_t::show()
 	glSDL_VSync(_vsync);
 	flags |= xflags;
 
+    
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
-    // IOHAVOC - Update API -- per the SDL Migration Guide  - new SDL_WindowFlags below  -- ignoring legacy flags variable
-    //              ::SDL_WINDOW_FULLSCREEN, ::SDL_WINDOW_OPENGL,
-    //              ::SDL_WINDOW_HIDDEN,     ::SDL_WINDOW_BORDERLESS,
-    //              ::SDL_WINDOW_RESIZABLE,  ::SDL_WINDOW_MAXIMIZED,
-    //              ::SDL_WINDOW_MINIMIZED,  ::SDL_WINDOW_INPUT_GRABBED.
-	// screen_surface = SDL_SetVideoMode(_width, _height, _depth, flags);
-    /*
-     sdl2window = SDL_CreateWindow("sdl_createwindow",
-                                         SDL_WINDOWPOS_CENTERED,
-                                         SDL_WINDOWPOS_CENTERED,
-                                         _width,
-                                         _height,
-                                         SDL_WINDOW_SHOWN);
-    */
-    
-    
-    // IOHAVOC -- Still create the legacy "screen" surface and when we're all done, we're write to texture and render it.
+
+    // SDL2 - re-create the legacy "screen" surface and when we're all done, we're write to texture and render it.
+    // screen_surface = SDL_SetVideoMode(_width, _height, _depth, flags);
+
     Uint32 Rmask = 0x000000ff;
     Uint32 Gmask = 0x0000ff00;
     Uint32 Bmask = 0x00ff0000;
@@ -854,16 +842,16 @@ int gfxengine_t::show()
     screen_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, //flags,
                                           _width,
                                           _height,
-                                          32, // depth,
+                                          32,            // depth,
                                           Rmask,
                                           Gmask,
                                           Bmask,
                                           Amask);
-
+    
     // SDL2 - one stop window and renderer setup
     SDL_CreateWindowAndRenderer(_width,
                                 _height,
-                                SDL_WINDOW_SHOWN,
+                                SDL_WINDOW_SHOWN, // SDL_WINDOW_FULLSCREEN_DESKTOP
                                 &sdl2window,
                                 &sdlRenderer);
     
@@ -872,13 +860,16 @@ int gfxengine_t::show()
                                    SDL_PIXELFORMAT_RGBA8888,
                                    SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC,
                                    _width, _height);
-    if(NULL == sdl2window ||
+    if(NULL == sdl2window  ||
        NULL == sdlRenderer ||
        NULL == sdlTexture)
 	{
 		log_printf(ELOG, "Failed to open display -- sdlwindow or sdlRenderer!\n");
 		return -3;
 	}
+    
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
+    SDL_RenderSetLogicalSize(sdlRenderer, 640, 480);
     
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
@@ -1428,7 +1419,7 @@ void gfxengine_t::flip()
         // IOHAVOC -- SDL2 replacement.
         
         SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, screen_surface->pitch);
-
+        
         SDL_RenderClear(sdlRenderer);
         SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
         SDL_RenderPresent(sdlRenderer);

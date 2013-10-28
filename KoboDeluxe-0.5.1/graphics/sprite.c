@@ -403,7 +403,7 @@ static int extract_sprite(s_bank_t *bank, unsigned frame,
     if(src->flags) {
         Uint32 colorkeyVal = 0;
         SDL_GetColorKey(src, &colorkeyVal);
-		SDL_SetColorKey(tmp, src->flags & SDL_RLEACCEL, colorkeyVal);
+		SDL_SetColorKey(tmp, SDL_TRUE | SDL_RLEACCEL /* src->flags & SDL_RLEACCEL */, colorkeyVal);
     }
     
 	bank->sprites[frame]->surface = tmp;

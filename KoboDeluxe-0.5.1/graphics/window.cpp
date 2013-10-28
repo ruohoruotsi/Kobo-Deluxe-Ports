@@ -138,9 +138,9 @@ int window_t::offscreen()
 	visible(0);
 	_offscreen = 1;
 	SDL_Surface *s = SDL_CreateRGBSurface(SDL_SWSURFACE,
-			phys_rect.w, phys_rect.h,
-			32, 0xff000000, 0x00ff0000,
-			0x0000ff00, 0x000000ff);
+                                          phys_rect.w, phys_rect.h,
+                                          32, 0xff000000, 0x00ff0000,
+                                          0x0000ff00, 0x000000ff);
 	if(!s)
 		return -1;
 	
@@ -290,7 +290,7 @@ void window_t::colorkey(Uint32 color)
 	if(!_offscreen)
 		return;
 //	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, color); // IOHAVOC -- Update API (use SDL_TRUE)
-	SDL_SetColorKey(surface, SDL_TRUE, color);
+	SDL_SetColorKey(surface, SDL_TRUE | SDL_RLEACCEL, color);
 }
 
 void window_t::colorkey()
@@ -301,7 +301,7 @@ void window_t::colorkey()
 		return;
 	if(!_offscreen)
 		return;
-	SDL_SetColorKey(surface, 0, 0);
+	SDL_SetColorKey(surface, SDL_TRUE | SDL_RLEACCEL /* 0 */, 0);
 }
 
 void window_t::alpha(float a)

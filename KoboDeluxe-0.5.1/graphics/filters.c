@@ -498,11 +498,11 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
                     
                     SDL_SetSurfaceAlphaMod(s->surface, SDL_ALPHA_OPAQUE);
                 } else
-                    SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
+                    SDL_SetColorKey(s->surface, SDL_TRUE | SDL_RLEACCEL, 0);
                 break;
             
             case S_BLITMODE_OPAQUE:
-                SDL_SetColorKey(s->surface, SDL_RLEACCEL, 0);
+                SDL_SetColorKey(s->surface, SDL_TRUE | SDL_RLEACCEL, 0);
                 break;
             
             case S_BLITMODE_COLORKEY:
@@ -515,7 +515,7 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
                                            s_colorkey.g,
                                            s_colorkey.b)); */
                 SDL_SetColorKey(s->surface,
-                                 SDL_RLEACCEL,
+                                 SDL_TRUE | SDL_RLEACCEL,
                                 SDL_MapRGB(s->surface->format,
                                            s_colorkey.r,
                                            s_colorkey.g,
@@ -534,19 +534,20 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
 
 		if(args->x)
 		{
-			if(s->surface->format->Amask)
-				tweak_ck(s->surface);
+			if(s->surface->format->Amask)           // IOHAVOC -- what is tweak_ck really doing?? how does it affect color?
+				tweak_ck(s->surface);       
 			// tmp = SDL_DisplayFormat(s->surface); // IOHAVOC -- Update API -duuno what the pixel format should be
             tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
 
             
-			if(s->surface->format->Amask)
+			if(s->surface->format->Amask) {
 				/* IOHAVOC -- update API
                 SDL_SetColorKey(tmp,
 						SDL_SRCCOLORKEY | SDL_RLEACCEL,
 						SDL_MapRGB(tmp->format, 0,0,0)); */
                 
-                SDL_SetColorKey(tmp, SDL_RLEACCEL, SDL_MapRGB(tmp->format, 0,0,0));
+                SDL_SetColorKey(tmp, SDL_TRUE | SDL_RLEACCEL, SDL_MapRGB(tmp->format, 0,0,0));
+            }
 		}
 		else
 		{
