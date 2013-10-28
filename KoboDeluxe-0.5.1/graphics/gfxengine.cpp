@@ -866,13 +866,12 @@ int gfxengine_t::show()
                                 SDL_WINDOW_SHOWN,
                                 &sdl2window,
                                 &sdlRenderer);
-
+    
     // SDL2 - make a texture
     sdlTexture = SDL_CreateTexture(sdlRenderer,
                                    SDL_PIXELFORMAT_RGBA8888,
-                                   SDL_TEXTUREACCESS_STREAMING,
+                                   SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC,
                                    _width, _height);
-    
     if(NULL == sdl2window ||
        NULL == sdlRenderer ||
        NULL == sdlTexture)
@@ -949,7 +948,7 @@ int gfxengine_t::show()
 	// SDL_WM_SetCaption(_title, _icontitle); // IOHAVOC -- update API -- what about the icontitle?
     SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
     
-	SDL_ShowCursor(_cursor);
+	SDL_SetRelativeMouseMode(SDL_TRUE); // SDL_ShowCursor(_cursor); // IOHAVOC -- update API
 	cs_engine_set_size(csengine, _width, _height);
 	csengine->filter = use_interpolation;
 
@@ -1428,7 +1427,7 @@ void gfxengine_t::flip()
         
         // IOHAVOC -- SDL2 replacement.
         
-        SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, _width * sizeof (Uint32));
+        SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, screen_surface->pitch);
 
         SDL_RenderClear(sdlRenderer);
         SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);

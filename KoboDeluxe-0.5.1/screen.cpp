@@ -841,7 +841,7 @@ void _screen::render_highlight(window_t *win)
 		{
 			SDL_Rect sr, dr;
 			sr.x = 0;
-			sr.y = i;
+            sr.y = i >= 0 ? i : 0; // i; IOHAVOC -- clamp down i == -2147483648 (nan), coming from divide by zero @ line 827
 			sr.w = fx->w;
 			sr.h = 1;
 			dr.x = x0 + (int)(x * fx->w) - xo;

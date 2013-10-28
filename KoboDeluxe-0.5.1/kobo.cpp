@@ -1373,7 +1373,7 @@ void KOBO_main::pause_game()
 }
 
 
-void kobo_render_highlight(ct_widget_t *wg)
+static void kobo_render_highlight(ct_widget_t *wg)
 {
 	screen.set_highlight(wg->y() + wg->height() / 2 - wmain->y(),
 			wg->height());
@@ -1671,8 +1671,11 @@ void kobo_gfxengine_t::frame()
 			k = gamecontrol.map(ev.key.keysym.sym);
 			gamecontrol.press(k);
 			
-                // IOHAVOC -- SDL_Keysym no longer has a unicode, only an used by sizeof stuff in struct has changed. Comment out for now.
+            // IOHAVOC -- SDL_Keysym no longer has a unicode, only an used by sizeof stuff in struct has changed.
+            // unicode isn't used so just pass in 1 for now, as that seems to be working.
             // gsm.press(k, ev.key.keysym.unicode);
+            gsm.press(k, 1);
+
 			break;
 		  case SDL_KEYUP:
 			if((ev.key.keysym.sym == SDLK_ESCAPE) && km.escape_hammering())
