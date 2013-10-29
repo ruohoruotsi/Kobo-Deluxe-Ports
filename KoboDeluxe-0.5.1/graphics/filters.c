@@ -537,7 +537,7 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
 			if(s->surface->format->Amask)           // IOHAVOC -- what is tweak_ck really doing?? how does it affect color?
 				tweak_ck(s->surface);       
 			// tmp = SDL_DisplayFormat(s->surface); // IOHAVOC -- Update API -duuno what the pixel format should be
-            tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+            tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_ABGR8888, 0);
 
             
 			if(s->surface->format->Amask) {
@@ -553,11 +553,11 @@ int s_filter_displayformat(s_bank_t * b, unsigned first, unsigned frames,
 		{
 			if(s->surface->format->Amask) {
 				// tmp = SDL_DisplayFormatAlpha(s->surface);        // IOHAVOC -- Update API -- Pixel Format?? Also DisplayFormatALPHA (different!!) TODO
-                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_ABGR8888, 0);
             }
 			else {
                 //	tmp = SDL_DisplayFormat(s->surface);            // IOHAVOC -- Update API -- Pixel Format??
-                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_RGBA8888, 0);
+                tmp = SDL_ConvertSurfaceFormat(s->surface, SDL_PIXELFORMAT_ABGR8888, 0);
             }
 		}
 		if(!tmp)

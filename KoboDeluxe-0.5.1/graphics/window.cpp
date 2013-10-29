@@ -145,7 +145,7 @@ int window_t::offscreen()
 		return -1;
 	
     // surface = SDL_DisplayFormat(s); // IOHAVOC - Update API -- I'm not sure what the SDL pixel format should be, nor the correct flags
-    surface = SDL_ConvertSurfaceFormat(s, SDL_PIXELFORMAT_RGBA8888, 0);
+    surface = SDL_ConvertSurfaceFormat(s, SDL_PIXELFORMAT_ABGR8888, 0);
 	SDL_FreeSurface(s);
 	if(!surface)
 		return -1;

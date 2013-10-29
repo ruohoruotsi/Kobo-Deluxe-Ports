@@ -855,9 +855,9 @@ int gfxengine_t::show()
                                 &sdl2window,
                                 &sdlRenderer);
     
-    // SDL2 - make a texture
+    // SDL2 - make a texture -- with the pixelformat SDL_PIXELFORMAT_ABGR8888
     sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                   SDL_PIXELFORMAT_RGBA8888,
+                                   SDL_PIXELFORMAT_ABGR8888,    // SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGBA8888
                                    SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC,
                                    _width, _height);
     if(NULL == sdl2window  ||
