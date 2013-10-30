@@ -939,7 +939,7 @@ int gfxengine_t::show()
 	// SDL_WM_SetCaption(_title, _icontitle); // IOHAVOC -- update API -- what about the icontitle?
     SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
     
-	SDL_SetRelativeMouseMode(SDL_TRUE); // SDL_ShowCursor(_cursor); // IOHAVOC -- update API
+	// SDL_SetRelativeMouseMode(SDL_TRUE); // SDL_ShowCursor(_cursor); // IOHAVOC -- update API
 	cs_engine_set_size(csengine, _width, _height);
 	csengine->filter = use_interpolation;
 
