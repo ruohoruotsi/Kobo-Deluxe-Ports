@@ -85,7 +85,6 @@
 		D9AC1BA717CF12C600342A50 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CEE15796DAA0053D889 /* Cocoa.framework */; };
 		D9AC1BB117CF12C600342A50 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BAF17CF12C600342A50 /* InfoPlist.strings */; };
 		D9AC1BB717CF12C600342A50 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BB517CF12C600342A50 /* Credits.rtf */; };
-		D9AC1BBD17CF12C700342A50 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D9AC1BBB17CF12C700342A50 /* MainMenu.xib */; };
 		D9AC1BC217CF135500342A50 /* libsound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D903F985157A64FB004221EC /* libsound.a */; };
 		D9AC1BC517CF138000342A50 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CF015796DB40053D889 /* CoreFoundation.framework */; };
 		D9AC1BC617CF13E200342A50 /* cs.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751BB81578B19F0053D889 /* cs.c */; };
@@ -431,12 +430,7 @@
 		D9AC1BAB17CF12C600342A50 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D9AC1BAE17CF12C600342A50 /* Kobo Deluxe-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Kobo Deluxe-Info.plist"; sourceTree = "<group>"; };
 		D9AC1BB017CF12C600342A50 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D9AC1BB217CF12C600342A50 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		D9AC1BB417CF12C600342A50 /* Kobo Deluxe-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kobo Deluxe-Prefix.pch"; sourceTree = "<group>"; };
 		D9AC1BB617CF12C600342A50 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		D9AC1BB817CF12C600342A50 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		D9AC1BB917CF12C600342A50 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		D9AC1BBC17CF12C700342A50 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		D9AC1D4717CF2C3C00342A50 /* bigfont3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bigfont3.png; sourceTree = "<group>"; };
 		D9AC1D4817CF2C3C00342A50 /* bigship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bigship.png; sourceTree = "<group>"; };
 		D9AC1D4917CF2C3C00342A50 /* bmr-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bmr-green.png"; sourceTree = "<group>"; };
@@ -816,9 +810,6 @@
 		D9AC1BAC17CF12C600342A50 /* Kobo Deluxe App */ = {
 			isa = PBXGroup;
 			children = (
-				D9AC1BB817CF12C600342A50 /* AppDelegate.h */,
-				D9AC1BB917CF12C600342A50 /* AppDelegate.m */,
-				D9AC1BBB17CF12C700342A50 /* MainMenu.xib */,
 				D9AC1BAD17CF12C600342A50 /* Supporting Files */,
 			);
 			name = "Kobo Deluxe App";
@@ -831,8 +822,6 @@
 				D9AC1E2B17CFCA8000342A50 /* Icon.icns */,
 				D9AC1BAE17CF12C600342A50 /* Kobo Deluxe-Info.plist */,
 				D9AC1BAF17CF12C600342A50 /* InfoPlist.strings */,
-				D9AC1BB217CF12C600342A50 /* main.m */,
-				D9AC1BB417CF12C600342A50 /* Kobo Deluxe-Prefix.pch */,
 				D9AC1BB517CF12C600342A50 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -1187,7 +1176,6 @@
 				D9AC1BB117CF12C600342A50 /* InfoPlist.strings in Resources */,
 				D9AC1EA517CFE34C00342A50 /* kobosfx.h in Resources */,
 				D9AC1BB717CF12C600342A50 /* Credits.rtf in Resources */,
-				D9AC1BBD17CF12C700342A50 /* MainMenu.xib in Resources */,
 				D9AC1E2C17CFCA8000342A50 /* Icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1374,14 +1362,6 @@
 				D9AC1BB617CF12C600342A50 /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		D9AC1BBB17CF12C700342A50 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D9AC1BBC17CF12C700342A50 /* en */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
