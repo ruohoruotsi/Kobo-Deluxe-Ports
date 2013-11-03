@@ -869,7 +869,7 @@ int gfxengine_t::show()
 	}
     
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(sdlRenderer, 640, 480);
+    SDL_RenderSetLogicalSize(sdlRenderer, _width, _height);
     
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
