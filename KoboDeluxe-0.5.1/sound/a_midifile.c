@@ -155,7 +155,7 @@ static inline void set_tempo(midi_player_t *mp, unsigned ppqn, unsigned usqtr)
 	mp->c.usqtr = usqtr;
 	mp->c.spulse = (float)usqtr / (float)ppqn / 1000000.0;
 	midiprintf(D2LOG, "ppqn = %u  ", ppqn);
-	midiprintf(D2LOG, "µsqtr = %u  ", usqtr);
+	midiprintf(D2LOG, "\u00B5sqtr = %u  ", usqtr);
 	midiprintf(D2LOG, "spulse = %f  ", mp->c.spulse);
 }
 
