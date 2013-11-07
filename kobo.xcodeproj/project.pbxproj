@@ -379,7 +379,6 @@
 		D9751B311578B12D0053D889 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		D9751B321578B12D0053D889 /* states.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = states.cpp; sourceTree = "<group>"; };
 		D9751B331578B12D0053D889 /* logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logger.c; sourceTree = "<group>"; };
-		D9751B341578B12D0053D889 /* acconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = acconfig.h; sourceTree = "<group>"; };
 		D9751B351578B12D0053D889 /* aconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aconfig.h; sourceTree = "<group>"; };
 		D9751B361578B12D0053D889 /* cfgform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cfgform.h; sourceTree = "<group>"; };
 		D9751B371578B12D0053D889 /* cfgparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cfgparse.h; sourceTree = "<group>"; };
@@ -747,7 +746,6 @@
 				D9751B311578B12D0053D889 /* sound.cpp */,
 				D9751B321578B12D0053D889 /* states.cpp */,
 				D9751B331578B12D0053D889 /* logger.c */,
-				D9751B341578B12D0053D889 /* acconfig.h */,
 				D9751B351578B12D0053D889 /* aconfig.h */,
 				D9751B361578B12D0053D889 /* cfgform.h */,
 				D9751B371578B12D0053D889 /* cfgparse.h */,
