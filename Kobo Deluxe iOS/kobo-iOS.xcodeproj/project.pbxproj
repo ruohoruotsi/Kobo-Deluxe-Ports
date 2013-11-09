@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D97C9AD8182E8FEA00017B82 /* kobosfx.h in Resources */ = {isa = PBXBuildFile; fileRef = D9DC8E981826C89A00F33A94 /* kobosfx.h */; };
 		D98C9F381826C3B2000A27BF /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D98C9F361826C321000A27BF /* libSDL2.a */; };
 		D9A8D5841827054F0088B453 /* a_agw.c in Sources */ = {isa = PBXBuildFile; fileRef = D9DC8FF21826CA9C00F33A94 /* a_agw.c */; };
 		D9A8D5851827054F0088B453 /* a_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = D9DC8FF51826CA9C00F33A94 /* a_bus.c */; };
@@ -547,14 +548,14 @@
 				D98C9F311826C321000A27BF /* SDL.xcodeproj */,
 				D9DC8E401826C89900F33A94 /* data */,
 				FD77A0040E26BC0500F39101 /* src */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97317FDCFA39411CA2CEA /* Kobo Deluxe iPad app */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
 		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
+		29B97317FDCFA39411CA2CEA /* Kobo Deluxe iPad app */ = {
 			isa = PBXGroup;
 			children = (
 				FDB651C30E43D19800F688B5 /* data */,
@@ -562,7 +563,7 @@
 				FD925B180E0F276600E92347 /* Icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
-			name = Resources;
+			name = "Kobo Deluxe iPad app";
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -1150,6 +1151,7 @@
 				D9DC8F291826C89A00F33A94 /* trance1.mid in Resources */,
 				D9DC8F2A1826C89A00F33A94 /* trance1_c.agw in Resources */,
 				D9DC8F2B1826C89A00F33A94 /* zapp1.agw in Resources */,
+				D97C9AD8182E8FEA00017B82 /* kobosfx.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
