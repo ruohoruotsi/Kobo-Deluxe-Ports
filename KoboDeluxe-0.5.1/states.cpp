@@ -168,7 +168,9 @@ void st_introbase_t::pre_render()
 void st_introbase_t::post_render()
 {
 	kobo_basestate_t::post_render();
-	screen.scroller();
+    
+	// IOHAVOC -- the info in the scroller moved to "About" menu
+    // screen.scroller();
 }
 
 
