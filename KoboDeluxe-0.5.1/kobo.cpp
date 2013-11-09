@@ -1051,6 +1051,7 @@ static KOBO_GfxDesc gfxdesc[] = {
 	// Framework
 	{ "Loading framework graphics", 0, 0,0, 0.0f, KOBO_MESSAGE },
 	{ "GFX>>screen2.png", B_SCREEN,	0, 0,	2.0f,	KOBO_CLAMP_OPAQUE },
+//  { "GFX>>screen2_1024_768.png", B_SCREEN,	0, 0,	2.0f,	KOBO_CLAMP_OPAQUE },    // IOHAVOC --new assets
 
 	// Logo
 	{ "Loading logo", 0, 0,0, 0.0f, KOBO_MESSAGE },

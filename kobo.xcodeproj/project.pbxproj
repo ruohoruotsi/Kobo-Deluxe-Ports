@@ -62,6 +62,7 @@
 		D9751BF31578B19F0053D889 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9751BDA1578B19F0053D889 /* window.cpp */; };
 		D9751CEF15796DAA0053D889 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CEE15796DAA0053D889 /* Cocoa.framework */; };
 		D9751CF115796DB40053D889 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9751CF015796DB40053D889 /* CoreFoundation.framework */; };
+		D97C9AD2182B903E00017B82 /* screen2_1024_768.png in Resources */ = {isa = PBXBuildFile; fileRef = D97C9AD1182B903E00017B82 /* screen2_1024_768.png */; };
 		D98AFC9F1826FB4000B8981C /* a_agw.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9B15796CAC0053D889 /* a_agw.c */; };
 		D98AFCA01826FB4000B8981C /* a_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9C15796CAC0053D889 /* a_bus.c */; };
 		D98AFCA11826FB4000B8981C /* a_channel.c in Sources */ = {isa = PBXBuildFile; fileRef = D9751C9D15796CAC0053D889 /* a_channel.c */; };
@@ -504,6 +505,7 @@
 		D9751CB315796CAC0053D889 /* sfifo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = sfifo.c; path = "KoboDeluxe-0.5.1/sound/sfifo.c"; sourceTree = "<group>"; };
 		D9751CEE15796DAA0053D889 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		D9751CF015796DB40053D889 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		D97C9AD1182B903E00017B82 /* screen2_1024_768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = screen2_1024_768.png; path = gfx/screen2_1024_768.png; sourceTree = "<group>"; };
 		D9AC1BA617CF12C600342A50 /* Kobo Deluxe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kobo Deluxe.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9AC1BA917CF12C600342A50 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		D9AC1BAA17CF12C600342A50 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -539,9 +541,6 @@
 		D9AC1D6017CF2C3C00342A50 /* loading3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading3.png; sourceTree = "<group>"; };
 		D9AC1D6117CF2C3C00342A50 /* logo-outline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-outline.png"; sourceTree = "<group>"; };
 		D9AC1D6217CF2C3C00342A50 /* logomask3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logomask3.png; sourceTree = "<group>"; };
-		D9AC1D6317CF2C3C00342A50 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		D9AC1D6417CF2C3C00342A50 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		D9AC1D6517CF2C3C00342A50 /* Makefile.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		D9AC1D6617CF2C3D00342A50 /* missile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile.png; sourceTree = "<group>"; };
 		D9AC1D6717CF2C3D00342A50 /* missile2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile2.png; sourceTree = "<group>"; };
 		D9AC1D6817CF2C3D00342A50 /* missile3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile3.png; sourceTree = "<group>"; };
@@ -897,6 +896,14 @@
 			name = sound;
 			sourceTree = "<group>";
 		};
+		D97C9AD0182B901700017B82 /* new_gfx */ = {
+			isa = PBXGroup;
+			children = (
+				D97C9AD1182B903E00017B82 /* screen2_1024_768.png */,
+			);
+			name = new_gfx;
+			sourceTree = "<group>";
+		};
 		D9AC1BA817CF12C600342A50 /* Apple Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,6 +936,7 @@
 		D9AC1D4517CF2C3C00342A50 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				D97C9AD0182B901700017B82 /* new_gfx */,
 				D9AC1D4617CF2C3C00342A50 /* gfx */,
 				D9AC1D7A17CF2C3D00342A50 /* sfx */,
 			);
@@ -967,9 +975,6 @@
 				D9AC1D6017CF2C3C00342A50 /* loading3.png */,
 				D9AC1D6117CF2C3C00342A50 /* logo-outline.png */,
 				D9AC1D6217CF2C3C00342A50 /* logomask3.png */,
-				D9AC1D6317CF2C3C00342A50 /* Makefile */,
-				D9AC1D6417CF2C3C00342A50 /* Makefile.am */,
-				D9AC1D6517CF2C3C00342A50 /* Makefile.in */,
 				D9AC1D6617CF2C3D00342A50 /* missile.png */,
 				D9AC1D6717CF2C3D00342A50 /* missile2.png */,
 				D9AC1D6817CF2C3D00342A50 /* missile3.png */,
@@ -1317,6 +1322,7 @@
 				D9AC1EA517CFE34C00342A50 /* kobosfx.h in Resources */,
 				D9AC1BB717CF12C600342A50 /* Credits.rtf in Resources */,
 				D9AC1E2C17CFCA8000342A50 /* Icon.icns in Resources */,
+				D97C9AD2182B903E00017B82 /* screen2_1024_768.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
