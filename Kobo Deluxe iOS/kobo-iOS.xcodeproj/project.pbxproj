@@ -494,16 +494,6 @@
 		FD77A0090E26BC0500F39101 /* mixer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mixer.c; sourceTree = "<group>"; };
 		FD787AA00E22A5CC003E8E36 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		FD925B180E0F276600E92347 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		FDB651C60E43D19800F688B5 /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
-		FDB651C80E43D19800F688B5 /* ds_brush_snare.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ds_brush_snare.wav; sourceTree = "<group>"; };
-		FDB651C90E43D19800F688B5 /* ds_china.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ds_china.wav; sourceTree = "<group>"; };
-		FDB651CA0E43D19800F688B5 /* ds_kick_big_amb.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ds_kick_big_amb.wav; sourceTree = "<group>"; };
-		FDB651CB0E43D19800F688B5 /* ds_loose_skin_mute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ds_loose_skin_mute.wav; sourceTree = "<group>"; };
-		FDB651CC0E43D19800F688B5 /* icon.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = icon.bmp; sourceTree = "<group>"; };
-		FDB651CD0E43D19800F688B5 /* ship.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = ship.bmp; sourceTree = "<group>"; };
-		FDB651CE0E43D19800F688B5 /* space.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = space.bmp; sourceTree = "<group>"; };
-		FDB651CF0E43D19800F688B5 /* stroke.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = stroke.bmp; sourceTree = "<group>"; };
-		FDB652C60E43E25900F688B5 /* kromasky_16x16.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = kromasky_16x16.bmp; sourceTree = "<group>"; };
 		FDB96ED30DEFC9C700FAF19F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		FDB96EDF0DEFC9DC00FAF19F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FDF0D6A40E12D05400247964 /* KoboDeluxe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KoboDeluxe.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -558,7 +548,6 @@
 		29B97317FDCFA39411CA2CEA /* Kobo Deluxe iPad app */ = {
 			isa = PBXGroup;
 			children = (
-				FDB651C30E43D19800F688B5 /* data */,
 				FD787AA00E22A5CC003E8E36 /* Default.png */,
 				FD925B180E0F276600E92347 /* Icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -928,39 +917,6 @@
 				FD77A0090E26BC0500F39101 /* mixer.c */,
 			);
 			path = src;
-			sourceTree = "<group>";
-		};
-		FDB651C30E43D19800F688B5 /* data */ = {
-			isa = PBXGroup;
-			children = (
-				FDB651C40E43D19800F688B5 /* bitmapfont */,
-				FDB651C70E43D19800F688B5 /* drums */,
-				FDB651CC0E43D19800F688B5 /* icon.bmp */,
-				FDB651CD0E43D19800F688B5 /* ship.bmp */,
-				FDB651CE0E43D19800F688B5 /* space.bmp */,
-				FDB651CF0E43D19800F688B5 /* stroke.bmp */,
-			);
-			path = data;
-			sourceTree = "<group>";
-		};
-		FDB651C40E43D19800F688B5 /* bitmapfont */ = {
-			isa = PBXGroup;
-			children = (
-				FDB652C60E43E25900F688B5 /* kromasky_16x16.bmp */,
-				FDB651C60E43D19800F688B5 /* license.txt */,
-			);
-			path = bitmapfont;
-			sourceTree = "<group>";
-		};
-		FDB651C70E43D19800F688B5 /* drums */ = {
-			isa = PBXGroup;
-			children = (
-				FDB651C80E43D19800F688B5 /* ds_brush_snare.wav */,
-				FDB651C90E43D19800F688B5 /* ds_china.wav */,
-				FDB651CA0E43D19800F688B5 /* ds_kick_big_amb.wav */,
-				FDB651CB0E43D19800F688B5 /* ds_loose_skin_mute.wav */,
-			);
-			path = drums;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
