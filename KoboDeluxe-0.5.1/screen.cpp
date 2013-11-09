@@ -193,8 +193,9 @@ void _screen::title(int t, float fade, int mode)
 		wmain->font(B_MEDIUM_FONT);
 		wmain->center(145, "CHEAT MODE");
 	}
-#if 1
-	// WIP notice
+    
+#if 0 // IOHAVOC -- cleanup, we don't need this kind of clutter. Finish this already!
+	  // WIP notice
 	if(!flashin(t - 2000))
 	{
 		wmain->font(B_MEDIUM_FONT);
