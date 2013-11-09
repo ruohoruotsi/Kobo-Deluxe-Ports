@@ -505,7 +505,7 @@
 		FDB652C60E43E25900F688B5 /* kromasky_16x16.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = kromasky_16x16.bmp; sourceTree = "<group>"; };
 		FDB96ED30DEFC9C700FAF19F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		FDB96EDF0DEFC9DC00FAF19F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		FDF0D6A40E12D05400247964 /* Kobo Deluxe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kobo Deluxe.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDF0D6A40E12D05400247964 /* KoboDeluxe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KoboDeluxe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDF0D71D0E12D2AB00247964 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		FDF0D7220E12D31800247964 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -535,7 +535,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FDF0D6A40E12D05400247964 /* Kobo Deluxe.app */,
+				FDF0D6A40E12D05400247964 /* KoboDeluxe.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -979,7 +979,7 @@
 			);
 			name = "Kobo Deluxe iPad";
 			productName = Accelerometer;
-			productReference = FDF0D6A40E12D05400247964 /* Kobo Deluxe.app */;
+			productReference = FDF0D6A40E12D05400247964 /* KoboDeluxe.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1291,7 +1291,7 @@
 					"\"$(SRCROOT)/../KoboDeluxe-0.5.1/graphics\"",
 					"\"$(SRCROOT)/../KoboDeluxe-0.5.1/sound\"",
 				);
-				PRODUCT_NAME = "Kobo Deluxe";
+				PRODUCT_NAME = KoboDeluxe;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1310,7 +1310,7 @@
 					"\"$(SRCROOT)/../KoboDeluxe-0.5.1/graphics\"",
 					"\"$(SRCROOT)/../KoboDeluxe-0.5.1/sound\"",
 				);
-				PRODUCT_NAME = "Kobo Deluxe";
+				PRODUCT_NAME = KoboDeluxe;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
