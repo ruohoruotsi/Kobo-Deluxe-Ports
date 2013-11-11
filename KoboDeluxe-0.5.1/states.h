@@ -516,7 +516,7 @@ class st_error_t : public kobo_basestate_t
 extern gamestatemanager_t gsm;
 extern st_intro_title_t st_intro_title;
 extern st_intro_instructions_t st_intro_instructions;
-extern st_intro_highscores_t st_intro_highscores;
+//extern st_intro_highscores_t st_intro_highscores;
 extern st_intro_credits_t st_intro_credits;
 extern st_ask_exit_t st_ask_exit;
 extern st_game_t st_game;

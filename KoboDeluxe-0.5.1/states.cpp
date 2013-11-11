@@ -237,7 +237,7 @@ void st_intro_instructions_t::enter()
 	st_introbase_t::enter();
 	duration = INTRO_INSTRUCTIONS_TIME;
 	inext = &st_intro_title;
-	st_intro_title.inext = &st_intro_highscores;
+	st_intro_title.inext = &st_intro_credits; // &st_intro_highscores; -- IOHAVOC -- remove highscores. Clutter.
 	st_intro_title.duration = INTRO_TITLE2_TIME - INTRO_BLANK_TIME;
 	st_intro_title.mode = pubrand.get(1) + 1;
 }
@@ -296,7 +296,7 @@ void st_intro_highscores_t::post_render()
 	}
 }
 
-st_intro_highscores_t st_intro_highscores;
+// st_intro_highscores_t st_intro_highscores;
 
 
 /*---------------------------------------------------------*/
