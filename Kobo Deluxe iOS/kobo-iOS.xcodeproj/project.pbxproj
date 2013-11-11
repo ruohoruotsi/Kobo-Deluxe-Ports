@@ -255,9 +255,6 @@
 		D9DC8E5B1826C89900F33A94 /* loading3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading3.png; sourceTree = "<group>"; };
 		D9DC8E5C1826C89900F33A94 /* logo-outline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-outline.png"; sourceTree = "<group>"; };
 		D9DC8E5D1826C89900F33A94 /* logomask3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logomask3.png; sourceTree = "<group>"; };
-		D9DC8E5E1826C89900F33A94 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		D9DC8E5F1826C89900F33A94 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		D9DC8E601826C89900F33A94 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		D9DC8E611826C89900F33A94 /* missile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile.png; sourceTree = "<group>"; };
 		D9DC8E621826C89900F33A94 /* missile2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile2.png; sourceTree = "<group>"; };
 		D9DC8E631826C89900F33A94 /* missile3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = missile3.png; sourceTree = "<group>"; };
@@ -461,7 +458,6 @@
 		D9DC90AD1826CCA700F33A94 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sound.cpp; path = "../../KoboDeluxe-0.5.1/sound.cpp"; sourceTree = "<group>"; };
 		D9DC90AE1826CCA700F33A94 /* states.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = states.cpp; path = "../../KoboDeluxe-0.5.1/states.cpp"; sourceTree = "<group>"; };
 		D9DC90AF1826CCA700F33A94 /* logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = logger.c; path = "../../KoboDeluxe-0.5.1/logger.c"; sourceTree = "<group>"; };
-		D9DC90B01826CCA700F33A94 /* acconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = acconfig.h; path = "../../KoboDeluxe-0.5.1/acconfig.h"; sourceTree = "<group>"; };
 		D9DC90B11826CCA700F33A94 /* aconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aconfig.h; path = "../../KoboDeluxe-0.5.1/aconfig.h"; sourceTree = "<group>"; };
 		D9DC90B21826CCA700F33A94 /* cfgform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cfgform.h; path = "../../KoboDeluxe-0.5.1/cfgform.h"; sourceTree = "<group>"; };
 		D9DC90B31826CCA700F33A94 /* cfgparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cfgparse.h; path = "../../KoboDeluxe-0.5.1/cfgparse.h"; sourceTree = "<group>"; };
@@ -628,9 +624,6 @@
 				D9DC8E5B1826C89900F33A94 /* loading3.png */,
 				D9DC8E5C1826C89900F33A94 /* logo-outline.png */,
 				D9DC8E5D1826C89900F33A94 /* logomask3.png */,
-				D9DC8E5E1826C89900F33A94 /* Makefile */,
-				D9DC8E5F1826C89900F33A94 /* Makefile.am */,
-				D9DC8E601826C89900F33A94 /* Makefile.in */,
 				D9DC8E611826C89900F33A94 /* missile.png */,
 				D9DC8E621826C89900F33A94 /* missile2.png */,
 				D9DC8E631826C89900F33A94 /* missile3.png */,
@@ -872,7 +865,6 @@
 				D9DC90AD1826CCA700F33A94 /* sound.cpp */,
 				D9DC90AE1826CCA700F33A94 /* states.cpp */,
 				D9DC90AF1826CCA700F33A94 /* logger.c */,
-				D9DC90B01826CCA700F33A94 /* acconfig.h */,
 				D9DC90B11826CCA700F33A94 /* aconfig.h */,
 				D9DC90B21826CCA700F33A94 /* cfgform.h */,
 				D9DC90B31826CCA700F33A94 /* cfgparse.h */,
