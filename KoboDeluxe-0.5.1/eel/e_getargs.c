@@ -106,7 +106,7 @@ static void eel_remove_arg(int pos)
  * Remove all arguments in the range ]start, end[.
  * (That is, not including args 'start' or 'end'.)
  */
-static eel_collapse(int start, int end)
+static void eel_collapse(int start, int end)
 {
 	int i;
 	for(i = start + 1; i < end; ++i)
