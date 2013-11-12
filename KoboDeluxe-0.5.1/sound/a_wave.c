@@ -797,10 +797,13 @@ int audio_wave_load(int wid, const char *name, int looped)
 #elif defined MACOS
 	strncat(buf, ":", sizeof(buf));
 #else
-	strncat(buf, "/", sizeof(buf));
+	strncat(buf, "/", sizeof(buf) - 1); // IOFIX: sizeof(buf) -> sizeof(buf)-1
 #endif
-	strncat(buf, name, sizeof(buf));
+	strncat(buf, name, sizeof(buf) - 1); // IOFIX: sizeof(buf) -> sizeof(buf)-1
 
+    // IOFIX notes: correct size argument should look like the following:
+    // strncat(dst, src, sizeof(dst) - strlen(dest) - 1);
+    
 	/* Check extension */
 	if(strstr(name, ".raw") || strstr(name, ".RAW"))
 	{
@@ -884,11 +887,16 @@ int audio_wave_save(int wid, const char *name)
 #elif defined MACOS
 	strncat(buf, ":", sizeof(buf));
 #else
-	strncat(buf, "/", sizeof(buf));
+	strncat(buf, "/", sizeof(buf) - 1); // IOFIX: sizeof(buf) -> sizeof(buf)-1
 #endif
-	strncat(buf, name, sizeof(buf));
-	log_printf(DLOG, "Saving to \"%s\"\n", buf);
-	/* Check extension */
+	strncat(buf, name, sizeof(buf) - 1); // IOFIX: sizeof(buf) -> sizeof(buf)-1
+    
+    // IOFIX notes: correct size argument should look like the following:
+    // strncat(dst, src, sizeof(dst) - strlen(dest) - 1);
+    
+    log_printf(DLOG, "Saving to \"%s\"\n", buf);
+
+    /* Check extension */
 	if(strstr(name, ".raw") || strstr(name, ".RAW"))
 		return SaveRAW(buf, wave->data.si8, wave->size,
 				(int)wave->format, wave->rate, wave->looped);
