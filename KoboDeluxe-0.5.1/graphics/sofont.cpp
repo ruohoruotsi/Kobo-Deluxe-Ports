@@ -28,7 +28,7 @@ SoFont::~SoFont()
 
 namespace SoFontUtilities
 {
-	Uint32 SoFontGetPixel(SDL_Surface * Surface, Sint32 X, Sint32 Y)
+	static Uint32 SoFontGetPixel(SDL_Surface * Surface, Sint32 X, Sint32 Y)
 	{
 		Uint8 *bits;
 		Uint32 Bpp;
@@ -76,8 +76,8 @@ namespace SoFontUtilities
 		log_printf(ELOG, "SoFontGetPixel: Unsupported pixel format!\n");
 		return 0;	// David (to get rid of warning)
 	}
-	void SoFontSetPixel(SDL_Surface * Surface, Sint32 X, Sint32 Y,
-			Uint32 c)
+	
+    static void SoFontSetPixel(SDL_Surface * Surface, Sint32 X, Sint32 Y, Uint32 c)
 	{
 		Uint8 *bits;
 		Uint32 Bpp;
@@ -124,7 +124,8 @@ namespace SoFontUtilities
 			break;
 		}
 	}
-	void clipx(SDL_Rect * srcrect, SDL_Rect * dstrect, SDL_Rect * clip)
+	
+    static void clipx(SDL_Rect * srcrect, SDL_Rect * dstrect, SDL_Rect * clip)
 	{
 		// Use if destination have the same size than source.
 		int dx = clip->x - dstrect->x;
@@ -160,8 +161,8 @@ namespace SoFontUtilities
 		else
 			dstrect->w = 0;
 	}
-	void sdcRects(SDL_Rect * source, SDL_Rect * destination,
-			SDL_Rect clipping)
+	
+    static void sdcRects(SDL_Rect * source, SDL_Rect * destination, SDL_Rect clipping)
 	{
 		// Use if destination have the same size than source &
 		// cliping on destination

@@ -559,13 +559,13 @@ typedef struct modulator_t
 	unsigned	remain;		/* samples left of current section */
 } modulator_t;
 
-void _env_reset(modulator_t *e)
+static void _env_reset(modulator_t *e)
 {
 	e->steps = 0;
 	e->v[0] = e->t[0] = e->d[0] = 0.0f;
 }
 
-void _env_add(modulator_t *e, float duration, float v)
+static void _env_add(modulator_t *e, float duration, float v)
 {
 	if(e->steps >= WCA_MAX_ENV_STEPS)
 	{

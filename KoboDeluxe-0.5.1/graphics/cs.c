@@ -547,12 +547,12 @@ void cs_engine_reset(cs_engine_t *e)
 ----------------------------------------------------------------------
  */
 
-void __enemy_fire(cs_obj_t *o)
+static void __enemy_fire(cs_obj_t *o)
 {
 	log_printf(DLOG, "fire!\n");
 }
 
-void __make_move(cs_obj_t *o, int wx, int wy)
+static void __make_move(cs_obj_t *o, int wx, int wy)
 {
 	/* 
 	 * Movement
@@ -594,7 +594,7 @@ FIXME: Dirty hack here... Should play *any* death animation one-shot and then di
 }
 
 
-void __update_points(cs_engine_t *e, float frac_frame)
+static void __update_points(cs_engine_t *e, float frac_frame)
 {
 	cs_obj_t *o;
 	int i;
@@ -637,7 +637,7 @@ void __update_points(cs_engine_t *e, float frac_frame)
 }
 
 
-void __run_all(cs_engine_t *e)
+static void __run_all(cs_engine_t *e)
 {
 	int i;
 	cs_obj_t *o;
@@ -658,7 +658,7 @@ void __run_all(cs_engine_t *e)
 }
 
 
-void __wrap_all(cs_engine_t *e)
+static void __wrap_all(cs_engine_t *e)
 {
 	int i;
 	cs_obj_t *o;
