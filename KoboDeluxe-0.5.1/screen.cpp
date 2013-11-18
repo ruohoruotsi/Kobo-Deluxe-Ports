@@ -194,7 +194,7 @@ void _screen::title(int t, float fade, int mode)
 		wmain->center(145, "CHEAT MODE");
 	}
     
-#if 0 // IOHAVOC -- cleanup, we don't need this kind of clutter. Finish this already!
+#if 0 // IOHAVOC  -- CLEANUP, we don't need this kind of clutter. Finish this already!
 	  // WIP notice
 	if(!flashin(t - 2000))
 	{
@@ -280,49 +280,68 @@ void _screen::highscores(int t, float fade)
 
 void _screen::credits(int t)
 {
-	if((t % 4000 < 3600) && (t / 4000 <= 2))
+	if((t % 4000 < 3600) && (t / 4000 <= 3))
 		screen.set_highlight(102, 70);
 	else
 		screen.set_highlight(0, 0);
 	int t2 = 10 * (t % 4000) / 3700;
-	if(t % 4000 < 3700)
+    
+	if(t % 4000 < 3700) {
 		switch(t / 4000)
 		{
-		  case 0:
-			wmain->font(B_BIG_FONT);
-			if(t2 > 0)
-				wmain->center(80, "DAVID OLOFSON");
-			wmain->font(B_NORMAL_FONT);
-			if(t2 > 2)
-				wmain->center(105, "New SDL Audio & GFX Engines");
-			if(t2 > 3)
-				wmain->center(115, "New Graphics, Sound & Music");
-			break;
-		  case 1:
-			wmain->font(B_BIG_FONT);
-			if(t2 > 0)
-				wmain->center(80, "AKIRA HIGUCHI");
-			wmain->font(B_NORMAL_FONT);
-			if(t2 > 2)
-				wmain->center(110, "XKobo - The Original Game");
-			break;
-		  case 2:
-			wmain->font(B_BIG_FONT);
-			if(t2 > 0)
-				wmain->center(80, "MASANAO IZUMO");
-			wmain->font(B_NORMAL_FONT);
-			if(t2 > 2)
-				wmain->center(105, "Original Sounds");
-			if(t2 > 3)
-				wmain->center(115, "Original Sound Engine");
-			break;
+            case 0:
+                wmain->font(B_BIG_FONT);
+                if(t2 > 0)
+                    wmain->center(80, "RUOHO RUOTSI");
+                wmain->font(B_NORMAL_FONT);
+                if(t2 > 2)
+                    wmain->center(105, "SDL2 port. MacoS/iOS port");
+                if(t2 > 3)
+                    wmain->center(115, "New Graphics, Sound & Music");
+                break;
+                
+            case 1:
+                wmain->font(B_BIG_FONT);
+                if(t2 > 0)
+                    wmain->center(80, "DAVID OLOFSON");
+                wmain->font(B_NORMAL_FONT);
+                if(t2 > 2)
+                    wmain->center(105, "SDL Audio & GFX Engines");
+                if(t2 > 3)
+                    wmain->center(115, "New Graphics, Sound & Music");
+                break;
+                
+            case 2:
+                wmain->font(B_BIG_FONT);
+                if(t2 > 0)
+                    wmain->center(80, "AKIRA HIGUCHI");
+                wmain->font(B_NORMAL_FONT);
+                if(t2 > 2)
+                    wmain->center(110, "XKobo - The Original Game");
+                break;
+                
+            case 3:
+                wmain->font(B_BIG_FONT);
+                if(t2 > 0)
+                    wmain->center(80, "MASANAO IZUMO");
+                wmain->font(B_NORMAL_FONT);
+                if(t2 > 2)
+                    wmain->center(105, "Original Sounds");
+                if(t2 > 3)
+                    wmain->center(115, "Original Sound Engine");
+                break;
+
 		}
+    }
+    
+    /* IOHAVOC -- No! We need less visual clutter!
 	if(!flashin(t - 11000))
 	{
 		wmain->font(B_MEDIUM_FONT);
 		wmain->center(170, "Additional Credits & Thanks");
 		wmain->center(180, "in the scroller below");
 	}
+     */
 }
 
 

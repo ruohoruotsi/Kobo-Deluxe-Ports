@@ -144,6 +144,6 @@
 #define	INTRO_TITLE2_TIME	5500	/* Intermediate title show time */
 #define	INTRO_INSTRUCTIONS_TIME	19700
 #define	INTRO_HIGHSCORE_TIME	11700
-#define	INTRO_CREDITS_TIME	13700
+#define	INTRO_CREDITS_TIME	15200       // IOHAVOC -- Fixed for updated credits
 
 #endif	/*_KOBO_CONFIG_H_*/
