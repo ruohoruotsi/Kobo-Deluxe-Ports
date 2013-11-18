@@ -226,7 +226,6 @@
 		D98C9F311826C321000A27BF /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../SDL2-2.0.1/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		D9A8D5A818275C010088B453 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D9A8D5AA18275CAF0088B453 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		D9DA0C2518221AA5004AA90F /* common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = common.c; sourceTree = "<group>"; };
 		D9DC8E421826C89900F33A94 /* bigfont3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bigfont3.png; sourceTree = "<group>"; };
 		D9DC8E431826C89900F33A94 /* bigship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bigship.png; sourceTree = "<group>"; };
 		D9DC8E441826C89900F33A94 /* bmr-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bmr-green.png"; sourceTree = "<group>"; };
@@ -486,8 +485,6 @@
 		D9DC90CA1826CCA700F33A94 /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound.h; path = "../../KoboDeluxe-0.5.1/sound.h"; sourceTree = "<group>"; };
 		D9DC90CB1826CCA700F33A94 /* states.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = states.h; path = "../../KoboDeluxe-0.5.1/states.h"; sourceTree = "<group>"; };
 		D9DC90CC1826CCA700F33A94 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = "../../KoboDeluxe-0.5.1/version.h"; sourceTree = "<group>"; };
-		FD77A0070E26BC0500F39101 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
-		FD77A0090E26BC0500F39101 /* mixer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mixer.c; sourceTree = "<group>"; };
 		FD787AA00E22A5CC003E8E36 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		FD925B180E0F276600E92347 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		FDB96ED30DEFC9C700FAF19F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -904,9 +901,6 @@
 				D9DC8F2C1826C8CA00F33A94 /* eel */,
 				D9DC90961826CBF600F33A94 /* kobo */,
 				D9DC8FD71826CA9B00F33A94 /* sound */,
-				D9DA0C2518221AA5004AA90F /* common.c */,
-				FD77A0070E26BC0500F39101 /* common.h */,
-				FD77A0090E26BC0500F39101 /* mixer.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
