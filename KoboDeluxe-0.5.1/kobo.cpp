@@ -1611,7 +1611,7 @@ int KOBO_main::run()
 kobo_gfxengine_t::kobo_gfxengine_t()
 {}
 
-void kobo_gfxengine_t::mousemotion(SDL_Event ev)
+void kobo_gfxengine_t::mouseMotion(SDL_Event ev)
 {
     mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
     mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
@@ -1621,7 +1621,7 @@ void kobo_gfxengine_t::mousemotion(SDL_Event ev)
                                    mouse_y - MARGIN - WSIZE/2);
 }
 
-void kobo_gfxengine_t::mousebuttondown(SDL_Event ev)
+void kobo_gfxengine_t::mouseButtonDown(SDL_Event ev)
 {
     mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
     mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
@@ -1647,7 +1647,7 @@ void kobo_gfxengine_t::mousebuttondown(SDL_Event ev)
     }
 }
 
-void kobo_gfxengine_t::mousebuttonup(SDL_Event ev)
+void kobo_gfxengine_t::mouseButtonUp(SDL_Event ev)
 {
     mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
     mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
@@ -1677,7 +1677,7 @@ void kobo_gfxengine_t::mousebuttonup(SDL_Event ev)
     }
 }
 
-void kobo_gfxengine_t::keydown(SDL_Event ev)
+void kobo_gfxengine_t::keyDown(SDL_Event ev)
 {
     int k, ms;
     switch(ev.key.keysym.sym){
@@ -1739,6 +1739,69 @@ void kobo_gfxengine_t::keydown(SDL_Event ev)
     gsm.press(k, 1);
 }
 
+void kobo_gfxengine_t::joystickButtonDown(SDL_Event ev)
+{
+    if(ev.jbutton.button == km.js_fire)
+    {
+        gamecontrol.press(BTN_FIRE);
+        gsm.press(BTN_FIRE);
+    }
+    else if(ev.jbutton.button == km.js_start)
+    {
+        gamecontrol.press(BTN_START);
+        gsm.press(BTN_START);
+    }
+}
+
+void kobo_gfxengine_t::joystickButtonUp(SDL_Event ev)
+{
+    if(ev.jbutton.button == km.js_fire)
+    {
+        gamecontrol.release(BTN_FIRE);
+        gsm.release(BTN_FIRE);
+    }
+}
+
+void kobo_gfxengine_t::joystickAxisMotion(SDL_Event ev)
+{
+    if(ev.jaxis.axis == km.js_lr) {
+        
+        if(ev.jaxis.value < -3200) {
+            gamecontrol.press(BTN_LEFT);
+            gsm.press(BTN_LEFT);
+        }
+        else if(ev.jaxis.value > 3200) {
+            gamecontrol.press(BTN_RIGHT);
+            gsm.press(BTN_RIGHT);
+        }
+        else {
+            gamecontrol.release(BTN_LEFT);
+            gamecontrol.release(BTN_RIGHT);
+            gsm.release(BTN_LEFT);
+            gsm.release(BTN_RIGHT);
+        }
+    }
+    else if(ev.jaxis.axis == km.js_ud) {
+        
+        if(ev.jaxis.value < -3200) {
+            gamecontrol.press(BTN_UP);
+            gsm.press(BTN_UP);
+        }
+        else if(ev.jaxis.value > 3200) {
+            gamecontrol.press(BTN_DOWN);
+            gsm.press(BTN_DOWN);
+        }
+        else {
+            gamecontrol.release(BTN_UP);
+            gamecontrol.release(BTN_DOWN);
+            gsm.release(BTN_UP);
+            gsm.release(BTN_DOWN);
+        }
+    }
+}
+
+
+
 void kobo_gfxengine_t::frame()
 {
 	sound.frame();
@@ -1767,7 +1830,7 @@ void kobo_gfxengine_t::frame()
 		{
                 /*---------------------------------------------------------*/
             case SDL_KEYDOWN:
-                keydown(ev);
+                keyDown(ev);
                 break;
                 
                 
@@ -1831,92 +1894,36 @@ void kobo_gfxengine_t::frame()
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYBUTTONDOWN:
-                if(ev.jbutton.button == km.js_fire)
-                {
-                    gamecontrol.press(BTN_FIRE);
-                    gsm.press(BTN_FIRE);
-                }
-                else if(ev.jbutton.button == km.js_start)
-                {
-                    gamecontrol.press(BTN_START);
-                    gsm.press(BTN_START);
-                }
+                joystickButtonDown(ev);
                 break;
                 
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYBUTTONUP:
-                if(ev.jbutton.button == km.js_fire)
-                {
-                    gamecontrol.release(BTN_FIRE);
-                    gsm.release(BTN_FIRE);
-                }
+                joystickButtonUp(ev);
                 break;
                 
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYAXISMOTION:
-                // FIXME: We will want to allow these to be
-                // redefined, but for now, this works ;-)
-                if(ev.jaxis.axis == km.js_lr)
-                {
-                    if(ev.jaxis.value < -3200)
-                    {
-                        gamecontrol.press(BTN_LEFT);
-                        gsm.press(BTN_LEFT);
-                    }
-                    else if(ev.jaxis.value > 3200)
-                    {
-                        gamecontrol.press(BTN_RIGHT);
-                        gsm.press(BTN_RIGHT);
-                    }
-                    else
-                    {
-                        gamecontrol.release(BTN_LEFT);
-                        gamecontrol.release(BTN_RIGHT);
-                        gsm.release(BTN_LEFT);
-                        gsm.release(BTN_RIGHT);
-                    }
-                    
-                }
-                else if(ev.jaxis.axis == km.js_ud)
-                {
-                    if(ev.jaxis.value < -3200)
-                    {
-                        gamecontrol.press(BTN_UP);
-                        gsm.press(BTN_UP);
-                    }
-                    else if(ev.jaxis.value > 3200)
-                    {
-                        gamecontrol.press(BTN_DOWN);
-                        gsm.press(BTN_DOWN);
-                    }
-                    else
-                    {
-                        gamecontrol.release(BTN_UP);
-                        gamecontrol.release(BTN_DOWN);
-                        gsm.release(BTN_UP);
-                        gsm.release(BTN_DOWN);
-                    }
-                    
-                }
-                
+                joystickAxisMotion(ev);
+
                 
                 /*---------------------------------------------------------*/
             case SDL_MOUSEMOTION:
-                mousemotion(ev);
+                mouseMotion(ev);
                 break;
                 
                 
                 /*---------------------------------------------------------*/
             case SDL_MOUSEBUTTONDOWN:
-                mousebuttondown(ev);
+                mouseButtonDown(ev);
                 break;
                 
                 
                 /*---------------------------------------------------------*/
             case SDL_MOUSEBUTTONUP:
-                mousebuttonup(ev);
+                mouseButtonUp(ev);
                 break;
 		}
 	}

@@ -49,10 +49,15 @@ class kobo_gfxengine_t : public gfxengine_t
 	void pre_render();
 	void post_render();
     
-    void mousemotion(SDL_Event ev);
-    void mousebuttondown(SDL_Event ev);
-    void mousebuttonup(SDL_Event ev);
-    void keydown(SDL_Event ev);
+    void mouseMotion(SDL_Event ev);
+    void mouseButtonDown(SDL_Event ev);
+    void mouseButtonUp(SDL_Event ev);
+    void keyDown(SDL_Event ev);
+    
+    void joystickButtonDown(SDL_Event ev);
+    void joystickButtonUp(SDL_Event ev);
+    void joystickAxisMotion(SDL_Event ev);
+
     
   public:
 	kobo_gfxengine_t();
