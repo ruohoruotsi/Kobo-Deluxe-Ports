@@ -542,8 +542,8 @@ int KOBO_main::open_logging(prefs_t *p)
 		log_set_target_stream(1, stderr);
 	}
 
-    // IOHAVOC
-	// log_set_target_stream(2, NULL);
+    // IOHAVOC -- set logging level: 2
+	log_set_target_stream(2, NULL);
 
 	if(p)
 		switch(p->logformat)
@@ -1609,14 +1609,140 @@ int KOBO_main::run()
 /*---------------------------------------------------------*/
 
 kobo_gfxengine_t::kobo_gfxengine_t()
+{}
+
+void kobo_gfxengine_t::mousemotion(SDL_Event ev)
 {
+    mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
+    mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
+    if(prefs->use_mouse)
+        gamecontrol.mouse_position(
+                                   mouse_x - 8 - MARGIN - WSIZE/2,
+                                   mouse_y - MARGIN - WSIZE/2);
 }
 
+void kobo_gfxengine_t::mousebuttondown(SDL_Event ev)
+{
+    mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
+    mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
+    gsm.press(BTN_FIRE);
+    if(prefs->use_mouse)
+    {
+        gamecontrol.mouse_position(
+                                   mouse_x - 8 - MARGIN - WSIZE/2,
+                                   mouse_y - MARGIN - WSIZE/2);
+        switch(ev.button.button)
+        {
+            case SDL_BUTTON_LEFT:
+                mouse_left = 1;
+                break;
+            case SDL_BUTTON_MIDDLE:
+                mouse_middle = 1;
+                break;
+            case SDL_BUTTON_RIGHT:
+                mouse_right = 1;
+                break;
+        }
+        gamecontrol.press(BTN_FIRE);
+    }
+}
+
+void kobo_gfxengine_t::mousebuttonup(SDL_Event ev)
+{
+    mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
+    mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
+    if(prefs->use_mouse)
+    {
+        gamecontrol.mouse_position(
+                                   mouse_x - 8 - MARGIN - WSIZE/2,
+                                   mouse_y - MARGIN - WSIZE/2);
+        switch(ev.button.button)
+        {
+            case SDL_BUTTON_LEFT:
+                mouse_left = 0;
+                break;
+            case SDL_BUTTON_MIDDLE:
+                mouse_middle = 0;
+                break;
+            case SDL_BUTTON_RIGHT:
+                mouse_right = 0;
+                break;
+        }
+    }
+    if(!mouse_left && !mouse_middle && !mouse_right)
+    {
+        if(prefs->use_mouse)
+            gamecontrol.release(BTN_FIRE);
+        gsm.release(BTN_FIRE);
+    }
+}
+
+void kobo_gfxengine_t::keydown(SDL_Event ev)
+{
+    int k, ms;
+    switch(ev.key.keysym.sym){
+#ifdef PROFILE_AUDIO
+        case SDLK_F10:
+            ++km.audio_vismode;
+            break;
+        case SDLK_F12:
+            audio_print_info();
+            break;
+        case SDLK_r:
+        {
+            audio_channel_stop(-1, -1);
+            int startt = SDL_GetTicks();
+            audio_wave_load(0, "sfx.agw", 0);
+            log_printf(VLOG, "(Loading + processing time: %d ms)\n",
+                       SDL_GetTicks() - startt);
+            break;
+        }
+#endif
+            /*---------------------------------------------------------*/
+        case SDLK_DELETE:
+            if(prefs->cmd_debug)
+            {
+                manage.ships = 1;
+                myship.hit(1000);
+            }
+            break;
+            
+            /*---------------------------------------------------------*/
+        case SDLK_RETURN:
+            ms = SDL_GetModState();
+            if(ms & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI)) // IOHAVOC KMOD_META == (KMOD_LMETA|KMOD_RMETA) i.e. (0x0400 | 0x0800)
+                break;
+            if(!(ms & KMOD_ALT))
+                break;
+            km.pause_game();
+            prefs->fullscreen = !prefs->fullscreen;
+            prefs->changed = 1;
+            global_status |= OS_RELOAD_GRAPHICS |
+            OS_RESTART_VIDEO;
+            stop();
+            return;
+        case SDLK_PRINTSCREEN: // SDLK_PRINT: IOHAVOC -- making an educated guess
+        case SDLK_SYSREQ:
+            // FIXME: Doesn't this trigger when entering names and stuff...?
+        case SDLK_s:
+            gengine->screenshot();
+            break;
+        default:
+            break;
+    }
+    k = gamecontrol.map(ev.key.keysym.sym);
+    gamecontrol.press(k);
+    
+    // IOHAVOC -- SDL_Keysym no longer has a unicode, only an used by sizeof stuff in struct has changed.
+    // unicode isn't used so just pass in 1 for now, as that seems to be working.
+    // gsm.press(k, ev.key.keysym.unicode);
+    gsm.press(k, 1);
+}
 
 void kobo_gfxengine_t::frame()
 {
 	sound.frame();
-
+    
 	if(!gsm.current())
 	{
 		log_printf(CELOG, "INTERNAL ERROR: No gamestate!\n");
@@ -1629,256 +1755,178 @@ void kobo_gfxengine_t::frame()
 		stop();
 		return;
 	}
-
+    
 	/*
 	 * Process input
 	 */
 	SDL_Event ev;
 	while(SDL_PollEvent(&ev))
 	{
-		int k, ms;
+		int k;
 		switch (ev.type)
 		{
-		  case SDL_KEYDOWN:
-			switch(ev.key.keysym.sym)
-			{
-#ifdef PROFILE_AUDIO
-			  case SDLK_F10:
-				++km.audio_vismode;
-				break;
-			  case SDLK_F12:
-				audio_print_info();
-				break;
-			  case SDLK_r:
-			  {
-				audio_channel_stop(-1, -1);
-				int startt = SDL_GetTicks();
-				audio_wave_load(0, "sfx.agw", 0);
-				log_printf(VLOG, "(Loading + processing time: %d ms)\n",
-						SDL_GetTicks() - startt);
-				break;
-			  }
-#endif
-			  case SDLK_DELETE:
-				if(prefs->cmd_debug)
-				{
-					manage.ships = 1;
-					myship.hit(1000);
-				}
-				break;
-			  case SDLK_RETURN:
-				ms = SDL_GetModState();
-				if(ms & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI)) // IOHAVOC KMOD_META == (KMOD_LMETA|KMOD_RMETA) i.e. (0x0400 | 0x0800)
-					break;
-				if(!(ms & KMOD_ALT))
-					break;
-				km.pause_game();
-				prefs->fullscreen = !prefs->fullscreen;
-				prefs->changed = 1;
-				global_status |= OS_RELOAD_GRAPHICS |
-						OS_RESTART_VIDEO;
-				stop();
-				return;
-                case SDLK_PRINTSCREEN: // SDLK_PRINT: IOHAVOC -- making an educated guess
-			  case SDLK_SYSREQ:
-// FIXME: Doesn't this trigger when entering names and stuff...?
-			  case SDLK_s:
-				gengine->screenshot();
-				break;
-			  default:
-				break;
-			}
-			k = gamecontrol.map(ev.key.keysym.sym);
-			gamecontrol.press(k);
-			
-            // IOHAVOC -- SDL_Keysym no longer has a unicode, only an used by sizeof stuff in struct has changed.
-            // unicode isn't used so just pass in 1 for now, as that seems to be working.
-            // gsm.press(k, ev.key.keysym.unicode);
-            gsm.press(k, 1);
-
-			break;
-		  case SDL_KEYUP:
-			if((ev.key.keysym.sym == SDLK_ESCAPE) && km.escape_hammering())
-			{
-				km.pause_game();
-				prefs->fullscreen = 0;
-				prefs->videodriver = (int)GFX_DRIVER_SDL2D;
-				prefs->width = 640;
-				prefs->height = 480;
-				prefs->aspect = 1000;
-				prefs->depth = 0;
-				prefs->doublebuf = 0;
-				prefs->pages = -1;
-				prefs->shadow = 1;
-				prefs->scalemode = (int)GFX_SCALE_NEAREST;
-				prefs->brightness = 100;
-				prefs->contrast = 100;
-				global_status |= OS_RELOAD_GRAPHICS |
-						OS_RESTART_VIDEO;
-				stop();
-				st_error.message("Safe video settings applied!",
-					"Enter Options menu to save.");
-				gsm.push(&st_error);
-				return;
-			}
-			k = gamecontrol.map(ev.key.keysym.sym);
-			if(k == SDLK_PAUSE)
-			{
-				gamecontrol.press(BTN_PAUSE);
-				gsm.press(BTN_PAUSE);
-			}
-			else
-			{
-				gamecontrol.release(k);
-				gsm.release(k);
-			}
-			break;
-        // SDL_VIDEOEXPOSE generated by wake from sleep? IOHAVOC removing. Is SDL_APP_WILLENTERFOREGROUND a replacement?
-        // case SDL_VIDEOEXPOSE:
-		//	gengine->invalidate();
-		//	break;
+                /*---------------------------------------------------------*/
+            case SDL_KEYDOWN:
+                keydown(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_KEYUP:
+                if((ev.key.keysym.sym == SDLK_ESCAPE) && km.escape_hammering())
+                {
+                    km.pause_game();
+                    prefs->fullscreen = 0;
+                    prefs->videodriver = (int)GFX_DRIVER_SDL2D;
+                    prefs->width = 640;
+                    prefs->height = 480;
+                    prefs->aspect = 1000;
+                    prefs->depth = 0;
+                    prefs->doublebuf = 0;
+                    prefs->pages = -1;
+                    prefs->shadow = 1;
+                    prefs->scalemode = (int)GFX_SCALE_NEAREST;
+                    prefs->brightness = 100;
+                    prefs->contrast = 100;
+                    global_status |= OS_RELOAD_GRAPHICS |
+                    OS_RESTART_VIDEO;
+                    stop();
+                    st_error.message("Safe video settings applied!",
+                                     "Enter Options menu to save.");
+                    gsm.push(&st_error);
+                    return;
+                }
+                k = gamecontrol.map(ev.key.keysym.sym);
+                if(k == SDLK_PAUSE)
+                {
+                    gamecontrol.press(BTN_PAUSE);
+                    gsm.press(BTN_PAUSE);
+                }
+                else
+                {
+                    gamecontrol.release(k);
+                    gsm.release(k);
+                }
+                break;
+                // SDL_VIDEOEXPOSE generated by wake from sleep? IOHAVOC removing. Is SDL_APP_WILLENTERFOREGROUND a replacement?
+                // case SDL_VIDEOEXPOSE:
+                //	gengine->invalidate();
+                //	break;
+                
+                
+                /*---------------------------------------------------------*/
             case SDL_APP_WILLENTERBACKGROUND:   // IOHAVOC -- SDL_ACTIVEEVENT:
-			// Any type of focus loss should activate pause mode!
-			// if(!ev.active.gain)              // IOHAVOC -- entering bg obviates need for this conditional
+                // Any type of focus loss should activate pause mode!
+                // if(!ev.active.gain)              // IOHAVOC -- entering bg obviates need for this conditional
 				km.pause_game();
-			break;
-		  case SDL_QUIT:
-			/*gsm.press(BTN_CLOSE);*/
-			km.brutal_quit();
-			break;
-		  case SDL_JOYBUTTONDOWN:
-			if(ev.jbutton.button == km.js_fire)
-			{
-				gamecontrol.press(BTN_FIRE);
-				gsm.press(BTN_FIRE);
-			}
-			else if(ev.jbutton.button == km.js_start)
-			{
-				gamecontrol.press(BTN_START);
-				gsm.press(BTN_START);
-			}
-			break;
-		  case SDL_JOYBUTTONUP:
-			if(ev.jbutton.button == km.js_fire)
-			{
-				gamecontrol.release(BTN_FIRE);
-				gsm.release(BTN_FIRE);
-			}
-			break;
-		  case SDL_JOYAXISMOTION:
-			// FIXME: We will want to allow these to be
-			// redefined, but for now, this works ;-)
-			if(ev.jaxis.axis == km.js_lr)
-			{
-				if(ev.jaxis.value < -3200)
-				{
-					gamecontrol.press(BTN_LEFT);
-					gsm.press(BTN_LEFT);
-				}
-				else if(ev.jaxis.value > 3200)
-				{
-					gamecontrol.press(BTN_RIGHT);
-					gsm.press(BTN_RIGHT);
-				}
-				else
-				{
-					gamecontrol.release(BTN_LEFT);
-					gamecontrol.release(BTN_RIGHT);
-					gsm.release(BTN_LEFT);
-					gsm.release(BTN_RIGHT);
-				}
-
-			}
-			else if(ev.jaxis.axis == km.js_ud)
-			{
-				if(ev.jaxis.value < -3200)
-				{
-					gamecontrol.press(BTN_UP);
-					gsm.press(BTN_UP);
-				}
-				else if(ev.jaxis.value > 3200)
-				{
-					gamecontrol.press(BTN_DOWN);
-					gsm.press(BTN_DOWN);
-				}
-				else
-				{
-					gamecontrol.release(BTN_UP);
-					gamecontrol.release(BTN_DOWN);
-					gsm.release(BTN_UP);
-					gsm.release(BTN_DOWN);
-				}
-
-			}
-		  case SDL_MOUSEMOTION:
-			mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
-			mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
-			if(prefs->use_mouse)
-				gamecontrol.mouse_position(
-						mouse_x - 8 - MARGIN - WSIZE/2,
-						mouse_y - MARGIN - WSIZE/2);
-			break;
-		  case SDL_MOUSEBUTTONDOWN:
-			mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
-			mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
-			gsm.press(BTN_FIRE);
-			if(prefs->use_mouse)
-			{
-				gamecontrol.mouse_position(
-						mouse_x - 8 - MARGIN - WSIZE/2,
-						mouse_y - MARGIN - WSIZE/2);
-				switch(ev.button.button)
-				{
-				  case SDL_BUTTON_LEFT:
-					mouse_left = 1;
-					break;
-				  case SDL_BUTTON_MIDDLE:
-					mouse_middle = 1;
-					break;
-				  case SDL_BUTTON_RIGHT:
-					mouse_right = 1;
-					break;
-				}
-				gamecontrol.press(BTN_FIRE);
-			}
-			break;
-		  case SDL_MOUSEBUTTONUP:
-			mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
-			mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
-			if(prefs->use_mouse)
-			{
-				gamecontrol.mouse_position(
-						mouse_x - 8 - MARGIN - WSIZE/2,
-						mouse_y - MARGIN - WSIZE/2);
-				switch(ev.button.button)
-				{
-				  case SDL_BUTTON_LEFT:
-					mouse_left = 0;
-					break;
-				  case SDL_BUTTON_MIDDLE:
-					mouse_middle = 0;
-					break;
-				  case SDL_BUTTON_RIGHT:
-					mouse_right = 0;
-					break;
-				}
-			}
-			if(!mouse_left && !mouse_middle && !mouse_right)
-			{
-				if(prefs->use_mouse)
-					gamecontrol.release(BTN_FIRE);
-				gsm.release(BTN_FIRE);
-			}
-			break;
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_QUIT:
+                /*gsm.press(BTN_CLOSE);*/
+                km.brutal_quit();
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_JOYBUTTONDOWN:
+                if(ev.jbutton.button == km.js_fire)
+                {
+                    gamecontrol.press(BTN_FIRE);
+                    gsm.press(BTN_FIRE);
+                }
+                else if(ev.jbutton.button == km.js_start)
+                {
+                    gamecontrol.press(BTN_START);
+                    gsm.press(BTN_START);
+                }
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_JOYBUTTONUP:
+                if(ev.jbutton.button == km.js_fire)
+                {
+                    gamecontrol.release(BTN_FIRE);
+                    gsm.release(BTN_FIRE);
+                }
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_JOYAXISMOTION:
+                // FIXME: We will want to allow these to be
+                // redefined, but for now, this works ;-)
+                if(ev.jaxis.axis == km.js_lr)
+                {
+                    if(ev.jaxis.value < -3200)
+                    {
+                        gamecontrol.press(BTN_LEFT);
+                        gsm.press(BTN_LEFT);
+                    }
+                    else if(ev.jaxis.value > 3200)
+                    {
+                        gamecontrol.press(BTN_RIGHT);
+                        gsm.press(BTN_RIGHT);
+                    }
+                    else
+                    {
+                        gamecontrol.release(BTN_LEFT);
+                        gamecontrol.release(BTN_RIGHT);
+                        gsm.release(BTN_LEFT);
+                        gsm.release(BTN_RIGHT);
+                    }
+                    
+                }
+                else if(ev.jaxis.axis == km.js_ud)
+                {
+                    if(ev.jaxis.value < -3200)
+                    {
+                        gamecontrol.press(BTN_UP);
+                        gsm.press(BTN_UP);
+                    }
+                    else if(ev.jaxis.value > 3200)
+                    {
+                        gamecontrol.press(BTN_DOWN);
+                        gsm.press(BTN_DOWN);
+                    }
+                    else
+                    {
+                        gamecontrol.release(BTN_UP);
+                        gamecontrol.release(BTN_DOWN);
+                        gsm.release(BTN_UP);
+                        gsm.release(BTN_DOWN);
+                    }
+                    
+                }
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_MOUSEMOTION:
+                mousemotion(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_MOUSEBUTTONDOWN:
+                mousebuttondown(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_MOUSEBUTTONUP:
+                mousebuttonup(ev);
+                break;
 		}
 	}
 	gamecontrol.process();
-
+    
 	/*
 	 * Run the current gamestate for one frame
 	 */
 	gsm.frame();
-
+    
 	if(prefs->cmd_autoshot && !manage.game_stopped())
 	{
 		static int c = 0;

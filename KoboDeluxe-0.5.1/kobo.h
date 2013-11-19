@@ -48,6 +48,12 @@ class kobo_gfxengine_t : public gfxengine_t
 	void frame();
 	void pre_render();
 	void post_render();
+    
+    void mousemotion(SDL_Event ev);
+    void mousebuttondown(SDL_Event ev);
+    void mousebuttonup(SDL_Event ev);
+    void keydown(SDL_Event ev);
+    
   public:
 	kobo_gfxengine_t();
 };
