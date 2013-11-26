@@ -1449,9 +1449,12 @@ void gfxengine_t::flip()
         // IOHAVOC -- SDL2 replacement.
         
         SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, screen_surface->pitch);
-        
         SDL_RenderClear(sdlRenderer);
+        
+        // Draw the background
         SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+        
+        // Update screen
         SDL_RenderPresent(sdlRenderer);
 	}
 	else
