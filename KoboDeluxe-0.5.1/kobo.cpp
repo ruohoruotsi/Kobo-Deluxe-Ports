@@ -65,15 +65,23 @@ extern "C" {
 
 
 #include <CoreFoundation/CFBundle.h>
-
+#include <Accelerate/Accelerate.h>  // for vDSP
+#include <mach/mach_time.h>         // for mach_absolute_time() and friends
 
 #define	MAX_FPS_RESULTS	64
 
 /* Joystick support */
-#define DEFAULT_JOY_LR		0	// Joystick axis left-right default
-#define DEFAULT_JOY_UD		1	// Joystick axis up-down default
+// #define DEFAULT_JOY_LR		0	// Joystick axis left-right default // IOHAVOC Portrait mode
+// #define DEFAULT_JOY_UD		1	// Joystick axis up-down default
+
+#define DEFAULT_JOY_UD		0	// Joystick axis up-down default        // IOHAVOC Landscape mode
+#define DEFAULT_JOY_LR		1	// Joystick axis left-right default
+#define DEFAULT_JOY_FB      2   // Joystick axis forward-backward default
+
 #define DEFAULT_JOY_FIRE	0	// Default fire button on joystick
 #define DEFAULT_JOY_START	1
+
+
 
 /* IOHAVOC: PATHS */
 #define KOBO_DATA_DIR "$HOME/Library/Preferences"
@@ -121,6 +129,14 @@ int mouse_middle = 0;
 int mouse_right = 0;
 
 int exit_game = 0;
+
+// IOHAVOC joystick/acceloglobals
+const int fingerMotionSize = 10;
+static float fingerMotion[fingerMotionSize];
+static int fingerInc = 0;
+
+static float deg, degMean = 0;
+static int quadrant = -1;
 
 
 static int main_init()
@@ -342,8 +358,10 @@ class KOBO_main
 	static int		audio_vismode;
 #endif
 	static SDL_Joystick	*joystick;
-	static int		js_lr;
-	static int		js_ud;
+	static int		js_lr;  // left-right (-x,x)
+	static int		js_ud;  // up-down (y,-y)
+    static int      js_fb;  // forward-backward (Z axis) (z, -z)
+    
 	static int		js_fire;
 	static int		js_start;
 
@@ -408,6 +426,7 @@ int		KOBO_main::audio_vismode = 0;
 SDL_Joystick	*KOBO_main::joystick = NULL;
 int		KOBO_main::js_lr = DEFAULT_JOY_LR;
 int		KOBO_main::js_ud = DEFAULT_JOY_UD;
+int     KOBO_main::js_fb = DEFAULT_JOY_FB;
 int		KOBO_main::js_fire = DEFAULT_JOY_FIRE;
 int		KOBO_main::js_start = DEFAULT_JOY_START;
 
@@ -1418,8 +1437,23 @@ int KOBO_main::open()
 
 	sound.open();
 
+    // TIMING BENCHMARKS
+    mach_timebase_info_data_t info;
+    if (mach_timebase_info(&info) != KERN_SUCCESS)  log_printf(ELOG, "FAIL: mach_timebase_info(&info) != KERN_SUCCESS \n");
+;
+    uint64_t start_time = mach_absolute_time ();
+
+    
 	if(load_sounds(prefs) < 0)
 		return -3;
+    
+    uint64_t end_time = mach_absolute_time ();
+    uint64_t elapsed_time = end_time - start_time;
+    uint64_t nanos = elapsed_time * info.numer / info.denom;
+    float ret_time =  (float)nanos / NSEC_PER_SEC;
+    log_printf(ELOG, "IOHAVOC -- SOUND LOAD QUERY -- TIMING:::::::: %f", ret_time);
+    // TIMING BENCHMARKS
+    
 
 	wdash->progress_done();
 
@@ -1800,6 +1834,153 @@ void kobo_gfxengine_t::joystickAxisMotion(SDL_Event ev)
     }
 }
 
+void kobo_gfxengine_t::fingerDown_iOS(SDL_Event ev)
+{
+    // log_printf(ELOG, "SDL_FINGERDOWN [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
+    
+    gamecontrol.press(BTN_FIRE);
+    gsm.press(BTN_FIRE);
+    
+    // fingerMotion: reset datastructures
+    vDSP_vclr(fingerMotion, 1, fingerMotionSize);
+    fingerInc = 0;
+    
+    gamecontrol.release(BTN_UP);
+    gsm.release(BTN_UP);
+    
+    gamecontrol.release(BTN_LEFT);
+    gsm.release(BTN_LEFT);
+    
+    gamecontrol.release(BTN_RIGHT);
+    gsm.release(BTN_RIGHT);
+    
+    gamecontrol.release(BTN_DOWN);
+    gsm.release(BTN_DOWN);
+}
+
+void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
+{
+    // log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
+    
+    // gamecontrol.release(BTN_FIRE);
+    // gsm.release(BTN_FIRE);
+    
+    // fingerMotion: compute mean and set ship direction
+    if(fingerInc)
+        vDSP_meanv (fingerMotion, 1, &degMean, fingerInc); // divide by # of items instead of fingerMotionSize
+    log_printf(ELOG, "***** SDL_FINGERUP: %f \n", degMean);
+    printf("\n\n\n");
+    
+    
+    if(degMean > -20 &&
+       degMean < 20) {
+        
+        gamecontrol.press(BTN_RIGHT);
+        gsm.press(BTN_RIGHT);
+    }
+    else if(degMean < -20 &&
+            degMean > -70) {
+        
+        gamecontrol.press(BTN_RIGHT);
+        gsm.press(BTN_RIGHT);
+        
+        gamecontrol.press(BTN_UP);
+        gsm.press(BTN_UP);
+        
+    }
+    else if(degMean < -70 &&
+            degMean > -110) {
+        
+        gamecontrol.press(BTN_UP);
+        gsm.press(BTN_UP);
+    }
+    else if(degMean < -110 &&
+            degMean > -160) {
+        
+        gamecontrol.press(BTN_UP);
+        gsm.press(BTN_UP);
+        
+        gamecontrol.press(BTN_LEFT);
+        gsm.press(BTN_LEFT);
+    }
+    else if(degMean > 20 &&
+            degMean < 70 ) {
+        
+        gamecontrol.press(BTN_DOWN);
+        gsm.press(BTN_DOWN);
+        
+        gamecontrol.press(BTN_RIGHT);
+        gsm.press(BTN_RIGHT);
+    }
+    else if(degMean > 70 &&
+            degMean < 110 ) {
+        
+        gamecontrol.press(BTN_DOWN);
+        gsm.press(BTN_DOWN);
+        
+    }
+    else if(degMean > 110 &&
+            degMean < 160 ) {
+        
+        gamecontrol.press(BTN_DOWN);
+        gsm.press(BTN_DOWN);
+        
+        gamecontrol.press(BTN_LEFT);
+        gsm.press(BTN_LEFT);
+    } /* below is the tumultuous error zone
+       else if(degMean > 160 &&
+       degMean < 180 ) {
+       
+       gamecontrol.press(BTN_LEFT);
+       gsm.press(BTN_LEFT);
+       }
+       else if(degMean < -160 &&
+       degMean > -180 ) {
+       
+       gamecontrol.press(BTN_LEFT);
+       gsm.press(BTN_LEFT);
+       } */
+}
+
+void kobo_gfxengine_t::fingerMotion_iOS(SDL_Event ev)
+{
+    deg = (float)(SDL_atan2(ev.tfinger.dy, ev.tfinger.dx)) * 180 / M_PI;
+    
+    if(ev.tfinger.dx >= 0 &&
+       ev.tfinger.dy >= 0 ) {
+        
+        quadrant = 4;
+    }
+    else if(ev.tfinger.dx  < 0 &&
+            ev.tfinger.dy >= 0 ) {
+        
+        quadrant = 3;
+    }
+    else if(ev.tfinger.dx < 0 &&
+            ev.tfinger.dy < 0 ) {
+        
+        quadrant = 2;
+        
+    }else if(ev.tfinger.dx > 0 &&
+             ev.tfinger.dy < 0 ) {
+        
+        quadrant = 1;
+    }
+    
+    
+    log_printf(ELOG, "SDL_FINGERMOTION [%f, %f] [%f, %f]    arctan:%f   quad:%d\n", ev.tfinger.x, ev.tfinger.y, ev.tfinger.dx, ev.tfinger.dy, deg, quadrant);
+    
+    // fingerMotion: store finger motion
+    
+    if(fingerInc < fingerMotionSize) {
+        fingerMotion[fingerInc] = deg;
+        fingerInc++;
+    }
+    else {
+        log_printf(ELOG, "SDL_FINGERMOTION: fingerMotion size error");
+    }
+    
+}
 
 
 void kobo_gfxengine_t::frame()
@@ -1906,8 +2087,11 @@ void kobo_gfxengine_t::frame()
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYAXISMOTION:
-                joystickAxisMotion(ev);
+     
+#ifdef __MACOSX__ // __IPHONEOS__ // __ANDROID__
 
+                joystickAxisMotion(ev);
+#endif
                 
                 /*---------------------------------------------------------*/
             case SDL_MOUSEMOTION:
@@ -1924,6 +2108,30 @@ void kobo_gfxengine_t::frame()
                 /*---------------------------------------------------------*/
             case SDL_MOUSEBUTTONUP:
                 mouseButtonUp(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_FINGERDOWN:
+                fingerDown_iOS(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_FINGERUP:
+                fingerUp_iOS(ev);
+                break;
+            
+                
+                /*---------------------------------------------------------*/
+            case SDL_FINGERMOTION:
+                fingerMotion_iOS(ev);
+                break;
+                
+                
+                /*---------------------------------------------------------*/
+            case SDL_MULTIGESTURE:
+                log_printf(ELOG, "SDL_MULTIGESTURE [%f, %f] dTheta:%f   dDist:%f    numFingers:%d \n", ev.mgesture.x, ev.mgesture.y, ev.mgesture.dTheta, ev.mgesture.dDist, ev.mgesture.numFingers);
                 break;
 		}
 	}

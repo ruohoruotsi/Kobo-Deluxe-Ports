@@ -58,6 +58,10 @@ class kobo_gfxengine_t : public gfxengine_t
     void joystickButtonUp(SDL_Event ev);
     void joystickAxisMotion(SDL_Event ev);
 
+    void fingerDown_iOS(SDL_Event ev);
+    void fingerUp_iOS(SDL_Event ev);
+    void fingerMotion_iOS(SDL_Event ev);
+
     
   public:
 	kobo_gfxengine_t();
