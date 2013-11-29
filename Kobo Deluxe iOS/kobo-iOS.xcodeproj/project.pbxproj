@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D95BAAD8184559E700621830 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D95BAAD7184559E700621830 /* Accelerate.framework */; };
 		D97C9AD8182E8FEA00017B82 /* kobosfx.h in Resources */ = {isa = PBXBuildFile; fileRef = D9DC8E981826C89A00F33A94 /* kobosfx.h */; };
 		D98C9F381826C3B2000A27BF /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D98C9F361826C321000A27BF /* libSDL2.a */; };
 		D9A8D5841827054F0088B453 /* a_agw.c in Sources */ = {isa = PBXBuildFile; fileRef = D9DC8FF21826CA9C00F33A94 /* a_agw.c */; };
@@ -222,6 +223,7 @@
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D95BAAD7184559E700621830 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		D98AFC911826F96000B8981C /* SDL_image.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_image.xcodeproj; path = "../SDL2_image-2.0.0/Xcode-iOS/SDL_image.xcodeproj"; sourceTree = "<group>"; };
 		D98C9F311826C321000A27BF /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../SDL2-2.0.1/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		D9A8D5A818275C010088B453 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -499,6 +501,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D95BAAD8184559E700621830 /* Accelerate.framework in Frameworks */,
 				D9A8D59F182705680088B453 /* libSDL2_image.a in Frameworks */,
 				D98C9F381826C3B2000A27BF /* libSDL2.a in Frameworks */,
 				FDF0D7230E12D31800247964 /* AudioToolbox.framework in Frameworks */,
@@ -551,6 +554,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D95BAAD7184559E700621830 /* Accelerate.framework */,
 				FDF0D7220E12D31800247964 /* AudioToolbox.framework */,
 				FDF0D71D0E12D2AB00247964 /* CoreAudio.framework */,
 				1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */,
