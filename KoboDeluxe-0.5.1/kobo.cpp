@@ -1873,13 +1873,13 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
     
     
     if(degMean > -20 &&
-       degMean < 20) {
+       degMean <= 20) {
         
         gamecontrol.press(BTN_RIGHT);
         gsm.press(BTN_RIGHT);
     }
     else if(degMean < -20 &&
-            degMean > -70) {
+            degMean >= -70) {
         
         gamecontrol.press(BTN_RIGHT);
         gsm.press(BTN_RIGHT);
@@ -1889,13 +1889,13 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         
     }
     else if(degMean < -70 &&
-            degMean > -110) {
+            degMean >= -110) {
         
         gamecontrol.press(BTN_UP);
         gsm.press(BTN_UP);
     }
     else if(degMean < -110 &&
-            degMean > -160) {
+            degMean >= -160) {
         
         gamecontrol.press(BTN_UP);
         gsm.press(BTN_UP);
@@ -1903,8 +1903,14 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
     }
+    else if(degMean < -160 &&
+            degMean >= -180 ) {
+        
+        gamecontrol.press(BTN_LEFT);
+        gsm.press(BTN_LEFT);
+    }
     else if(degMean > 20 &&
-            degMean < 70 ) {
+            degMean <= 70 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
@@ -1913,38 +1919,37 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         gsm.press(BTN_RIGHT);
     }
     else if(degMean > 70 &&
-            degMean < 110 ) {
+            degMean <= 110 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
         
     }
     else if(degMean > 110 &&
-            degMean < 160 ) {
+            degMean <= 160 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
         
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
-    } /* below is the tumultuous error zone
-       else if(degMean > 160 &&
-       degMean < 180 ) {
-       
-       gamecontrol.press(BTN_LEFT);
-       gsm.press(BTN_LEFT);
-       }
-       else if(degMean < -160 &&
-       degMean > -180 ) {
-       
-       gamecontrol.press(BTN_LEFT);
-       gsm.press(BTN_LEFT);
-       } */
+    }
+    else if(degMean > 160 &&
+            degMean <= 180 ) {
+        
+        gamecontrol.press(BTN_LEFT);
+        gsm.press(BTN_LEFT);
+    }
 }
 
 void kobo_gfxengine_t::fingerMotion_iOS(SDL_Event ev)
 {
     deg = (float)(SDL_atan2(ev.tfinger.dy, ev.tfinger.dx)) * 180 / M_PI;
+    
+    // map negative 2nd quadrant stuff to positive for easier
+    // & more accurate left button swipe detection
+    // if(deg < -160 && deg >= -180) deg = fabsf(deg);
+    
     
     if(ev.tfinger.dx >= 0 &&
        ev.tfinger.dy >= 0 ) {
