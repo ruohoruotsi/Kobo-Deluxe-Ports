@@ -1834,17 +1834,44 @@ void kobo_gfxengine_t::joystickAxisMotion(SDL_Event ev)
     }
 }
 
+#ifdef __IPHONEOS__
+
 void kobo_gfxengine_t::fingerDown_iOS(SDL_Event ev)
 {
     // log_printf(ELOG, "SDL_FINGERDOWN [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
     
-    gamecontrol.press(BTN_FIRE);
-    gsm.press(BTN_FIRE);
+    if(ev.tfinger.x <= 0.5 && ev.tfinger.y > 0.5) { // i.e. 4th quadrant
+        gamecontrol.press(BTN_FIRE);
+        gsm.press(BTN_FIRE);
+    }
     
     // fingerMotion: reset datastructures
     vDSP_vclr(fingerMotion, 1, fingerMotionSize);
     fingerInc = 0;
+}
+
+void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
+{
+    log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
     
+    if(ev.tfinger.x <= 0.5 && ev.tfinger.y > 0.5) { // i.e. 4th quadrant
+        gamecontrol.release(BTN_FIRE);
+        gsm.release(BTN_FIRE);
+        return;
+    }
+    
+    // fingerMotion: compute mean to get a better smoother estimate for setting ship direction
+    // if(fingerInc)
+    //    vDSP_meanv (fingerMotion, 1, &degMean, fingerInc); // divide by # of items instead of fingerMotionSize
+    
+    // Mean angle is noisy & unreliable, esp as arctan has a discontinuity @ -180 deg. So use first finger dx/dy
+    degMean = *fingerMotion;    
+    
+    log_printf(ELOG, "***** SDL_FINGERUP: %f \n", degMean);
+    printf("\n\n\n");
+    
+    
+    //
     gamecontrol.release(BTN_UP);
     gsm.release(BTN_UP);
     
@@ -1856,46 +1883,27 @@ void kobo_gfxengine_t::fingerDown_iOS(SDL_Event ev)
     
     gamecontrol.release(BTN_DOWN);
     gsm.release(BTN_DOWN);
-}
-
-void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
-{
-    // log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
+    //
     
-    // gamecontrol.release(BTN_FIRE);
-    // gsm.release(BTN_FIRE);
-    
-    // fingerMotion: compute mean and set ship direction
-    if(fingerInc)
-        vDSP_meanv (fingerMotion, 1, &degMean, fingerInc); // divide by # of items instead of fingerMotionSize
-    log_printf(ELOG, "***** SDL_FINGERUP: %f \n", degMean);
-    printf("\n\n\n");
-    
-    
-    if(degMean > -20 &&
-       degMean <= 20) {
+    if(degMean > -20 && degMean <= 20) {
         
         gamecontrol.press(BTN_RIGHT);
         gsm.press(BTN_RIGHT);
     }
-    else if(degMean < -20 &&
-            degMean >= -70) {
+    else if(degMean < -20 && degMean >= -70) {
         
         gamecontrol.press(BTN_RIGHT);
         gsm.press(BTN_RIGHT);
         
         gamecontrol.press(BTN_UP);
         gsm.press(BTN_UP);
-        
     }
-    else if(degMean < -70 &&
-            degMean >= -110) {
+    else if(degMean < -70 && degMean >= -110) {
         
         gamecontrol.press(BTN_UP);
         gsm.press(BTN_UP);
     }
-    else if(degMean < -110 &&
-            degMean >= -160) {
+    else if(degMean < -110 && degMean >= -160) {
         
         gamecontrol.press(BTN_UP);
         gsm.press(BTN_UP);
@@ -1903,14 +1911,12 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
     }
-    else if(degMean < -160 &&
-            degMean >= -180 ) {
+    else if(degMean < -160 && degMean >= -180 ) {
         
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
     }
-    else if(degMean > 20 &&
-            degMean <= 70 ) {
+    else if(degMean > 20 && degMean <= 70 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
@@ -1918,15 +1924,12 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         gamecontrol.press(BTN_RIGHT);
         gsm.press(BTN_RIGHT);
     }
-    else if(degMean > 70 &&
-            degMean <= 110 ) {
+    else if(degMean > 70 && degMean <= 110 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
-        
     }
-    else if(degMean > 110 &&
-            degMean <= 160 ) {
+    else if(degMean > 110 && degMean <= 160 ) {
         
         gamecontrol.press(BTN_DOWN);
         gsm.press(BTN_DOWN);
@@ -1934,8 +1937,7 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
     }
-    else if(degMean > 160 &&
-            degMean <= 180 ) {
+    else if(degMean > 160 && degMean <= 180 ) {
         
         gamecontrol.press(BTN_LEFT);
         gsm.press(BTN_LEFT);
@@ -1944,12 +1946,7 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
 
 void kobo_gfxengine_t::fingerMotion_iOS(SDL_Event ev)
 {
-    deg = (float)(SDL_atan2(ev.tfinger.dy, ev.tfinger.dx)) * 180 / M_PI;
-    
-    // map negative 2nd quadrant stuff to positive for easier
-    // & more accurate left button swipe detection
-    // if(deg < -160 && deg >= -180) deg = fabsf(deg);
-    
+    deg = (float)(SDL_atan2(ev.tfinger.dy, ev.tfinger.dx)) * (180 / M_PI);
     
     if(ev.tfinger.dx >= 0 &&
        ev.tfinger.dy >= 0 ) {
@@ -1976,17 +1973,15 @@ void kobo_gfxengine_t::fingerMotion_iOS(SDL_Event ev)
     log_printf(ELOG, "SDL_FINGERMOTION [%f, %f] [%f, %f]    arctan:%f   quad:%d\n", ev.tfinger.x, ev.tfinger.y, ev.tfinger.dx, ev.tfinger.dy, deg, quadrant);
     
     // fingerMotion: store finger motion
-    
     if(fingerInc < fingerMotionSize) {
         fingerMotion[fingerInc] = deg;
         fingerInc++;
-    }
-    else {
+    } else {
         log_printf(ELOG, "SDL_FINGERMOTION: fingerMotion size error");
     }
     
 }
-
+#endif
 
 void kobo_gfxengine_t::frame()
 {
@@ -2115,6 +2110,7 @@ void kobo_gfxengine_t::frame()
                 mouseButtonUp(ev);
                 break;
                 
+#ifdef __IPHONEOS__
                 
                 /*---------------------------------------------------------*/
             case SDL_FINGERDOWN:
@@ -2137,7 +2133,13 @@ void kobo_gfxengine_t::frame()
                 /*---------------------------------------------------------*/
             case SDL_MULTIGESTURE:
                 log_printf(ELOG, "SDL_MULTIGESTURE [%f, %f] dTheta:%f   dDist:%f    numFingers:%d \n", ev.mgesture.x, ev.mgesture.y, ev.mgesture.dTheta, ev.mgesture.dDist, ev.mgesture.numFingers);
+                
+                k = gamecontrol.map(13);
+                gamecontrol.press(k);
+                gsm.press(k, 1);
+                
                 break;
+#endif                
 		}
 	}
 	gamecontrol.process();
