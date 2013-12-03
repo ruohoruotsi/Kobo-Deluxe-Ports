@@ -1854,7 +1854,7 @@ void kobo_gfxengine_t::fingerDown_iOS(SDL_Event ev)
 
 void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
 {
-    //log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
+    // log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
     
     if(ev.tfinger.x <= 0.5 && ev.tfinger.y > 0.5) { // i.e. 4th quadrant
         gamecontrol.release(BTN_FIRE);
@@ -1864,8 +1864,8 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
     
     if(multitouchPressed) {
         int k = gamecontrol.map(13);
-        gamecontrol.press(k);
-        gsm.press(k, 1);
+        gamecontrol.release(k);
+        gsm.release(k);
         multitouchPressed = false;
     }
     
@@ -2143,11 +2143,11 @@ void kobo_gfxengine_t::frame()
             case SDL_MULTIGESTURE:
                 log_printf(ELOG, "SDL_MULTIGESTURE [%f, %f] dTheta:%f   dDist:%f    numFingers:%d \n", ev.mgesture.x, ev.mgesture.y, ev.mgesture.dTheta * (180 / M_PI), ev.mgesture.dDist, ev.mgesture.numFingers);
                 
-                if(ev.mgesture.x > 0.6 ||
-                   (ev.mgesture.x < 0.5 && ev.mgesture.y < 0.5)) {
+                if(ev.mgesture.x > 0.6 || (ev.mgesture.x < 0.5 && ev.mgesture.y < 0.5)) {
                     
                     if(!multitouchPressed) {
-                        k = gamecontrol.map(13);
+                        
+                        k = gamecontrol.map(13);    // 13 == Enter/Pause
                         gamecontrol.press(k);
                         gsm.press(k, 1);
                         multitouchPressed = true;
