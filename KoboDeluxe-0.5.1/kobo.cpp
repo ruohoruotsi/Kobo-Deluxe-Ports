@@ -130,13 +130,15 @@ int mouse_right = 0;
 
 int exit_game = 0;
 
-// IOHAVOC joystick/acceloglobals
+// IOHAVOC fingerMotion globlas
 const int fingerMotionSize = 10;
 static float fingerMotion[fingerMotionSize];
 static int fingerInc = 0;
 
 static float deg, degMean = 0;
 static int quadrant = -1;
+
+static bool multitouchPressed = false;
 
 
 static int main_init()
@@ -1852,12 +1854,19 @@ void kobo_gfxengine_t::fingerDown_iOS(SDL_Event ev)
 
 void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
 {
-    log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
+    //log_printf(ELOG, "SDL_FINGERUP [%f, %f] \n", ev.tfinger.x, ev.tfinger.y);
     
     if(ev.tfinger.x <= 0.5 && ev.tfinger.y > 0.5) { // i.e. 4th quadrant
         gamecontrol.release(BTN_FIRE);
         gsm.release(BTN_FIRE);
         return;
+    }
+    
+    if(multitouchPressed) {
+        int k = gamecontrol.map(13);
+        gamecontrol.press(k);
+        gsm.press(k, 1);
+        multitouchPressed = false;
     }
     
     // fingerMotion: compute mean to get a better smoother estimate for setting ship direction
@@ -1867,7 +1876,7 @@ void kobo_gfxengine_t::fingerUp_iOS(SDL_Event ev)
     // Mean angle is noisy & unreliable, esp as arctan has a discontinuity @ -180 deg. So use first finger dx/dy
     degMean = *fingerMotion;    
     
-    log_printf(ELOG, "***** SDL_FINGERUP: %f \n", degMean);
+    //log_printf(ELOG, "***** SDL_FINGERUP: %f \n", degMean);
     printf("\n\n\n");
     
     
@@ -1970,14 +1979,14 @@ void kobo_gfxengine_t::fingerMotion_iOS(SDL_Event ev)
     }
     
     
-    log_printf(ELOG, "SDL_FINGERMOTION [%f, %f] [%f, %f]    arctan:%f   quad:%d\n", ev.tfinger.x, ev.tfinger.y, ev.tfinger.dx, ev.tfinger.dy, deg, quadrant);
+    // log_printf(ELOG, "SDL_FINGERMOTION [%f, %f] [%f, %f]    arctan:%f   quad:%d\n", ev.tfinger.x, ev.tfinger.y, ev.tfinger.dx, ev.tfinger.dy, deg, quadrant);
     
     // fingerMotion: store finger motion
     if(fingerInc < fingerMotionSize) {
         fingerMotion[fingerInc] = deg;
         fingerInc++;
     } else {
-        log_printf(ELOG, "SDL_FINGERMOTION: fingerMotion size error");
+        //log_printf(ELOG, "SDL_FINGERMOTION: fingerMotion size error");
     }
     
 }
@@ -2009,6 +2018,7 @@ void kobo_gfxengine_t::frame()
 		int k;
 		switch (ev.type)
 		{
+                
                 /*---------------------------------------------------------*/
             case SDL_KEYDOWN:
                 keyDown(ev);
@@ -2040,6 +2050,7 @@ void kobo_gfxengine_t::frame()
                     gsm.push(&st_error);
                     return;
                 }
+                
                 k = gamecontrol.map(ev.key.keysym.sym);
                 if(k == SDLK_PAUSE)
                 {
@@ -2072,6 +2083,7 @@ void kobo_gfxengine_t::frame()
                 km.brutal_quit();
                 break;
                 
+#ifdef __MACOSX__ // __IPHONEOS__ // __ANDROID__
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYBUTTONDOWN:
@@ -2087,11 +2099,8 @@ void kobo_gfxengine_t::frame()
                 
                 /*---------------------------------------------------------*/
             case SDL_JOYAXISMOTION:
-     
-#ifdef __MACOSX__ // __IPHONEOS__ // __ANDROID__
-
                 joystickAxisMotion(ev);
-#endif
+                
                 
                 /*---------------------------------------------------------*/
             case SDL_MOUSEMOTION:
@@ -2110,7 +2119,7 @@ void kobo_gfxengine_t::frame()
                 mouseButtonUp(ev);
                 break;
                 
-#ifdef __IPHONEOS__
+#elif __IPHONEOS__
                 
                 /*---------------------------------------------------------*/
             case SDL_FINGERDOWN:
@@ -2122,7 +2131,7 @@ void kobo_gfxengine_t::frame()
             case SDL_FINGERUP:
                 fingerUp_iOS(ev);
                 break;
-            
+                
                 
                 /*---------------------------------------------------------*/
             case SDL_FINGERMOTION:
@@ -2132,14 +2141,23 @@ void kobo_gfxengine_t::frame()
                 
                 /*---------------------------------------------------------*/
             case SDL_MULTIGESTURE:
-                log_printf(ELOG, "SDL_MULTIGESTURE [%f, %f] dTheta:%f   dDist:%f    numFingers:%d \n", ev.mgesture.x, ev.mgesture.y, ev.mgesture.dTheta, ev.mgesture.dDist, ev.mgesture.numFingers);
+                log_printf(ELOG, "SDL_MULTIGESTURE [%f, %f] dTheta:%f   dDist:%f    numFingers:%d \n", ev.mgesture.x, ev.mgesture.y, ev.mgesture.dTheta * (180 / M_PI), ev.mgesture.dDist, ev.mgesture.numFingers);
                 
-                k = gamecontrol.map(13);
-                gamecontrol.press(k);
-                gsm.press(k, 1);
-                
+                if(ev.mgesture.x > 0.6 ||
+                   (ev.mgesture.x < 0.5 && ev.mgesture.y < 0.5)) {
+                    
+                    if(!multitouchPressed) {
+                        k = gamecontrol.map(13);
+                        gamecontrol.press(k);
+                        gsm.press(k, 1);
+                        multitouchPressed = true;
+                    }
+                }
+                else {
+                    log_printf(ELOG, "Multigesture captured within BTN_FIRE zone");  // i.e. 4th quadrant
+                }
                 break;
-#endif                
+#endif
 		}
 	}
 	gamecontrol.process();
