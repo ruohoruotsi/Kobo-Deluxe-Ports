@@ -309,7 +309,8 @@ void dashboard_window_t::nibble(int tool)
 		}
 		gengine->invalidate();
 		gengine->flip();
-		if(gengine->doublebuffer())
+		
+        /* if(gengine->doublebuffer())
 		{
 			for(i = 0; i < dt * 4; ++i)
 			{
@@ -336,7 +337,7 @@ void dashboard_window_t::nibble(int tool)
 				}
 				++last_index;
 			}
-		}
+		} */
 	}
 	mode(DASHBOARD_BLACK);
 	gengine->flip();

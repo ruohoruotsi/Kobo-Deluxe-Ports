@@ -130,7 +130,8 @@ int mouse_right = 0;
 
 int exit_game = 0;
 
-// IOHAVOC fingerMotion globlas
+#ifdef __IPHONEOS__ // fingerMotion globlas
+
 const int fingerMotionSize = 10;
 static float fingerMotion[fingerMotionSize];
 static int fingerInc = 0;
@@ -140,6 +141,7 @@ static int quadrant = -1;
 
 static bool multitouchPressed = false;
 
+#endif
 
 static int main_init()
 {
@@ -748,10 +750,10 @@ int KOBO_main::init_display(prefs_t *p)
 	gengine->size(dw, dh);
 
 	gengine->mode(0, p->fullscreen);
-	gengine->doublebuffer(p->doublebuf);
+	// gengine->doublebuffer(p->doublebuf);  // IOHAVOC
 	gengine->pages(p->pages);
 	gengine->vsync(p->vsync);
-	gengine->shadow(p->shadow);
+	// gengine->shadow(p->shadow);
 	gengine->cursor(0);
 
 	gengine->period(game.speed);

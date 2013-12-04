@@ -103,8 +103,8 @@ class gfxengine_t
 	void wrap(int x, int y);
 
 	/* Info */
-	int doublebuffer()	{ return _doublebuf; }
-	int shadow()		{ return _shadow; }
+//	int doublebuffer()	{ return _doublebuf; }
+//	int shadow()		{ return _shadow; }
 	int autoinvalidate()	{ return _autoinvalidate; }
 
 	/* Engine open/close */
@@ -244,10 +244,10 @@ class gfxengine_t
 	SoFont		*fonts[GFX_BANKS];	// Kludge.
 	cs_engine_t	*csengine;
 	int		xflags;
-	int		_doublebuf;
+//	int		_doublebuf;
 	int		_pages;
 	int		_vsync;
-	int		_shadow;
+//	int		_shadow;
 	int		_fullscreen;
 	int		_centered;
 	int		_autoinvalidate;
