@@ -220,7 +220,7 @@ class gfxengine_t
     // ---------------------------------------------
     
 	SDL_Surface	*screen_surface;
-	SDL_Surface	*softbuf;
+	// SDL_Surface	*softbuf;
 	int		backpage;
 	int		frontpage;
 	int		dirtyrects[MAX_PAGES];

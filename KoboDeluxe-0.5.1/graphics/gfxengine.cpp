@@ -41,7 +41,7 @@ gfxengine_t::gfxengine_t()
 	gfxengine = this;	/* Uurgh! Kludge. */
 
 	screen_surface = NULL;
-	softbuf = NULL;
+//	softbuf = NULL;
 	fullwin = NULL;
 	window = NULL;
 	windows = NULL;
@@ -1007,17 +1007,16 @@ void gfxengine_t::hide(void)
 	window_t *w = windows;
 	while(w)
 	{
-		if((w->surface == screen_surface) ||
-				(w->surface == softbuf))
+		if((w->surface == screen_surface) /*|| (w->surface == softbuf)*/)
 			w->surface = NULL;
 		w = w->next;
 	}
 
-	if(softbuf)
-	{
-		SDL_FreeSurface(softbuf);
-		softbuf = NULL;
-	}
+//	if(softbuf)
+//	{
+//		SDL_FreeSurface(softbuf);
+//		softbuf = NULL;
+//	}
 	screen_surface = NULL;
 
 	is_showing = 0;
@@ -1277,9 +1276,9 @@ int gfxengine_t::yoffs(int layer)
 
 SDL_Surface *gfxengine_t::surface()
 {
-	if(softbuf)
-		return softbuf;
-	else
+//	if(softbuf)
+//		return softbuf;
+//	else
 		return screen_surface;
 }
 
