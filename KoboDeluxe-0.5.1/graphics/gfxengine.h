@@ -76,7 +76,6 @@ class gfxengine_t
 	// 1: Use double buffering if possible
 	void doublebuffer(int use);
 
-	// -1: Use default for shadow() and doublebuffer() settings
 	// 0: None; assume flipping gives you a garbage buffer
 	// 1: Assume flipping leaves the back buffer intact
 	// 2: Assume two buffers that are swapped when flipping
@@ -85,9 +84,6 @@ class gfxengine_t
 
 	// 1: Enable vsync, if available
 	void vsync(int use);
-
-	// 1: Use a software shadow back buffer, if possible
-	void shadow(int use);
 
 	void autoinvalidate(int use);
 
@@ -103,8 +99,6 @@ class gfxengine_t
 	void wrap(int x, int y);
 
 	/* Info */
-//	int doublebuffer()	{ return _doublebuf; }
-//	int shadow()		{ return _shadow; }
 	int autoinvalidate()	{ return _autoinvalidate; }
 
 	/* Engine open/close */
@@ -220,7 +214,6 @@ class gfxengine_t
     // ---------------------------------------------
     
 	SDL_Surface	*screen_surface;
-	// SDL_Surface	*softbuf;
 	int		backpage;
 	int		frontpage;
 	int		dirtyrects[MAX_PAGES];
@@ -244,10 +237,8 @@ class gfxengine_t
 	SoFont		*fonts[GFX_BANKS];	// Kludge.
 	cs_engine_t	*csengine;
 	int		xflags;
-//	int		_doublebuf;
 	int		_pages;
 	int		_vsync;
-//	int		_shadow;
 	int		_fullscreen;
 	int		_centered;
 	int		_autoinvalidate;

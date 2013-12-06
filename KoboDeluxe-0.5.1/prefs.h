@@ -80,8 +80,6 @@ class prefs_t : public config_parser_t
 	int	depth;		//Bits per pixel
 	int	max_fps;	//Maximum fps
 	int	max_fps_strict;	//Strictly regulated fps limiter
-	int	doublebuf;	//Use double buffering
-	int	shadow;		//Use software shadow buffer
 	int	videomode;	//New video mode codes
 	int	vsync;		//Vertical (retrace) sync
 	int	pages;		//Number of physical video pages

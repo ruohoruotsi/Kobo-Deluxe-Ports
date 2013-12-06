@@ -93,8 +93,8 @@ void prefs_t::init()
 	key("depth", depth, 0); desc("Display Depth");
 	key("maxfps", max_fps, 100); desc("Maximum fps");
 	key("maxfpsstrict", max_fps_strict, 0); desc("Strictly Regulated fps");
-	key("buffer", doublebuf, 1); desc("Display Buffer Mode");
-	yesno("shadow", shadow, 1); desc("Use Software Shadow Buffer");
+	// key("buffer", doublebuf, 1); desc("Display Buffer Mode");
+	// yesno("shadow", shadow, 1); desc("Use Software Shadow Buffer");
 	key("videomode", videomode, 0x04330); desc("Video Mode");
 	yesno("vsync", vsync, 1); desc("Enable Vertical Sync");
 	key("videopages", pages, -1); desc("Number of Video Pages");

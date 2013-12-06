@@ -750,10 +750,8 @@ int KOBO_main::init_display(prefs_t *p)
 	gengine->size(dw, dh);
 
 	gengine->mode(0, p->fullscreen);
-	// gengine->doublebuffer(p->doublebuf);  // IOHAVOC
 	gengine->pages(p->pages);
 	gengine->vsync(p->vsync);
-	// gengine->shadow(p->shadow);
 	gengine->cursor(0);
 
 	gengine->period(game.speed);
@@ -2038,9 +2036,7 @@ void kobo_gfxengine_t::frame()
                     prefs->height = 480;
                     prefs->aspect = 1000;
                     prefs->depth = 0;
-                    prefs->doublebuf = 0;
                     prefs->pages = -1;
-                    prefs->shadow = 1;
                     prefs->scalemode = (int)GFX_SCALE_NEAREST;
                     prefs->brightness = 100;
                     prefs->contrast = 100;

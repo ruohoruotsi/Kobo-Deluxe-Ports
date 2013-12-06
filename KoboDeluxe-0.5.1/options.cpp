@@ -197,10 +197,10 @@ void video_options_t::build()
 	switch(prf->videodriver)
 	{
 	  case GFX_DRIVER_SDL2D:
-		list("Display Buffering Mode", &prf->doublebuf, OS_RESTART_VIDEO);
-			item("Single", 0);
-			item("Double", 1);
-		yesno("Software Shadow Buffer", &prf->shadow, OS_RESTART_VIDEO);
+//		list("Display Buffering Mode", &prf->doublebuf, OS_RESTART_VIDEO);
+//			item("Single", 0);
+//			item("Double", 1);
+//		yesno("Software Shadow Buffer", &prf->shadow, OS_RESTART_VIDEO);
 		break;
 	  case GFX_DRIVER_GLSDL:
 		yesno("Vertical Retrace Sync", &prf->vsync, OS_RESTART_VIDEO);

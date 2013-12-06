@@ -41,7 +41,6 @@ gfxengine_t::gfxengine_t()
 	gfxengine = this;	/* Uurgh! Kludge. */
 
 	screen_surface = NULL;
-//	softbuf = NULL;
 	fullwin = NULL;
 	window = NULL;
 	windows = NULL;
@@ -52,8 +51,6 @@ gfxengine_t::gfxengine_t()
 	gfx = NULL;
 	csengine = NULL;
 	_driver = GFX_DRIVER_SDL2D;
-//	_shadow = 0;                    // IOHAVOC - cleanup -- we don't need a shadow buffer!
-//	_doublebuf = 0;                 // IOHAVOC -- this should fail
 	_pages = -1;
 	_vsync = 1;
 	_fullscreen = 0;
@@ -187,24 +184,11 @@ void gfxengine_t::driver(gfx_drivers_t drv)
 	if(was_showing)
 		show();
 }
-//
-//void gfxengine_t::doublebuffer(int use)
-//{
-//	if(_doublebuf == use)
-//		return;
-//
-//	int was_showing = is_showing;
-//	hide();
-//
-//	_doublebuf = use;
-//
-//	if(was_showing)
-//		show();
-//}
 
 void gfxengine_t::pages(int np)
 {
 	_pages = np;
+    printf("\n\n\n np == %d \n\n\n", np);
 }
 
 void gfxengine_t::vsync(int use)
@@ -220,20 +204,6 @@ void gfxengine_t::vsync(int use)
 	if(was_showing)
 		show();
 }
-
-/* void gfxengine_t::shadow(int use)
-{
-	if(_shadow == use)
-		return;
-
-	int was_showing = is_showing;
-	hide();
-
-	_shadow = use;
-
-	if(was_showing)
-		show();
-} */
 
 void gfxengine_t::autoinvalidate(int use)
 {
@@ -808,18 +778,6 @@ int gfxengine_t::show()
 	  case GFX_DRIVER_SDL2D:
 		break;
 	  case GFX_DRIVER_GLSDL:
-//		if(!_doublebuf)
-//		{
-//			log_printf(WLOG, "Only double buffering is supported"
-//					" with OpenGL drivers!\n");
-//			doublebuffer(1);
-//		}
-//		if(_shadow)
-//		{
-//			log_printf(WLOG, "Shadow buffer not supported"
-//					" with OpenGL drivers!\n");
-//			shadow(0);
-//		}
 		break;
 	}
 
@@ -833,22 +791,12 @@ int gfxengine_t::show()
 		break;
 	}
 
-    /* IOHAVOC -- thes flags are deprecated
-	if(_doublebuf)
-		flags |= SDL_DOUBLEBUF | SDL_HWSURFACE;
-	else
-	{
-		if(!_shadow)
-		  	flags |= SDL_HWSURFACE;
-	} */
-
 	if(_fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN; // SDL_FULLSCREEN; // IOHAVOC
 
 	glSDL_VSync(_vsync);
 	flags |= xflags;
 
-    
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
 
@@ -894,69 +842,11 @@ int gfxengine_t::show()
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
 
-    
-    
-    
     if(!screen_surface)
 	{
 		log_printf(ELOG, "Failed to open display!\n");
 		return -3;
 	}
-    /*
-	if(_driver != GFX_DRIVER_GLSDL)
-	{
-		if((screen_surface->flags)) // & SDL_DOUBLEBUF) == SDL_DOUBLEBUF)   // IOHAVOC - depcrecated
-		{
-			if(!_doublebuf)
-			{
-				log_printf(WLOG, "Could not get"
-						" single buffered display.\n");
-				doublebuffer(1);
-			}
-		}
-		else
-		{
-			if(_doublebuf)
-			{
-				log_printf(WLOG, "Could not get"
-						" double buffered display.\n");
-				doublebuffer(0);
-			}
-		}
-     } */
-    
-	//if((screen_surface->flags)) // & SDL_HWSURFACE) == SDL_HWSURFACE)   // IOHAVOC - deprecated
-	//{
-
-    // IOHAVOC -- no shadow
-//    if(_shadow)
-//    {
-//        softbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
-//                                       _width, _height,
-//                                       screen_surface->format->BitsPerPixel,
-//                                       screen_surface->format->Rmask,
-//                                       screen_surface->format->Gmask,
-//                                       screen_surface->format->Bmask,
-//                                       screen_surface->format->Amask);
-//        if(!softbuf)
-//        {
-//            log_printf(WLOG, "Failed to create shadow buffer! "
-//                       "Trying direct rendering.\n");
-//            shadow(0);
-//        }
-//    }
-	//}
-	// else
-//	{
-//		if(_shadow)
-//			log_printf(WLOG, "Shadow buffer requested; "
-//                       "relying on SDL's shadow buffer.\n");
-//		else
-//		{
-//			log_printf(WLOG, "Could not get h/w display surface.\n");
-//			shadow(0);	//...which means we're using SDL's shadow.
-//		}
-//	}
 
     SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
     
@@ -1007,16 +897,11 @@ void gfxengine_t::hide(void)
 	window_t *w = windows;
 	while(w)
 	{
-		if((w->surface == screen_surface) /*|| (w->surface == softbuf)*/)
+		if((w->surface == screen_surface))
 			w->surface = NULL;
 		w = w->next;
 	}
-
-//	if(softbuf)
-//	{
-//		SDL_FreeSurface(softbuf);
-//		softbuf = NULL;
-//	}
+    
 	screen_surface = NULL;
 
 	is_showing = 0;
@@ -1028,8 +913,6 @@ void gfxengine_t::invalidate(SDL_Rect *rect, window_t *window)
 	switch(_pages)
 	{
 	  case -1:
-//		if(_doublebuf)
-//			__invalidate(1, rect, window);
 		__invalidate(0, rect, window);
 		break;
 	  case 0:
@@ -1276,10 +1159,7 @@ int gfxengine_t::yoffs(int layer)
 
 SDL_Surface *gfxengine_t::surface()
 {
-//	if(softbuf)
-//		return softbuf;
-//	else
-		return screen_surface;
+    return screen_surface;
 }
 
 
@@ -1380,15 +1260,6 @@ void gfxengine_t::flip()
 	switch(_pages)
 	{
 	  case -1:
-		//if(!_doublebuf)
-			frontpage = backpage = 0;
-		//else
-//            if(frontpage == backpage)
-//		{
-//			frontpage = 0;
-//			backpage = 1;
-//		}
-		break;
 	  case 0:
 		frontpage = backpage = 0;
 		invalidate();
@@ -1422,54 +1293,33 @@ void gfxengine_t::flip()
 	}
 
 	// Perform the actual flip or update
-
-    // IOHAVOC -- no shadow
-//	if(_shadow)
-//	{
-//		for(i = 0; i < dirtyrects[backpage]; ++i)
-//			SDL_BlitSurface(softbuf,
-//                            &dirtytable[backpage][i],
-//                            screen_surface,
-//                            &dirtytable[backpage][i]);
-//	}
-	// if(_doublebuf)
-	{
-		dirtyrects[backpage] = 0;
-		if(_pages == -1)
-		{
-			backpage = !backpage;
-			frontpage = !frontpage;
-		}
-		else if(_pages > 1)
-		{
-			backpage = (backpage + 1) % _pages;
-			frontpage = (frontpage + 1) % _pages;
-		}
-		
-        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead
-        //SDL_Flip(screen_surface);
-        
-        
-        // IOHAVOC -- SDL2 replacement.
-        
-        SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, screen_surface->pitch);
-        SDL_RenderClear(sdlRenderer);
-        
-        // Draw the background
-        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
-        
-        // Update screen
-        SDL_RenderPresent(sdlRenderer);
-	}
-	/*else
-	{
-        // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead
-		// SDL_UpdateRects(screen_surface, dirtyrects[0], dirtytable[0]);
-		dirtyrects[0] = 0;
-        
-        // IOHAVOC -- replacement. Stuff is being collected into sdlRenderer
-        SDL_RenderPresent(sdlRenderer);
-	} */
+	
+    dirtyrects[backpage] = 0;
+    if(_pages == -1)
+    {
+        backpage = !backpage;
+        frontpage = !frontpage;
+    }
+    else if(_pages > 1)
+    {
+        backpage = (backpage + 1) % _pages;
+        frontpage = (frontpage + 1) % _pages;
+    }
+    
+    // IOHAVOC -- deprecated -- use SDL_RenderPresent(renderer) instead
+    //SDL_Flip(screen_surface);
+    
+    
+    // IOHAVOC -- SDL2 replacement.
+    
+    SDL_UpdateTexture(sdlTexture, NULL, screen_surface->pixels, screen_surface->pitch);
+    SDL_RenderClear(sdlRenderer);
+    
+    // Draw the background
+    SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+    
+    // Update screen
+    SDL_RenderPresent(sdlRenderer);
 }
 
 
