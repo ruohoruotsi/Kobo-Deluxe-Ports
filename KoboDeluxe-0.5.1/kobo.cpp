@@ -2527,10 +2527,7 @@ int main(int argc, char *argv[])
 
 	km.close();
 
-	/* 
-	 * Seems like we got all the way here without crashing,
-	 * so let's save the current configuration! :-)
-	 */
+	//save the current configuration
 	if(prefs->changed)
 	{
 		km.save_config(prefs);
