@@ -63,7 +63,7 @@ void prefs_t::init()
 	comment("--- Sound settings -------------------------");
 	yesno("sound", use_sound, 1); desc("Enable Sound");
 	yesno("music", use_music, 1); desc("Enable Music");
-	yesno("cached_sounds", cached_sounds, 0); desc("Use Cached Sounds");
+	yesno("cached_sounds", cached_sounds, 1); desc("Use Cached Sounds");  // IOHAVOC -- using cached sounds!! not Algorthmically Generated Waveforms (AGW!)
 #ifdef HAVE_OSS
 	yesno("oss", use_oss, 0);
 #else
