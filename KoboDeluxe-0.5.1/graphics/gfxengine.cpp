@@ -188,7 +188,6 @@ void gfxengine_t::driver(gfx_drivers_t drv)
 void gfxengine_t::pages(int np)
 {
 	_pages = np;
-    printf("\n\n\n np == %d \n\n\n", np);
 }
 
 void gfxengine_t::vsync(int use)
