@@ -130,7 +130,7 @@ int mouse_right = 0;
 
 int exit_game = 0;
 
-#ifdef __IPHONEOS__ // fingerMotion globlas
+#ifdef __IPHONEOS__ // fingerMotion globals
 
 const int fingerMotionSize = 10;
 static float fingerMotion[fingerMotionSize];
@@ -1028,6 +1028,7 @@ typedef struct KOBO_GfxDesc
 } KOBO_GfxDesc;
 
 static KOBO_GfxDesc gfxdesc[] = {
+    
 	// Loading screen
 	{ "Loading loading screen graphics", 0, 0,0, 0.0f, KOBO_MESSAGE },
 	{ "GFX>>loading3.png", B_LOADING,	0, 0,	2.0f,
@@ -1442,7 +1443,6 @@ int KOBO_main::open()
     // TIMING BENCHMARKS
     mach_timebase_info_data_t info;
     if (mach_timebase_info(&info) != KERN_SUCCESS)  log_printf(ELOG, "FAIL: mach_timebase_info(&info) != KERN_SUCCESS \n");
-;
     uint64_t start_time = mach_absolute_time ();
 
     
@@ -2383,6 +2383,8 @@ extern "C" RETSIGTYPE breakhandler(int dummy)
 #endif
 }
 
+#if defined(__MACOSX__) || defined(__IPHONEOS__) // Only relevant on Apple platforms
+
 // From SDLMain - Set the working directory to the .app's parent directory
 static void setupWorkingDirectory(bool shouldChdir)
 {
@@ -2418,6 +2420,8 @@ static void setupWorkingDirectory(bool shouldChdir)
 #endif
     
 }
+#endif
+
 
 int main(int argc, char *argv[])
 {
