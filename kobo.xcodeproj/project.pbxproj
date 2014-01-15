@@ -1633,9 +1633,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
-					/Library/Frameworks/SDL2.framework/Headers/,
-					/Library/Frameworks/SDL2_image.framework/Headers,
+					"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/",
+					"$(SRCROOT)/SDL2-2.0.1/include/",
+					"$(SRCROOT)/SDL2_image-2.0.0/",
 				);
 				INFOPLIST_FILE = "Kobo Deluxe/Kobo Deluxe-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1665,9 +1665,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "USE_RESOURCE_WORKING_DIR=1";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/\"",
-					/Library/Frameworks/SDL2.framework/Headers/,
-					/Library/Frameworks/SDL2_image.framework/Headers,
+					"$(SRCROOT)/KoboDeluxe-0.5.1/data/sfx/",
+					"$(SRCROOT)/SDL2-2.0.1/include/",
+					"$(SRCROOT)/SDL2_image-2.0.0/",
 				);
 				INFOPLIST_FILE = "Kobo Deluxe/Kobo Deluxe-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
