@@ -403,7 +403,7 @@ void window_t::center_token_fxp(int _x, int _y, const char *txt, char token)
 		 */
 		if(token)
 		{
-			char *tok = strchr(txt, token);
+			const char *tok = strchr(txt, token);
 			if(tok)
 				tokpos = (int)(tok - txt);
 			else
