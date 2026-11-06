@@ -171,6 +171,26 @@ static void main_cleanup()
 /*---------------------------------------------------------*/
 /*---------------------------------------------------------*/
 
+/* Create all missing parent directories of the given absolute path. */
+static void makedirs(const char *path)
+{
+	char buf[PATH_MAX];
+	char *p;
+	size_t len = strlen(path);
+	if(len + 1 > sizeof(buf))
+		return;
+	strcpy(buf, path);
+	for(p = buf + 1; *p; ++p)
+		if(*p == '/')
+		{
+			*p = 0;
+			::mkdir(buf, 0755);
+			*p = '/';
+		}
+	::mkdir(buf, 0755);
+}
+
+
 static void setup_dirs(char *xpath)
 {
 	fmap->exepath(xpath);
@@ -206,8 +226,21 @@ static void setup_dirs(char *xpath)
 #endif
 
 	/*
-	 * Score files (user and global)
+	 * Score files: per-user dir first (always writable, and under the
+	 * App Sandbox $HOME is the app container), legacy system dir kept
+	 * as a fallback for old installs.
 	 */
+	{
+		char user_scores[PATH_MAX];
+		const char *home = getenv("HOME");
+		if(home)
+		{
+			snprintf(user_scores, sizeof(user_scores),
+					"%s/Library/Preferences/KoboDeluxe/scores", home);
+			makedirs(user_scores);
+			fmap->addpath("SCORES", user_scores, 1);
+		}
+	}
 	fmap->addpath("SCORES", KOBO_SCORE_DIR);
 	/* 'scores' in current dir (For importing scores, perhaps...) */
 // (Disabled for now, since filemapper_t can't tell
