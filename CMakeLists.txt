@@ -140,9 +140,9 @@ function(kobo_add_target name)
     "-framework Accelerate"
     "-framework Cocoa"
   )
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${name} PRIVATE DEBUG=1)
-  endif()
+  # Generator expression so this works on single-config (Makefiles/Ninja:
+  # CMAKE_BUILD_TYPE) and multi-config (Xcode: per-configuration) generators.
+  target_compile_definitions(${name} PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 endfunction()
 
 # --- Kobo Deluxe.app -------------------------------------------------------
@@ -163,8 +163,8 @@ set_target_properties(KoboDeluxe PROPERTIES
 
 set(KOBO_APP_RESOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Icon.icns
-  ${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/Credits.rtf
-  ${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/InfoPlist.strings
+  "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/Credits.rtf"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/InfoPlist.strings"
 )
 target_sources(KoboDeluxe PRIVATE ${KOBO_APP_RESOURCES})
 set_source_files_properties(${KOBO_APP_RESOURCES}
@@ -182,7 +182,7 @@ add_custom_target(MainMenuNib DEPENDS ${MAINMENU_NIB})
 add_dependencies(KoboDeluxe MainMenuNib)
 
 add_custom_command(TARGET KoboDeluxe POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${MAINMENU_NIB}
+  COMMAND ${CMAKE_COMMAND} -E copy ${MAINMENU_NIB}
           $<TARGET_BUNDLE_DIR:KoboDeluxe>/Contents/Resources/MainMenu.nib
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${KOBO_SRC_ROOT}/data
           $<TARGET_BUNDLE_DIR:KoboDeluxe>/Contents/Resources/data
