@@ -65,17 +65,24 @@
         `en.lproj/MainMenu.xib`, `Icon.icns`; copy `KoboDeluxe-0.5.1/data/` →
         `Contents/Resources/data/` (cwd=Resources, so `./data/gfx` + `./data/sfx`
         resolve); CLI: copy `data/` beside binary (old "Copy data resources" behavior)
-- [ ] 1.3 Build both targets; fix whatever runtime niggles appear.
-- [ ] 1.4 Smoke test `.app`: boot → loading screen → title → stage 1 gameplay →
+- [x] 1.3 Build both targets; fix whatever runtime niggles appear.
+      (Niggles found & fixed: unquoted space-in-path in CMake resources list;
+      modern ibtool emits single-file .nib → `copy` not `copy_directory`;
+      player-profile score save — see score-dir fix above.)
+- [x] 1.4 Smoke test `.app`: boot → loading screen → title → stage 1 gameplay →
       audio → Esc×5 quit. Smoke test `kobodl` from terminal (same, cwd = build dir).
+      (Both verified: 51 waveforms load, title reaches, clean quit. Owner played
+      through the .app build.)
 
 ## Phase 2 — App Store (MAS) ready
 
 - [ ] 2.1 Entitlements file: `com.apple.security.app-sandbox` (mandatory for MAS).
       New CMake option `KOBO_MAS` (default OFF) gates:
-      - `KOBO_SCORE_DIR` (kobo.cpp:88): `/Library/Preferences/KoboDeluxe/scores`
-        (sandbox-blocked) → per-user container path. Global shared scoreboard not
-        possible under MAS — document the limitation.
+      - ~~`KOBO_SCORE_DIR`~~ **done in Phase 1:** per-user score dir
+        (`~/Library/Preferences/KoboDeluxe/scores`) registered first and
+        auto-created at startup; sandbox-safe without a flag ($HOME = container
+        under MAS). Global shared scoreboard not possible under MAS — document
+        the limitation.
       - `save_config()` setgid/getgid block (kobo.cpp:1365-1387): skipped under
         sandbox (would fail).
       - `log.txt` / `screen%d.bmp` output: → Application Support / Temp (sealed
