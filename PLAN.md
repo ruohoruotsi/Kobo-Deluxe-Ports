@@ -78,12 +78,15 @@
 
 ## Phase 2 — MAS / 1.0 release (current)
 
-- [ ] 2.1 `KOBO_MAS` CMake option (default OFF) + entitlements file
-      (`com.apple.security.app-sandbox`):
+- [x] 2.1 `KOBO_MAS` CMake option (default OFF) + `KoboDeluxe.entitlements`
+      (`com.apple.security.app-sandbox`), passed to the Xcode project via
+      `XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS` (verified in pbxproj):
       - score dir: **already sandbox-safe without a flag** ($HOME = container)
       - `save_config()` setgid/getgid block (kobo.cpp): skipped under sandbox
-      - `log.txt` / `screen%d.bmp` output: → Application Support / Temp
-        (sealed bundle Resources are read-only)
+      - `log.txt` / `screen%d.bmp` output: → `~/Library/Application Support/
+        KoboDeluxe/` (auto-created; sealed bundle Resources are read-only).
+        Verified: MAS build logs there, non-MAS build keeps legacy cwd
+        behavior (new shared `kobopath.{h,cpp}` module).
       - Joystick: default OFF (sandbox blocks SDL's IOKit-HID joysticks)
 - [ ] 2.2 Archive flow: `cmake -B build-xcode -G Xcode` →
       `xcodebuild -scheme KoboDeluxe -configuration Release archive` →

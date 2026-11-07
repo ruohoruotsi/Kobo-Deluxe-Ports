@@ -28,6 +28,10 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version")
 set(KOBO_BUNDLE_ID "org.kobodluxe.KoboDeluxe" CACHE STRING
     "Bundle identifier for Kobo Deluxe.app")
 
+# Mac App Store build: App Sandbox entitlement + KOBO_MAS code gates
+# (setgid in save_config, log/screenshot paths, joystick default OFF).
+option(KOBO_MAS "Build KoboDeluxe.app for the Mac App Store (App Sandbox)" OFF)
+
 # --------------------------------------------------------------------------
 # Dependencies (Homebrew)
 # --------------------------------------------------------------------------
@@ -56,6 +60,7 @@ set(KOBO_SOURCES
   ${KOBO_SRC_ROOT}/gamectl.cpp
   ${KOBO_SRC_ROOT}/gamestate.cpp
   ${KOBO_SRC_ROOT}/kobo.cpp
+  ${KOBO_SRC_ROOT}/kobopath.cpp
   ${KOBO_SRC_ROOT}/manage.cpp
   ${KOBO_SRC_ROOT}/map.cpp
   ${KOBO_SRC_ROOT}/myship.cpp
@@ -149,7 +154,7 @@ endfunction()
 kobo_add_target(KoboDeluxe)
 target_compile_definitions(KoboDeluxe PRIVATE USE_RESOURCE_WORKING_DIR=1)
 
-set_target_properties(KoboDeluxe PROPERTIES
+set(KOBO_APP_PROPS
   OUTPUT_NAME "Kobo Deluxe"
   MACOSX_BUNDLE TRUE
   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/Info.plist.in"
@@ -160,6 +165,17 @@ set_target_properties(KoboDeluxe PROPERTIES
   MACOSX_BUNDLE_ICON_FILE "Icon.icns"
   MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald, (c) 2013 ruohoruotsi (SDL2 port)"
 )
+
+set_target_properties(KoboDeluxe PROPERTIES ${KOBO_APP_PROPS})
+
+if(KOBO_MAS)
+  target_compile_definitions(KoboDeluxe PRIVATE KOBO_MAS=1)
+  # Entitlements flow into the Xcode project (archive path); the
+  # Makefiles/Ninja generators ignore XCODE_ATTRIBUTE_*.
+  set_target_properties(KoboDeluxe PROPERTIES
+    XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS
+      "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe.entitlements")
+endif()
 
 set(KOBO_APP_RESOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Icon.icns

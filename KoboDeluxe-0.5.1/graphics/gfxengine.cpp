@@ -25,8 +25,10 @@
 
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 #include "gfxengine.h"
+#include "kobopath.h"
 #include "filters.h"
 #include "SDL_image.h"
 #include "SDL.h"
@@ -1133,7 +1135,16 @@ SDL_Surface *gfxengine_t::surface()
 void gfxengine_t::screenshot()
 {
 	char filename[1024];
-	snprintf(filename, sizeof(filename), "screen%d.bmp", screenshot_count++);
+#if defined(KOBO_MAS)
+	/* Bundle Resources are read-only under the sandbox. */
+	char dir[PATH_MAX];
+	kobo_app_support_dir(dir, sizeof(dir));
+	snprintf(filename, sizeof(filename), "%s/screen%d.bmp",
+			dir, screenshot_count++);
+#else
+	snprintf(filename, sizeof(filename), "screen%d.bmp",
+			screenshot_count++);
+#endif
 	SDL_SaveBMP(screen_surface, filename);
 }
 

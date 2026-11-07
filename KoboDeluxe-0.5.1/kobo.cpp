@@ -59,6 +59,7 @@ extern "C" {
 #include "gamectl.h"
 #include "random.h"
 #include "version.h"
+#include "kobopath.h"
 #include "options.h"
 #include "myship.h"
 #include "enemies.h"
@@ -173,37 +174,6 @@ static void main_cleanup()
 /*---------------------------------------------------------*/
 /*---------------------------------------------------------*/
 
-/* Expand a $HOME-relative suffix into buf. */
-static void kobo_home_path(char *buf, size_t len, const char *suffix)
-{
-	const char *home = getenv("HOME");
-	if(home && *home)
-		snprintf(buf, len, "%s%s", home, suffix);
-	else
-		snprintf(buf, len, "%s", suffix);
-}
-
-
-/* Create all missing parent directories of the given absolute path. */
-static void makedirs(const char *path)
-{
-	char buf[PATH_MAX];
-	char *p;
-	size_t len = strlen(path);
-	if(len + 1 > sizeof(buf))
-		return;
-	strcpy(buf, path);
-	for(p = buf + 1; *p; ++p)
-		if(*p == '/')
-		{
-			*p = 0;
-			::mkdir(buf, 0755);
-			*p = '/';
-		}
-	::mkdir(buf, 0755);
-}
-
-
 static void setup_dirs(char *xpath)
 {
 	fmap->exepath(xpath);
@@ -251,7 +221,7 @@ static void setup_dirs(char *xpath)
 		char user_scores[PATH_MAX];
 		kobo_home_path(user_scores, sizeof(user_scores),
 				KOBO_PREF_SUFFIX "/scores");
-		makedirs(user_scores);
+		kobo_makedirs(user_scores);
 		fmap->addpath("SCORES", user_scores, 1);
 	}
 	fmap->addpath("SCORES", KOBO_SCORE_DIR);
@@ -266,7 +236,7 @@ static void setup_dirs(char *xpath)
 	{
 		char config_dir[PATH_MAX];
 		kobo_home_path(config_dir, sizeof(config_dir), KOBO_PREF_SUFFIX);
-		makedirs(config_dir);
+		kobo_makedirs(config_dir);
 		fmap->addpath("CONFIG", config_dir);
 	}
 	/* In current dir (last resort) */
@@ -593,15 +563,19 @@ int KOBO_main::open_logging(prefs_t *p)
 		return -1;
 
 	if(p && p->logfile)
-		switch (p->logformat)
-		{
-		  case 2:
-			logfile = fopen("log.html", "wb");
-			break;
-		  default:
-			logfile = fopen("log.txt", "wb");
-			break;
-		}
+	{
+		const char *name = (p->logformat == 2) ? "log.html" : "log.txt";
+#if defined(KOBO_MAS)
+		/* Bundle Resources are read-only under the sandbox. */
+		char logdir[PATH_MAX];
+		kobo_app_support_dir(logdir, sizeof(logdir));
+		char logpath[PATH_MAX];
+		snprintf(logpath, sizeof(logpath), "%s/%s", logdir, name);
+		logfile = fopen(logpath, "wb");
+#else
+		logfile = fopen(name, "wb");
+#endif
+	}
 
 	if(logfile)
 	{
@@ -1415,7 +1389,8 @@ void KOBO_main::save_config(prefs_t *p)
 	char path[PATH_MAX];
 	FILE *f;
 	kobo_home_path(path, sizeof(path), KOBO_PREF_SUFFIX "/" KOBO_CONFIG_FILE);
-#if defined(HAVE_GETEGID) && defined(HAVE_SETGID)
+/* Changing group credentials is not allowed under the App Sandbox. */
+#if defined(HAVE_GETEGID) && defined(HAVE_SETGID) && !defined(KOBO_MAS)
 	gid_t oldgid = getegid();
 	if(setgid(getgid()) != 0)
 	{
@@ -1430,7 +1405,7 @@ void KOBO_main::save_config(prefs_t *p)
 		p->write(f);
 		fclose(f);
 	}
-#if defined(HAVE_GETEGID) && defined(HAVE_SETGID)
+#if defined(HAVE_GETEGID) && defined(HAVE_SETGID) && !defined(KOBO_MAS)
 	if(setgid(oldgid) != 0)
 	{
 		log_printf(ELOG, "Cannot restore GID! (%s)\n",
