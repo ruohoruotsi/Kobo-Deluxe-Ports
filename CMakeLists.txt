@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 # 1.0.0 is reserved for the MAS release (see PLAN.md, Versioning).
 project(KoboDeluxe
   VERSION 0.5.1
-  DESCRIPTION "Kobo Deluxe - an enhanced SDL port of XKobo (modern macOS port)"
+  DESCRIPTION "KoboDeluxe - an enhanced SDL port of XKobo (modern macOS port)"
   LANGUAGES C CXX
 )
 
@@ -28,7 +28,7 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORC
 
 # No personal info in the bundle identifier (final pick pending owner approval)
 set(KOBO_BUNDLE_ID "org.kobodluxe.KoboDeluxe" CACHE STRING
-    "Bundle identifier for Kobo Deluxe.app")
+    "Bundle identifier for KoboDeluxe.app")
 
 # Mac App Store build: App Sandbox entitlement + KOBO_MAS code gates
 # (setgid in save_config, log/screenshot paths, joystick default OFF).
@@ -152,15 +152,15 @@ function(kobo_add_target name)
   target_compile_definitions(${name} PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 endfunction()
 
-# --- Kobo Deluxe.app -------------------------------------------------------
+# --- KoboDeluxe.app --------------------------------------------------------
 kobo_add_target(KoboDeluxe)
 target_compile_definitions(KoboDeluxe PRIVATE USE_RESOURCE_WORKING_DIR=1)
 
 set(KOBO_APP_PROPS
-  OUTPUT_NAME "Kobo Deluxe"
+  OUTPUT_NAME "KoboDeluxe"
   MACOSX_BUNDLE TRUE
-  MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/Info.plist.in"
-  MACOSX_BUNDLE_BUNDLE_NAME "Kobo Deluxe"
+  MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe/Info.plist.in"
+  MACOSX_BUNDLE_BUNDLE_NAME "KoboDeluxe"
   MACOSX_BUNDLE_GUI_IDENTIFIER "${KOBO_BUNDLE_ID}"
   MACOSX_BUNDLE_BUNDLE_VERSION "0.5.1"
   MACOSX_BUNDLE_SHORT_VERSION_STRING "0.5.1"
@@ -188,8 +188,8 @@ endif()
 
 set(KOBO_APP_RESOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Icon.icns
-  "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/Credits.rtf"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/InfoPlist.strings"
+  "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe/en.lproj/Credits.rtf"
+  "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe/en.lproj/InfoPlist.strings"
 )
 target_sources(KoboDeluxe PRIVATE ${KOBO_APP_RESOURCES})
 set_source_files_properties(${KOBO_APP_RESOURCES}
@@ -199,8 +199,8 @@ set_source_files_properties(${KOBO_APP_RESOURCES}
 set(MAINMENU_NIB ${CMAKE_CURRENT_BINARY_DIR}/MainMenu.nib)
 add_custom_command(OUTPUT ${MAINMENU_NIB}
   COMMAND xcrun ibtool --compile ${MAINMENU_NIB}
-          "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/en.lproj/MainMenu.xib"
-  DEPENDS "Kobo Deluxe/en.lproj/MainMenu.xib"
+          "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe/en.lproj/MainMenu.xib"
+  DEPENDS "KoboDeluxe/en.lproj/MainMenu.xib"
   COMMENT "Compiling MainMenu.xib"
   VERBATIM)
 add_custom_target(MainMenuNib DEPENDS ${MAINMENU_NIB})
@@ -211,7 +211,7 @@ add_custom_command(TARGET KoboDeluxe POST_BUILD
           $<TARGET_BUNDLE_DIR:KoboDeluxe>/Contents/Resources/MainMenu.nib
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${KOBO_SRC_ROOT}/data
           $<TARGET_BUNDLE_DIR:KoboDeluxe>/Contents/Resources/data
-  COMMENT "Copying MainMenu.nib and game data into Kobo Deluxe.app"
+  COMMENT "Copying MainMenu.nib and game data into KoboDeluxe.app"
   VERBATIM)
 
 # --- kobodl (command line tool) --------------------------------------------

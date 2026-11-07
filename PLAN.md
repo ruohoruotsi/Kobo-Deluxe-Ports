@@ -40,7 +40,7 @@
 | Sandbox code changes | Same codebase, gated by `KOBO_MAS` build flag (default OFF). |
 | GLSDL driver | Removed (Phase 3, commit `083f016`). Default driver was already `GFX_DRIVER_SDL2D`; `HAVE_OPENGL` was never defined, so it compiled as no-op dummies. |
 | SDL2 vs SDL3 | Stay on the **SDL2 API** for 1.0/1.1. Improvements use SDL2 renderer/audio features (vsync, HiDPI, scale quality, audio device/rate). Native SDL3 API migration (~6-file surface) only if a specific feature demands it. |
-| Naming | De-space: `Kobo Deluxe` → `KoboDeluxe` for the bundle (`OUTPUT_NAME`), the `Kobo Deluxe/` resource dir, and Info.plist bundle-name strings. CMake target + bundle ID are already `KoboDeluxe`. |
+| Naming | De-spaced: bundle, resource dir, Info.plist all `KoboDeluxe` (done, Phase 2.4). In-game prose keeps the proper noun "Kobo Deluxe". CMake target + bundle ID were already `KoboDeluxe`. |
 | Branch hygiene | macOS/MAS work on this branch. `Kobo Deluxe iOS/` leaves this branch (work continues on `ios-port`). |
 | Per-platform code | Shared game code stays shared; platform quirks behind build flags (`__IPHONEOS__`, `KOBO_MAS`). Bigger platform features go in dedicated per-platform adapter files that plug into existing abstractions — e.g. `ios/iosinput.c` translating gestures into the key/button events `gamectl` already consumes. No `#ifdef` soup in game logic. |
 | Bundle ID | `org.kobodluxe.KoboDeluxe` (no PII). CMake variable `KOBO_BUNDLE_ID`. |
@@ -97,8 +97,9 @@
       Auerswald 2005, port credits; GPL v2 + LGPL notices; public repo = GPL
       source offer). `Kobo Deluxe/en.lproj/Credits.rtf` already exists and is
       bundled — verify/extend content.
-- [ ] 2.4 De-space rename: `OUTPUT_NAME` → `KoboDeluxe`, `Kobo Deluxe/` dir →
-      `KoboDeluxe/`, Info.plist bundle-name strings. (One commit.)
+- [x] 2.4 De-space rename: bundle is now `KoboDeluxe.app` (`OUTPUT_NAME`,
+      `CFBundleName`), resource dir `Kobo Deluxe/` → `KoboDeluxe/`. In-game
+      display strings keep the proper noun "Kobo Deluxe". (One commit.)
 - [ ] 2.5 Version: bump `aconfig.h` `VERSION` → `"1.0"`; add the 2026
       credit line in `version.h`; tag `v1.0`.
 - [x] 2.6 Branch hygiene: `ios-port` branch created from this HEAD;
