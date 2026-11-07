@@ -1,7 +1,7 @@
 # PLAN.md — Kobo Deluxe: Modern Port (macOS / iPadOS)
 
 **Branch:** `feature/repo_cleanup_mas` (macOS/MAS work; small reviewable commits via PR)
-**Future branch:** `ios-port` (iPadOS work, forked from the macOS line)
+**Branch `ios-port`:** created (iPadOS work, forked from the macOS line)
 **Target:** macOS 26 / Xcode 26 / Apple Silicon (arm64), App Store distribution
 **Last updated:** 2026-11-06
 
@@ -88,11 +88,11 @@
         Verified: MAS build logs there, non-MAS build keeps legacy cwd
         behavior (new shared `kobopath.{h,cpp}` module).
       - Joystick: default OFF (sandbox blocks SDL's IOKit-HID joysticks)
-- [ ] 2.2 Archive flow: `cmake -B build-xcode -G Xcode` →
-      `xcodebuild -scheme KoboDeluxe -configuration Release archive` →
-      `-exportArchive` with MAS provisioning profile (needs owner's developer
-      provisioning profile). Verify archived+sandboxed build launches/plays.
-      (Completes Phase 3.3.)
+- [ ] 2.2 Archive flow: `archive-mas.sh <TEAM_ID>` (generated:
+      `cmake -G Xcode -DKOBO_MAS=ON` → `xcodebuild archive` →
+      `-exportArchive`, method `app-store`). Needs owner's Apple Team ID /
+      signed-in developer account. Verify archived+sandboxed build
+      launches/plays. (Completes Phase 3.3.)
 - [ ] 2.3 Credits/license screen (Higuchi 1995-96, Olofson 2001-07,
       Auerswald 2005, port credits; GPL v2 + LGPL notices; public repo = GPL
       source offer). `Kobo Deluxe/en.lproj/Credits.rtf` already exists and is
@@ -101,7 +101,8 @@
       `KoboDeluxe/`, Info.plist bundle-name strings. (One commit.)
 - [ ] 2.5 Version: bump `aconfig.h` `VERSION` → `"1.0"`; add the 2026
       credit line in `version.h`; tag `v1.0`.
-- [ ] 2.6 Branch hygiene: `git rm -r "Kobo Deluxe iOS/"` (moves to `ios-port`).
+- [x] 2.6 Branch hygiene: `ios-port` branch created from this HEAD;
+      `Kobo Deluxe iOS/` removed from the macOS branch (commit `ad06bd1`).
 
 ## Phase 3 — Cleanup (done)
 
