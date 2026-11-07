@@ -84,10 +84,12 @@ extern "C" {
 
 
 /* IOHAVOC: PATHS */
-#define KOBO_DATA_DIR "$HOME/Library/Preferences"
 #define KOBO_SCORE_DIR "/Library/Preferences/KoboDeluxe/scores"
-#define KOBO_CONFIG_DIR "$HOME/Library/Preferences"
-#define SYSCONF_DIR "$HOME/Library/Preferences"
+/* Suffixes appended to $HOME at runtime (kobo_home_path()); the old
+ * literal "$HOME/..." macros were never expanded, so nothing ever
+ * persisted. Under the App Sandbox $HOME is the app container. */
+#define KOBO_DATA_SUFFIX "/Library/Preferences"
+#define KOBO_PREF_SUFFIX "/Library/Preferences/KoboDeluxe"
 #define KOBO_CONFIG_FILE "KoboDeluxe Preferences"
 
 /*----------------------------------------------------------
@@ -171,6 +173,17 @@ static void main_cleanup()
 /*---------------------------------------------------------*/
 /*---------------------------------------------------------*/
 
+/* Expand a $HOME-relative suffix into buf. */
+static void kobo_home_path(char *buf, size_t len, const char *suffix)
+{
+	const char *home = getenv("HOME");
+	if(home && *home)
+		snprintf(buf, len, "%s%s", home, suffix);
+	else
+		snprintf(buf, len, "%s", suffix);
+}
+
+
 /* Create all missing parent directories of the given absolute path. */
 static void makedirs(const char *path)
 {
@@ -195,7 +208,11 @@ static void setup_dirs(char *xpath)
 {
 	fmap->exepath(xpath);
 
-	fmap->addpath("DATA", KOBO_DATA_DIR);
+	{
+		char data_dir[PATH_MAX];
+		kobo_home_path(data_dir, sizeof(data_dir), KOBO_DATA_SUFFIX);
+		fmap->addpath("DATA", data_dir);
+	}
 
 	/*
 	 * Graphics data
@@ -232,14 +249,10 @@ static void setup_dirs(char *xpath)
 	 */
 	{
 		char user_scores[PATH_MAX];
-		const char *home = getenv("HOME");
-		if(home)
-		{
-			snprintf(user_scores, sizeof(user_scores),
-					"%s/Library/Preferences/KoboDeluxe/scores", home);
-			makedirs(user_scores);
-			fmap->addpath("SCORES", user_scores, 1);
-		}
+		kobo_home_path(user_scores, sizeof(user_scores),
+				KOBO_PREF_SUFFIX "/scores");
+		makedirs(user_scores);
+		fmap->addpath("SCORES", user_scores, 1);
 	}
 	fmap->addpath("SCORES", KOBO_SCORE_DIR);
 	/* 'scores' in current dir (For importing scores, perhaps...) */
@@ -250,9 +263,12 @@ static void setup_dirs(char *xpath)
 	/*
 	 * Configuration files
 	 */
-	fmap->addpath("CONFIG", KOBO_CONFIG_DIR);
-	/* System local */
-	fmap->addpath("CONFIG", SYSCONF_DIR);
+	{
+		char config_dir[PATH_MAX];
+		kobo_home_path(config_dir, sizeof(config_dir), KOBO_PREF_SUFFIX);
+		makedirs(config_dir);
+		fmap->addpath("CONFIG", config_dir);
+	}
 	/* In current dir (last resort) */
 	fmap->addpath("CONFIG", "./");
 }
@@ -1383,7 +1399,9 @@ void KOBO_main::close_js()
 
 void KOBO_main::load_config(prefs_t *p)
 {
-	FILE *f = fmap->fopen(KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE, "r");
+	char path[PATH_MAX];
+	kobo_home_path(path, sizeof(path), KOBO_PREF_SUFFIX "/" KOBO_CONFIG_FILE);
+	FILE *f = fmap->fopen(path, "r");
 	if(f)
 	{
 		p->read(f);
@@ -1394,7 +1412,9 @@ void KOBO_main::load_config(prefs_t *p)
 
 void KOBO_main::save_config(prefs_t *p)
 {
+	char path[PATH_MAX];
 	FILE *f;
+	kobo_home_path(path, sizeof(path), KOBO_PREF_SUFFIX "/" KOBO_CONFIG_FILE);
 #if defined(HAVE_GETEGID) && defined(HAVE_SETGID)
 	gid_t oldgid = getegid();
 	if(setgid(getgid()) != 0)
@@ -1404,7 +1424,7 @@ void KOBO_main::save_config(prefs_t *p)
 		return;
 	}
 #endif
-	f = fmap->fopen(KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE, "w");
+	f = fmap->fopen(path, "w");
 	if(f)
 	{
 		p->write(f);
