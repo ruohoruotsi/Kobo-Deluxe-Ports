@@ -2,7 +2,7 @@
 
 **Branch:** `macos-port-SDL2` (all work lands here, small reviewable commits)
 **Target:** macOS 26 / Xcode 26 / Apple Silicon (arm64), App Store distribution
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-06
 
 ## Context
 
@@ -98,14 +98,25 @@
 
 ## Phase 3 — Cleanup + modernization
 
-- [ ] 3.1 Deletion commit: `SDL2-2.0.1/`, `SDL2_image-2.0.0/` (~100 MB; webp.framework
+- [x] 3.1 Deletion commit: `SDL2-2.0.1/`, `SDL2_image-2.0.0/` (~85 MB; webp.framework
       is x86_64-only, can never link on arm64) + `kobo.xcodeproj/` (references deleted
       trees; `cmake -G Xcode` takes over its role). `Kobo Deluxe iOS/` stays untouched.
-- [ ] 3.2 Remove GLSDL driver: `graphics/glSDL.c`, `glSDL.h`, `GFX_DRIVER_GLSDL`
+      (Commit `f7f4462`.)
+- [x] 3.2 Remove GLSDL driver: `graphics/glSDL.c`, `glSDL.h`, `GFX_DRIVER_GLSDL`
       branches in `gfxengine.cpp`, clamp bug at `prefs.cpp:178`
-      (`if(videodriver != GFX_DRIVER_SDL2D) videodriver = GFX_DRIVER_GLSDL;`).
-      Drops deprecated OpenGL/GLU frameworks + ~2k lines. Re-run Phase 1 smoke test.
+      (`if(videodriver != GFX_DRIVER_SDL2D) videodriver = GFX_DRIVER_GLSDL;` →
+      forces `GFX_DRIVER_SDL2D`). `HAVE_OPENGL` was never defined in this build, so
+      glSDL compiled as no-op dummies; no OpenGL/GLU frameworks were linked.
+      14 headers/sources that included `glSDL.h` now include `SDL.h` directly.
+      (Commit `083f016`.) Re-run Phase 1 smoke test.
 - [ ] 3.3 Re-verify full build + App Store archive after deletions.
+      (Fresh `cmake -B && cmake --build` from clean tree: 0 errors, `kobodl
+      -showcfg` OK. Archive step pending Phase 2 provisioning.)
+- [x] 1.5 (added) Config persistence: the `"$HOME/..."` path macros in `kobo.cpp`
+      were never expanded, so options were silently written to a literal `$HOME`
+      dir in cwd. Now `kobo_home_path()` expands `$HOME` at runtime; config lives at
+      `~/Library/Preferences/KoboDeluxe/KoboDeluxe Preferences` (auto-created),
+      same base dir as the score dir — sandbox-safe. (Commit `de9e2d0`.)
 
 ## Deferred / optional (not scheduled)
 
