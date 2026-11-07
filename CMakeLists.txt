@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
+# 1.0.0 is reserved for the MAS release (see PLAN.md, Versioning).
 project(KoboDeluxe
-  VERSION 1.0.0
+  VERSION 0.5.1
   DESCRIPTION "Kobo Deluxe - an enhanced SDL port of XKobo (modern macOS port)"
   LANGUAGES C CXX
 )
@@ -154,10 +155,10 @@ set_target_properties(KoboDeluxe PROPERTIES
   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/Info.plist.in"
   MACOSX_BUNDLE_BUNDLE_NAME "Kobo Deluxe"
   MACOSX_BUNDLE_GUI_IDENTIFIER "${KOBO_BUNDLE_ID}"
-  MACOSX_BUNDLE_BUNDLE_VERSION "1.0"
-  MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0"
+  MACOSX_BUNDLE_BUNDLE_VERSION "0.5.1"
+  MACOSX_BUNDLE_SHORT_VERSION_STRING "0.5.1"
   MACOSX_BUNDLE_ICON_FILE "Icon.icns"
-  MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald"
+  MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald, (c) 2013 ruohoruotsi (SDL2 port)"
 )
 
 set(KOBO_APP_RESOURCES

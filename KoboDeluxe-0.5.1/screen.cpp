@@ -180,18 +180,19 @@ void _screen::title(int t, float fade, int mode)
 			PIXEL2CS(123) + (int)(PIXEL2CS(160) * mf * mf),
 			B_LOGODELUXE, 0);
 
-	// Version
+	// Version + port credits
 	if(fade > 0.9)
 	{
 		wmain->font(B_NORMAL_FONT);
 		wmain->center(132, KOBO_VERSION);
+		wmain->center(140, KOBO_VERSION_CREDIT);
 	}
 
 	// Cheat mode warning
 	if((prefs->cmd_cheat || prefs->cmd_pushmove) && (t % 1000 < 500))
 	{
 		wmain->font(B_MEDIUM_FONT);
-		wmain->center(145, "CHEAT MODE");
+		wmain->center(155, "CHEAT MODE");
 	}
     
 #if 0 // IOHAVOC  -- CLEANUP, we don't need this kind of clutter. Finish this already!

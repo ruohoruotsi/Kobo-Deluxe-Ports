@@ -2355,7 +2355,7 @@ void kobo_gfxengine_t::post_render()
 
 static void put_usage()
 {
-	printf("\nKobo Deluxe %s\n", KOBO_VERSION);
+	printf("\nKobo Deluxe %s\n%s\n", KOBO_VERSION, KOBO_VERSION_CREDIT);
 	printf("Usage: kobodl [<options>]\n");
 	printf("Recognized options:\n");
 	int s = -1;
