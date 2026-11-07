@@ -24,7 +24,7 @@
 #ifndef _KOBO_MANAGE_H_
 #define _KOBO_MANAGE_H_
 
-#include "glSDL.h"
+#include "SDL.h"
 #include "score.h"
 
 class _manage

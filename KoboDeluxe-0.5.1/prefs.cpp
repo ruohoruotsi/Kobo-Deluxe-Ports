@@ -174,7 +174,8 @@ void prefs_t::postload()
 		scrollradar = 2;
 	}
 
-	// Some unimplemented enums were removed in 0.4.1
+	// Some unimplemented enums were removed in 0.4.1; the glSDL
+	// (OpenGL) driver was removed entirely in the macOS port.
 	if(videodriver != GFX_DRIVER_SDL2D)
-		videodriver = GFX_DRIVER_GLSDL;
+		videodriver = GFX_DRIVER_SDL2D;
 }

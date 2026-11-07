@@ -74,7 +74,6 @@ set(KOBO_SOURCES
   ${KOBO_SRC_ROOT}/graphics/display.cpp
   ${KOBO_SRC_ROOT}/graphics/filters.c
   ${KOBO_SRC_ROOT}/graphics/gfxengine.cpp
-  ${KOBO_SRC_ROOT}/graphics/glSDL.c
   ${KOBO_SRC_ROOT}/graphics/region.c
   ${KOBO_SRC_ROOT}/graphics/sofont.cpp
   ${KOBO_SRC_ROOT}/graphics/sprite.c

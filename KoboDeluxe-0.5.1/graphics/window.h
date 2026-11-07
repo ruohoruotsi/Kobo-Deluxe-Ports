@@ -213,7 +213,7 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
-#include "glSDL.h"
+#include "SDL.h"
 
 class gfxengine_t;
 

@@ -22,7 +22,7 @@
 #ifndef	KOBO_REGION_H
 #define	KOBO_REGION_H
 
-#include "glSDL.h"
+#include "SDL.h"
 
 #ifdef __cplusplus
 extern "C" {

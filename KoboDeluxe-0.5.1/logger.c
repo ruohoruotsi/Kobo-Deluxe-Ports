@@ -25,7 +25,7 @@
 
 #include "config.h"
 #include "logger.h"
-#include "glSDL.h"
+#include "SDL.h"
 
 #define	LOG_BUFFER	1024
 

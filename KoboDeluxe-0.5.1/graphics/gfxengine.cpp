@@ -29,7 +29,7 @@
 #include "gfxengine.h"
 #include "filters.h"
 #include "SDL_image.h"
-#include "glSDL.h"
+#include "SDL.h"
 #include "sofont.h"
 #include "window.h"
 
@@ -423,23 +423,10 @@ void gfxengine_t::dither(int type, int _broken_rgba8)
 
 	if(_dither)
 	{
-		if(_driver == GFX_DRIVER_GLSDL)
-		{
-			//Klugde for glSDL, which doesn't give us a faked
-			//screen surface - while we're interested only in
-			//the *texture* depth; not the display depth!
-			df->args.r = df->args.g = df->args.b = 0;
-			//Another kludge, because some cards support RGB8
-			//(24 bit) textures, but not RGBA8 (32 bit).
-			df->args.x = broken_rgba8;
-		}
-		else
-		{
-			df->args.x = 0;
-			df->args.r = 1<<(screen_surface->format->Rloss-1);
-			df->args.g = 1<<(screen_surface->format->Gloss-1);
-			df->args.b = 1<<(screen_surface->format->Bloss-1);
-		}
+		df->args.x = 0;
+		df->args.r = 1<<(screen_surface->format->Rloss-1);
+		df->args.g = 1<<(screen_surface->format->Gloss-1);
+		df->args.b = 1<<(screen_surface->format->Bloss-1);
 	}
 	else
 		df->args.x = df->args.r = df->args.g = df->args.b = 0;
@@ -772,28 +759,9 @@ int gfxengine_t::show()
 			return -2;
 		}
 
-	switch(_driver)
-	{
-	  case GFX_DRIVER_SDL2D:
-		break;
-	  case GFX_DRIVER_GLSDL:
-		break;
-	}
-
-	switch(_driver)
-	{
-	  case GFX_DRIVER_SDL2D:
-		/* Nothing extra */
-		break;
-	  case GFX_DRIVER_GLSDL:
-	  	flags |= SDL_GLSDL;
-		break;
-	}
-
 	if(_fullscreen)
 		flags |= SDL_WINDOW_FULLSCREEN; // SDL_FULLSCREEN; // IOHAVOC
 
-	glSDL_VSync(_vsync);
 	flags |= xflags;
 
     //////////////////////////////////////////////////////////////////////////////////

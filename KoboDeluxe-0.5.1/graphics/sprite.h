@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "glSDL.h"
+#include "SDL.h"
 
 typedef enum
 {

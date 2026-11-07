@@ -34,7 +34,7 @@
 		* Cursor tests first check if '|' is present.
 		* Shadowed variables fixed.
 		* Garbage data in spacing table fixed. (Thanks to
-		  Andreas Spångberg for discovering this one!)
+		  Andreas Spï¿½ngberg for discovering this one!)
 		* Added ExtraSpace(). (Scaling support hack...)
 		* Disabled colorkeying. (Ruins some RGBA fonts!)
 */
@@ -42,7 +42,7 @@
 #ifndef __SOFONT_H
 #define __SOFONT_H
 
-#include "glSDL.h"
+#include "SDL.h"
 
 class SoFont
 {

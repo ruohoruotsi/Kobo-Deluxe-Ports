@@ -188,12 +188,10 @@ void window_t::invalidate(SDL_Rect *r)
 			rr.w = phys_rect.w;
 			rr.h = phys_rect.h;
 			phys_refresh(&rr);
-			glSDL_Invalidate(surface, &rr);
 		}
 		else
 		{
 			phys_refresh(r);
-			glSDL_Invalidate(surface, r);
 		}
 		return;
 	}
