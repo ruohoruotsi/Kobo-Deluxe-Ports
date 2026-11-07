@@ -29,14 +29,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "glSDL.h"
+#include "SDL.h"
 #include "sprite.h"
 #include "cs.h"
 
 enum gfx_drivers_t
 {
-	GFX_DRIVER_SDL2D =	0,
-	GFX_DRIVER_GLSDL =	1
+	GFX_DRIVER_SDL2D =	0
 };
 
 enum gfx_scalemodes_t

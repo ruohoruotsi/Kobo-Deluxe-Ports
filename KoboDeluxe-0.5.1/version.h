@@ -24,6 +24,8 @@
 #define _KOBO_VERSION_H_
 
 #define KOBO_VERSION	VERSION
+/* Port credit lines, one per era (title screen, CLI banner). */
+#define KOBO_VERSION_CREDIT	"2013 ruohoruotsi (SDL2 port)"
 #define KOBO_DATE	"<unknown>"
 
 #endif

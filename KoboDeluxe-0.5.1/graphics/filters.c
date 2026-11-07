@@ -22,7 +22,7 @@
 #include <string.h>
 #include <math.h>
 #include "logger.h"
-#include "glSDL.h"
+#include "SDL.h"
 #include "SDL_image.h"
 #include "sprite.h"
 #include "filters.h"

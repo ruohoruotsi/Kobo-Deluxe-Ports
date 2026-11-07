@@ -1,121 +1,173 @@
-# PLAN.md — Kobo Deluxe: Modern macOS Port
+# PLAN.md — Kobo Deluxe: Modern Port (macOS / iPadOS)
 
-**Branch:** `macos-port-SDL2` (all work lands here, small reviewable commits)
+**Branch:** `feature/repo_cleanup_mas` (macOS/MAS work; small reviewable commits via PR)
+**Branch `ios-port`:** created (iPadOS work, forked from the macOS line)
 **Target:** macOS 26 / Xcode 26 / Apple Silicon (arm64), App Store distribution
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-06
 
-## Context
+## Objectives
 
-- Kobo Deluxe 0.5.1 (2003, David Olofson / Akira Higuchi) + the 2013 SDL2 macOS
-  port. Game code was already ported to SDL2 APIs in 2013.
-- Old build (Xcode project compiling vendored SDL2 2.0.1 + SDL2_image 2.0.0 from
-  source, prebuilt x86_64 webp.framework) is unbuildable on arm64 + Xcode 26.
-- Verified: all 69 game source files compile 0-error against Homebrew SDL2 2.32.10
-  + macOS 26.2 SDK, except the two Phase 0 fixes below.
-- Upstream web port (CatBroDev, PR #5 + `codex/browser-restoration` branch)
-  independently proved the code runs as-is on modern toolchains.
+1. **MAS-ready SDL2 build** — cleaned-up, sandboxed, App Store distributable.
+   Version **1.0**.
+2. **Improved audio & graphics** — within the SDL2 API first (Homebrew `sdl2`
+   is sdl2-compat: SDL3 runs underneath already). Version **1.1**.
+3. **iPadOS port** — multi-touch gesture input mapped into the existing game
+   input layer. Version **2.0**, developed on `ios-port`.
+
+## Versioning
+
+- `0.5.1` = David Olofson's last upstream release. Internal `VERSION`
+  (`aconfig.h`) stays `0.5.1` **until the 1.0/MAS release**.
+- **1.0 starts with MAS** — the number is not used before the sandboxed
+  App Store build actually works. Then:
+  - **1.0** = MAS-ready, SDL2, CMake, no gameplay changes.
+  - **1.1** = audio/graphics improvements.
+  - **2.0** = iPadOS release.
+- Title screen + CLI banner show the version plus port-credit lines
+  (`KOBO_VERSION_CREDIT` in `version.h`), one line per port era:
+  - `2013 ruohoruotsi (SDL2 port)` — in since the credit commit.
+  - `2026 ...` line — added with the 1.0 release (MAS work).
+- At 1.0: bump `aconfig.h` `VERSION` → `"1.0"` (matches CMake project +
+  bundle version, already `1.0.0`/`1.0`).
 
 ## Decisions (agreed)
 
 | Question | Decision |
 |---|---|
-| Build system | CMake = single source of truth. Native builds for dev/CLI; `cmake -G Xcode` + `xcodebuild archive` for App Store. Old `kobo.xcodeproj` deleted in Phase 3. |
+| Build system | CMake = single source of truth. Native builds for dev/CLI; `cmake -G Xcode` + `xcodebuild archive` for App Store. Old `kobo.xcodeproj` deleted (Phase 3). |
 | Scope | Both `KoboDeluxe.app` and `kobodl` CLI target. |
-| Vendored SDL2 2.0.1 / SDL2_image 2.0.0 | Delete from repo (Phase 3). |
+| Vendored SDL2 2.0.1 / SDL2_image 2.0.0 | Deleted (Phase 3, commit `f7f4462`). |
 | Sandbox code changes | Same codebase, gated by `KOBO_MAS` build flag (default OFF). |
-| GLSDL driver | Remove in Phase 3 (default driver is already GFX_DRIVER_SDL2D). |
-| SDL2 vs SDL3 | Stay on SDL2 API. Homebrew `sdl2` = sdl2-compat (SDL3 under the hood). Native SDL3 port = deferred optional. |
-| Branch hygiene | Work directly on `macos-port-SDL2`. |
-| Bundle ID | `org.kobodluxe.KoboDeluxe` (no PII; neutral `org` prefix, echoes the game's `kobodl` binary name). CMake variable `KOBO_BUNDLE_ID`. |
+| GLSDL driver | Removed (Phase 3, commit `083f016`). Default driver was already `GFX_DRIVER_SDL2D`; `HAVE_OPENGL` was never defined, so it compiled as no-op dummies. |
+| SDL2 vs SDL3 | Stay on the **SDL2 API** for 1.0/1.1. Improvements use SDL2 renderer/audio features (vsync, HiDPI, scale quality, audio device/rate). Native SDL3 API migration (~6-file surface) only if a specific feature demands it. |
+| Naming | De-space: `Kobo Deluxe` → `KoboDeluxe` for the bundle (`OUTPUT_NAME`), the `Kobo Deluxe/` resource dir, and Info.plist bundle-name strings. CMake target + bundle ID are already `KoboDeluxe`. |
+| Branch hygiene | macOS/MAS work on this branch. `Kobo Deluxe iOS/` leaves this branch (work continues on `ios-port`). |
+| Per-platform code | Shared game code stays shared; platform quirks behind build flags (`__IPHONEOS__`, `KOBO_MAS`). Bigger platform features go in dedicated per-platform adapter files that plug into existing abstractions — e.g. `ios/iosinput.c` translating gestures into the key/button events `gamectl` already consumes. No `#ifdef` soup in game logic. |
+| Bundle ID | `org.kobodluxe.KoboDeluxe` (no PII). CMake variable `KOBO_BUNDLE_ID`. |
 
-## Phase 0 — Modern-toolchain fixes
+## Phase 0 — Modern-toolchain fixes (done)
 
-- [ ] 0.1 **Owner action:** approve + merge PR #5 (CatBroDev), then `git pull`.
-      Six audio tables in `KoboDeluxe-0.5.1/sound/a_struct.h` (lines 34-39) get
-      `extern`. Required: Xcode 26 clang defaults to `-fno-common`, so the
-      duplicates with definitions in `a_struct.c:31-36` fail at link time.
-- [ ] 0.2 `KoboDeluxe-0.5.1/graphics/window.cpp:406`: `char *tok` → `const char *tok`
-      (strchr returns `const char*` in C++; the only compile error in the tree).
-- [ ] 0.3 Verify: full-tree `clang -fsyntax-only` sweep = 0 errors (baseline already
-      established per-file; repeat post-fix as a scriptable check).
+- [x] 0.1 PR #5 (CatBroDev) merged: `extern` on six audio tables in
+      `sound/a_struct.h` (Xcode 26 clang `-fno-common`).
+- [x] 0.2 `graphics/window.cpp:406`: `char *tok` → `const char *tok`.
+- [x] 0.3 Full-tree `clang -fsyntax-only` sweep = 0 errors.
 
-## Phase 1 — CMake build, running locally
+## Phase 1 — CMake build, running locally (done)
 
-- [x] 1.1 `brew install sdl2_image` (2.8.12; pulls libpng/libtiff/webp/etc. `sdl2`
-      now 2.32.74 via sdl2-compat, plus `sdl3` 3.4.20.)
-- [x] 1.2 Write root `CMakeLists.txt` (macOS-only on this branch; clean structure a
-      future `web-port` branch can borrow):
-      - Targets: `KoboDeluxe` (MACOSX_BUNDLE) + `kobodl` (CLI tool)
-      - Sources (69): top-level `cfgform cfgparse dashboard enemies enemy filemap form
-        game gamectl gamestate kobo manage map myship options pfile prefs radar random
-        scenes score screen sound states` (.cpp) + `logger.c`; `graphics/{cs.c,
-        display.cpp, filters.c, gfxengine.cpp, glSDL.c, region.c, sofont.cpp, sprite.c,
-        toolkit.cpp, vidmodes.c, window.cpp}`; `eel/{e_builtin e_getargs e_lexer e_path
-        e_register e_script e_symtab e_util eel}.c`; `sound/{a_agw a_bus a_channel
-        a_commands a_control a_delay a_events a_filters a_globals a_limiter a_midi
-        a_midicon a_midifile a_midisock a_patch a_pitch a_plugin a_sequencer a_struct
-        a_voice a_wave a_wca audio audiodev sfifo}.c`
-      - Includes: `KoboDeluxe-0.5.1`, `.../graphics`, `.../sound`, `.../eel`,
-        `.../data/sfx`; define `USE_RESOURCE_WORKING_DIR=1` (app) / `0` (CLI)
-      - Link: Homebrew SDL2 + SDL2_image (pkg-config, `/opt/homebrew` prefix + rpath);
-        frameworks CoreFoundation, Accelerate, Cocoa
-      - Standards: C `gnu11`, C++ `gnu++14`
-      - App bundle: Info.plist (from `Kobo Deluxe/Kobo Deluxe-Info.plist`;
-        `LSMinimumSystemVersion` 13.0, add `NSHighResolutionCapable`),
-        `en.lproj/MainMenu.xib`, `Icon.icns`; copy `KoboDeluxe-0.5.1/data/` →
-        `Contents/Resources/data/` (cwd=Resources, so `./data/gfx` + `./data/sfx`
-        resolve); CLI: copy `data/` beside binary (old "Copy data resources" behavior)
-- [x] 1.3 Build both targets; fix whatever runtime niggles appear.
-      (Niggles found & fixed: unquoted space-in-path in CMake resources list;
-      modern ibtool emits single-file .nib → `copy` not `copy_directory`;
-      player-profile score save — see score-dir fix above.)
-- [x] 1.4 Smoke test `.app`: boot → loading screen → title → stage 1 gameplay →
-      audio → Esc×5 quit. Smoke test `kobodl` from terminal (same, cwd = build dir).
-      (Both verified: 51 waveforms load, title reaches, clean quit. Owner played
-      through the .app build.)
+- [x] 1.1 `brew install sdl2_image` (2.8.12; `sdl2` 2.32.x via sdl2-compat).
+- [x] 1.2 Root `CMakeLists.txt`: targets `KoboDeluxe` (MACOSX_BUNDLE) +
+      `kobodl` (CLI); 69 sources → 68 after glSDL removal; Homebrew SDL2 +
+      SDL2_image via pkg-config; CoreFoundation/Accelerate/Cocoa frameworks;
+      C `gnu11`, C++ `gnu++14`; bundle Info.plist from
+      `Kobo Deluxe/Info.plist.in` (`LSMinimumSystemVersion` 13.0);
+      `MainMenu.xib` → `.nib` via ibtool; `data/` copied into bundle
+      (app) / beside binary (CLI); `DEBUG=1` via `$<$<CONFIG:Debug>>`
+      generator expression (works for Makefiles *and* Xcode generator).
+- [x] 1.3 Build both targets; runtime fixes: CMake space-in-path quoting;
+      modern ibtool single-file .nib (`copy` not `copy_directory`); per-user
+      score dir `~/Library/Preferences/KoboDeluxe/scores` (auto-created,
+      sandbox-safe; legacy global `/Library/...` kept as read fallback).
+- [x] 1.4 Smoke tests: `.app` and `kobodl` boot → title → stage 1 → audio →
+      clean quit. Owner played through the `.app` build.
+- [x] 1.5 Config persistence: the legacy `"$HOME/..."` path macros in
+      `kobo.cpp` were never expanded, so options were silently written to a
+      literal `$HOME` dir in cwd. Now `kobo_home_path()` expands `$HOME` at
+      runtime; config at `~/Library/Preferences/KoboDeluxe/KoboDeluxe
+      Preferences` (auto-created, same base dir as scores, sandbox-safe).
+      (Commit `de9e2d0`.)
 
-## Phase 2 — App Store (MAS) ready
+## Phase 2 — MAS / 1.0 release (current)
 
-- [ ] 2.1 Entitlements file: `com.apple.security.app-sandbox` (mandatory for MAS).
-      New CMake option `KOBO_MAS` (default OFF) gates:
-      - ~~`KOBO_SCORE_DIR`~~ **done in Phase 1:** per-user score dir
-        (`~/Library/Preferences/KoboDeluxe/scores`) registered first and
-        auto-created at startup; sandbox-safe without a flag ($HOME = container
-        under MAS). Global shared scoreboard not possible under MAS — document
-        the limitation.
-      - `save_config()` setgid/getgid block (kobo.cpp:1365-1387): skipped under
-        sandbox (would fail).
-      - `log.txt` / `screen%d.bmp` output: → Application Support / Temp (sealed
-        bundle Resources are read-only).
-      - Joystick: default OFF (sandbox blocks SDL's IOKit-HID joysticks;
-        keyboard/mouse unaffected).
-- [ ] 2.2 Archive flow: `cmake -B build-xcode -G Xcode` →
-      `xcodebuild -scheme KoboDeluxe -configuration Release archive` →
-      `-exportArchive` with MAS provisioning profile. Verify archived+sandboxed build.
-- [ ] 2.3 Credits/license screen (Higuchi 1995-96, Olofson 2001-07, Auerswald 2005,
-      port credits; GPL v2 + LGPL notices; public repo = GPL source offer).
-      Version bump 0.5.1 → 1.0. Confirm final bundle ID (from shortlist above).
+- [x] 2.1 `KOBO_MAS` CMake option (default OFF) + `KoboDeluxe.entitlements`
+      (`com.apple.security.app-sandbox`), passed to the Xcode project via
+      `XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS` (verified in pbxproj):
+      - score dir: **already sandbox-safe without a flag** ($HOME = container)
+      - `save_config()` setgid/getgid block (kobo.cpp): skipped under sandbox
+      - `log.txt` / `screen%d.bmp` output: → `~/Library/Application Support/
+        KoboDeluxe/` (auto-created; sealed bundle Resources are read-only).
+        Verified: MAS build logs there, non-MAS build keeps legacy cwd
+        behavior (new shared `kobopath.{h,cpp}` module).
+      - Joystick: default OFF (sandbox blocks SDL's IOKit-HID joysticks)
+- [ ] 2.2 Archive flow: `archive-mas.sh <TEAM_ID>` (generated:
+      `cmake -G Xcode -DKOBO_MAS=ON` → `xcodebuild archive` →
+      `-exportArchive`, method `app-store`). Needs owner's Apple Team ID /
+      signed-in developer account. Verify archived+sandboxed build
+      launches/plays. (Completes Phase 3.3.)
+- [ ] 2.3 Credits/license screen (Higuchi 1995-96, Olofson 2001-07,
+      Auerswald 2005, port credits; GPL v2 + LGPL notices; public repo = GPL
+      source offer). `Kobo Deluxe/en.lproj/Credits.rtf` already exists and is
+      bundled — verify/extend content.
+- [ ] 2.4 De-space rename: `OUTPUT_NAME` → `KoboDeluxe`, `Kobo Deluxe/` dir →
+      `KoboDeluxe/`, Info.plist bundle-name strings. (One commit.)
+- [ ] 2.5 Version: bump `aconfig.h` `VERSION` → `"1.0"`; add the 2026
+      credit line in `version.h`; tag `v1.0`.
+- [x] 2.6 Branch hygiene: `ios-port` branch created from this HEAD;
+      `Kobo Deluxe iOS/` removed from the macOS branch (commit `ad06bd1`).
 
-## Phase 3 — Cleanup + modernization
+## Phase 3 — Cleanup (done)
 
-- [ ] 3.1 Deletion commit: `SDL2-2.0.1/`, `SDL2_image-2.0.0/` (~100 MB; webp.framework
-      is x86_64-only, can never link on arm64) + `kobo.xcodeproj/` (references deleted
-      trees; `cmake -G Xcode` takes over its role). `Kobo Deluxe iOS/` stays untouched.
-- [ ] 3.2 Remove GLSDL driver: `graphics/glSDL.c`, `glSDL.h`, `GFX_DRIVER_GLSDL`
-      branches in `gfxengine.cpp`, clamp bug at `prefs.cpp:178`
-      (`if(videodriver != GFX_DRIVER_SDL2D) videodriver = GFX_DRIVER_GLSDL;`).
-      Drops deprecated OpenGL/GLU frameworks + ~2k lines. Re-run Phase 1 smoke test.
+- [x] 3.1 Delete `SDL2-2.0.1/`, `SDL2_image-2.0.0/`, `kobo.xcodeproj/`
+      (~85 MB). (Commit `f7f4462`.)
+- [x] 3.2 Remove glSDL driver (~2.3k lines): `glSDL.c/h` deleted,
+      `GFX_DRIVER_GLSDL` branches removed, `prefs.cpp` clamp now forces
+      `GFX_DRIVER_SDL2D`, 14 files include `SDL.h` directly.
+      (Commit `083f016`.)
 - [ ] 3.3 Re-verify full build + App Store archive after deletions.
+      (Fresh `cmake -B && cmake --build` from clean tree: 0 errors,
+      `kobodl -showcfg` OK. Archive step = Phase 2.2.)
+
+## Phase 4 — Audio & graphics improvements / 1.1 (next after 1.0)
+
+Graphics (rendering is already SDL2 renderer-based: software surface →
+streaming texture → window):
+- [ ] 4.1 **Wire up vsync**: the `vsync` pref is currently a no-op —
+      `SDL_CreateWindowAndRenderer` is created without
+      `SDL_RENDERER_PRESENTVSYNC`. Add the flag per the pref.
+- [ ] 4.2 **HiDPI/Retina**: render at drawable (pixel) size, not point size —
+      crisp text/sprites on Retina; verify `NSHighResolutionCapable` path.
+- [ ] 4.3 Render scale quality hint (`SDL_HINT_RENDER_SCALE_QUALITY`) matched
+      to the existing software scale modes; evaluate dropping the old
+      software dither/scale filters if GPU scaling looks better.
+- [ ] 4.4 Re-evaluate `broken_rgba8`/dither paths on modern GPUs (likely
+      deletable).
+
+Audio (a_midisynth software synth via SDL audio callback):
+- [ ] 4.5 Expose/fix audio device selection, sample rate, buffer size
+      (options screen + prefs); verify no dropouts under load.
+- [ ] 4.6 Verify all 51 waveforms load; A/B against the web port's audio
+      (CatBroDev's branch is the reference for "known-good" behavior).
+
+- [ ] 4.7 Re-run smoke tests; owner playtest. Tag `v1.1`.
+
+## Phase 5 — iPadOS / 2.0 (on `ios-port`)
+
+Fork `ios-port` from the macOS line after 1.0 (so it inherits CMake, the
+config/score fixes, and cleanup). `Kobo Deluxe iOS/` (2013 starting point)
+moves there.
+- [ ] 5.1 CMake iOS target (or `cmake -G Xcode` with iOS platform) building
+      from the same shared sources; iOS Info.plist + provisioning.
+- [ ] 5.2 **Gesture input adapter**: new `ios/iosinput.c` (iOS-only source)
+      mapping multi-touch gestures (swipe/drag = ship movement, tap = fire,
+      pinch = zoom?, two-finger = pause) into the same virtual key/button
+      events `gamectl` consumes — keyboard/mouse code untouched.
+      (Owner has early gesture-mapping experiments to bring in.)
+- [ ] 5.3 Touch UI review: menu hit targets, HUD layout at 4:3 / 3:2 iPad
+      sizes, landscape default (existing `DEFAULT_JOY_*` landscape constants
+      suggest the 2013 port already oriented for landscape).
+- [ ] 5.4 No App Sandbox concerns on iOS (containers are the norm);
+      score dir under the container already works via $HOME.
+- [ ] 5.5 Archive + App Store submission flow; tag `v2.0`.
 
 ## Deferred / optional (not scheduled)
 
-- Native SDL3 API migration (~6-file surface: window/renderer split in gfxengine,
-  pixel-format enums, audio callback, events, joystick renames). Low urgency —
-  sdl2-compat already runs SDL3 underneath.
-- Retina/HiDPI scaling option; desktop-fullscreen default instead of exclusive.
-- `web-port` branch — CatBroDev's `codex/browser-restoration` branch is the reference;
-  hosted game already live at oldgamesarchive.org.
-- Joystick under MAS (would need GameController-framework path, not raw IOKit-HID).
+- Native SDL3 API migration (~6-file surface: window/renderer split in
+  gfxengine, pixel-format enums, audio callback, events, joystick renames).
+  Low urgency — sdl2-compat already runs SDL3 underneath; revisit if a
+  Phase 4/5 feature needs it.
+- Retina/HiDPI scaling *option* (vs 4.2 doing it unconditionally).
+- `web-port` branch — CatBroDev's `codex/browser-restoration` is the
+  reference; hosted game live at oldgamesarchive.org.
+- Joystick under MAS (would need GameController framework, not IOKit-HID).
 
 ## Verification checklist (run at each phase end)
 
@@ -123,4 +175,6 @@
 - [ ] `.app` launches from build dir and plays through stage 1 with audio
 - [ ] `kobodl` runs from terminal
 - [ ] (Phase 2+) archived MAS build launches and plays in sandbox
+- [ ] (Phase 2+) options change → quit → `KoboDeluxe Preferences` file appears
+      in `~/Library/Preferences/KoboDeluxe/` and is reloaded next launch
 - [ ] `git status` clean; commit history tells the story

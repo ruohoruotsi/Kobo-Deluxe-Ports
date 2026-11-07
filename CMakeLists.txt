@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
+# 1.0.0 is reserved for the MAS release (see PLAN.md, Versioning).
 project(KoboDeluxe
-  VERSION 1.0.0
+  VERSION 0.5.1
   DESCRIPTION "Kobo Deluxe - an enhanced SDL port of XKobo (modern macOS port)"
   LANGUAGES C CXX
 )
@@ -21,11 +22,17 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
 endif()
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version")
+# FORCE: pre-existing empty cache entries (from early configures) would
+# otherwise win and let Xcode default to the host SDK version.
+set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORCE)
 
 # No personal info in the bundle identifier (final pick pending owner approval)
 set(KOBO_BUNDLE_ID "org.kobodluxe.KoboDeluxe" CACHE STRING
     "Bundle identifier for Kobo Deluxe.app")
+
+# Mac App Store build: App Sandbox entitlement + KOBO_MAS code gates
+# (setgid in save_config, log/screenshot paths, joystick default OFF).
+option(KOBO_MAS "Build KoboDeluxe.app for the Mac App Store (App Sandbox)" OFF)
 
 # --------------------------------------------------------------------------
 # Dependencies (Homebrew)
@@ -55,6 +62,7 @@ set(KOBO_SOURCES
   ${KOBO_SRC_ROOT}/gamectl.cpp
   ${KOBO_SRC_ROOT}/gamestate.cpp
   ${KOBO_SRC_ROOT}/kobo.cpp
+  ${KOBO_SRC_ROOT}/kobopath.cpp
   ${KOBO_SRC_ROOT}/manage.cpp
   ${KOBO_SRC_ROOT}/map.cpp
   ${KOBO_SRC_ROOT}/myship.cpp
@@ -74,7 +82,6 @@ set(KOBO_SOURCES
   ${KOBO_SRC_ROOT}/graphics/display.cpp
   ${KOBO_SRC_ROOT}/graphics/filters.c
   ${KOBO_SRC_ROOT}/graphics/gfxengine.cpp
-  ${KOBO_SRC_ROOT}/graphics/glSDL.c
   ${KOBO_SRC_ROOT}/graphics/region.c
   ${KOBO_SRC_ROOT}/graphics/sofont.cpp
   ${KOBO_SRC_ROOT}/graphics/sprite.c
@@ -149,17 +156,35 @@ endfunction()
 kobo_add_target(KoboDeluxe)
 target_compile_definitions(KoboDeluxe PRIVATE USE_RESOURCE_WORKING_DIR=1)
 
-set_target_properties(KoboDeluxe PROPERTIES
+set(KOBO_APP_PROPS
   OUTPUT_NAME "Kobo Deluxe"
   MACOSX_BUNDLE TRUE
   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Kobo Deluxe/Info.plist.in"
   MACOSX_BUNDLE_BUNDLE_NAME "Kobo Deluxe"
   MACOSX_BUNDLE_GUI_IDENTIFIER "${KOBO_BUNDLE_ID}"
-  MACOSX_BUNDLE_BUNDLE_VERSION "1.0"
-  MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0"
+  MACOSX_BUNDLE_BUNDLE_VERSION "0.5.1"
+  MACOSX_BUNDLE_SHORT_VERSION_STRING "0.5.1"
   MACOSX_BUNDLE_ICON_FILE "Icon.icns"
-  MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald"
+  MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald, (c) 2013 ruohoruotsi (SDL2 port)"
 )
+
+# Automatic signing so Xcode can sign-to-run-locally for dev builds.
+# (The MAS archive flow overrides this on the xcodebuild command line.)
+set_target_properties(KoboDeluxe PROPERTIES
+  ${KOBO_APP_PROPS}
+  XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic"
+  XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "${KOBO_BUNDLE_ID}"
+  XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0"
+)
+
+if(KOBO_MAS)
+  target_compile_definitions(KoboDeluxe PRIVATE KOBO_MAS=1)
+  # Entitlements flow into the Xcode project (archive path); the
+  # Makefiles/Ninja generators ignore XCODE_ATTRIBUTE_*.
+  set_target_properties(KoboDeluxe PROPERTIES
+    XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS
+      "${CMAKE_CURRENT_SOURCE_DIR}/KoboDeluxe.entitlements")
+endif()
 
 set(KOBO_APP_RESOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Icon.icns
