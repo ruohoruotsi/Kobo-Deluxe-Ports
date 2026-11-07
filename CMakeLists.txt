@@ -22,7 +22,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
 endif()
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version")
+# FORCE: pre-existing empty cache entries (from early configures) would
+# otherwise win and let Xcode default to the host SDK version.
+set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORCE)
 
 # No personal info in the bundle identifier (final pick pending owner approval)
 set(KOBO_BUNDLE_ID "org.kobodluxe.KoboDeluxe" CACHE STRING
@@ -166,7 +168,14 @@ set(KOBO_APP_PROPS
   MACOSX_BUNDLE_COPYRIGHT "Kobo Deluxe (c) 1995-96 Akira Higuchi, (c) 2001-2007 David Olofson, (c) 2005 Erik Auerswald, (c) 2013 ruohoruotsi (SDL2 port)"
 )
 
-set_target_properties(KoboDeluxe PROPERTIES ${KOBO_APP_PROPS})
+# Automatic signing so Xcode can sign-to-run-locally for dev builds.
+# (The MAS archive flow overrides this on the xcodebuild command line.)
+set_target_properties(KoboDeluxe PROPERTIES
+  ${KOBO_APP_PROPS}
+  XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic"
+  XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "${KOBO_BUNDLE_ID}"
+  XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0"
+)
 
 if(KOBO_MAS)
   target_compile_definitions(KoboDeluxe PRIVATE KOBO_MAS=1)
