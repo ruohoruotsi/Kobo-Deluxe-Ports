@@ -290,18 +290,16 @@ void _screen::credits(int t)
 	if(t % 4000 < 3700) {
 		switch(t / 4000)
 		{
-            case 0:
+            case 1:
                 wmain->font(B_BIG_FONT);
                 if(t2 > 0)
-                    wmain->center(80, "RUOHO RUOTSI");
+                    wmain->center(80, "ruohoruotsi");
                 wmain->font(B_NORMAL_FONT);
                 if(t2 > 2)
-                    wmain->center(105, "SDL2 port. MacoS/iOS port");
-                if(t2 > 3)
-                    wmain->center(115, "New Graphics, Sound & Music");
+                    wmain->center(105, "MacOS SDL2 port");
                 break;
                 
-            case 1:
+            case 0:
                 wmain->font(B_BIG_FONT);
                 if(t2 > 0)
                     wmain->center(80, "DAVID OLOFSON");

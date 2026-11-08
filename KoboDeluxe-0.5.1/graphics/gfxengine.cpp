@@ -762,9 +762,10 @@ int gfxengine_t::show()
 		}
 
 	if(_fullscreen)
-		flags |= SDL_WINDOW_FULLSCREEN; // SDL_FULLSCREEN; // IOHAVOC
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP; // SDL_FULLSCREEN; // IOHAVOC
 
 	flags |= xflags;
+	flags |= SDL_WINDOW_RESIZABLE;
 
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
@@ -785,17 +786,23 @@ int gfxengine_t::show()
                                           Bmask,
                                           Amask);
     
-    // SDL2 - one stop window and renderer setup
-    SDL_CreateWindowAndRenderer(_width,
-                                _height,
-                                SDL_WINDOW_SHOWN, // SDL_WINDOW_FULLSCREEN_DESKTOP
-                                &sdl2window,
-                                &sdlRenderer);
-    
+    // SDL2 - window + renderer created separately so the renderer can be
+    // created with the vsync flag. The texture keeps the game's logical
+    // size; the renderer scales it to the window, which is freely resizable.
+    sdl2window = SDL_CreateWindow(_title,
+                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                  _width, _height, flags);
+    {
+        Uint32 rflags = 0;
+        if(_vsync)
+            rflags |= SDL_RENDERER_PRESENTVSYNC;
+        sdlRenderer = SDL_CreateRenderer(sdl2window, -1, rflags);
+    }
+
     // SDL2 - make a texture -- with the pixelformat SDL_PIXELFORMAT_ABGR8888
     sdlTexture = SDL_CreateTexture(sdlRenderer,
                                    SDL_PIXELFORMAT_ABGR8888,    // SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGBA8888
-                                   SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC,
+                                   SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC
                                    _width, _height);
     if(NULL == sdl2window  ||
        NULL == sdlRenderer ||
@@ -817,8 +824,6 @@ int gfxengine_t::show()
 		return -3;
 	}
 
-    SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
-    
 	// SDL_SetRelativeMouseMode(SDL_TRUE); // SDL_ShowCursor(_cursor); // IOHAVOC -- update API
 	cs_engine_set_size(csengine, _width, _height);
 	csengine->filter = use_interpolation;
@@ -871,6 +876,21 @@ void gfxengine_t::hide(void)
 		w = w->next;
 	}
     
+	if(sdlTexture)
+	{
+		SDL_DestroyTexture(sdlTexture);
+		sdlTexture = NULL;
+	}
+	if(sdlRenderer)
+	{
+		SDL_DestroyRenderer(sdlRenderer);
+		sdlRenderer = NULL;
+	}
+	if(sdl2window)
+	{
+		SDL_DestroyWindow(sdl2window);
+		sdl2window = NULL;
+	}
 	screen_surface = NULL;
 
 	is_showing = 0;

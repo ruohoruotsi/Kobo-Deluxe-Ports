@@ -184,6 +184,8 @@ void video_options_t::build()
 		item("16 bits", 16);
 		item("24 bits", 24);
 		item("32 bits", 32);
+	space();
+	yesno("Vertical Retrace Sync", &prf->vsync, OS_RESTART_VIDEO);
 	prf->videodriver = GFX_DRIVER_SDL2D;
 	space();
 	xoffs = 0.55;
