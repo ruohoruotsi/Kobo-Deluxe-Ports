@@ -29,7 +29,7 @@ TODO: tables as needed when loading banks.
 #include <stdlib.h>
 #include <string.h>
 #include "logger.h"
-#include "glSDL.h"
+#include "SDL.h"
 #include "SDL_image.h"
 #include "sprite.h"
 #include "filters.h"

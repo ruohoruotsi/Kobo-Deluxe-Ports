@@ -59,6 +59,7 @@ extern "C" {
 #include "gamectl.h"
 #include "random.h"
 #include "version.h"
+#include "kobopath.h"
 #include "options.h"
 #include "myship.h"
 #include "enemies.h"
@@ -84,10 +85,12 @@ extern "C" {
 
 
 /* IOHAVOC: PATHS */
-#define KOBO_DATA_DIR "$HOME/Library/Preferences"
 #define KOBO_SCORE_DIR "/Library/Preferences/KoboDeluxe/scores"
-#define KOBO_CONFIG_DIR "$HOME/Library/Preferences"
-#define SYSCONF_DIR "$HOME/Library/Preferences"
+/* Suffixes appended to $HOME at runtime (kobo_home_path()); the old
+ * literal "$HOME/..." macros were never expanded, so nothing ever
+ * persisted. Under the App Sandbox $HOME is the app container. */
+#define KOBO_DATA_SUFFIX "/Library/Preferences"
+#define KOBO_PREF_SUFFIX "/Library/Preferences/KoboDeluxe"
 #define KOBO_CONFIG_FILE "KoboDeluxe Preferences"
 
 /*----------------------------------------------------------
@@ -171,31 +174,15 @@ static void main_cleanup()
 /*---------------------------------------------------------*/
 /*---------------------------------------------------------*/
 
-/* Create all missing parent directories of the given absolute path. */
-static void makedirs(const char *path)
-{
-	char buf[PATH_MAX];
-	char *p;
-	size_t len = strlen(path);
-	if(len + 1 > sizeof(buf))
-		return;
-	strcpy(buf, path);
-	for(p = buf + 1; *p; ++p)
-		if(*p == '/')
-		{
-			*p = 0;
-			::mkdir(buf, 0755);
-			*p = '/';
-		}
-	::mkdir(buf, 0755);
-}
-
-
 static void setup_dirs(char *xpath)
 {
 	fmap->exepath(xpath);
 
-	fmap->addpath("DATA", KOBO_DATA_DIR);
+	{
+		char data_dir[PATH_MAX];
+		kobo_home_path(data_dir, sizeof(data_dir), KOBO_DATA_SUFFIX);
+		fmap->addpath("DATA", data_dir);
+	}
 
 	/*
 	 * Graphics data
@@ -232,14 +219,10 @@ static void setup_dirs(char *xpath)
 	 */
 	{
 		char user_scores[PATH_MAX];
-		const char *home = getenv("HOME");
-		if(home)
-		{
-			snprintf(user_scores, sizeof(user_scores),
-					"%s/Library/Preferences/KoboDeluxe/scores", home);
-			makedirs(user_scores);
-			fmap->addpath("SCORES", user_scores, 1);
-		}
+		kobo_home_path(user_scores, sizeof(user_scores),
+				KOBO_PREF_SUFFIX "/scores");
+		kobo_makedirs(user_scores);
+		fmap->addpath("SCORES", user_scores, 1);
 	}
 	fmap->addpath("SCORES", KOBO_SCORE_DIR);
 	/* 'scores' in current dir (For importing scores, perhaps...) */
@@ -250,9 +233,12 @@ static void setup_dirs(char *xpath)
 	/*
 	 * Configuration files
 	 */
-	fmap->addpath("CONFIG", KOBO_CONFIG_DIR);
-	/* System local */
-	fmap->addpath("CONFIG", SYSCONF_DIR);
+	{
+		char config_dir[PATH_MAX];
+		kobo_home_path(config_dir, sizeof(config_dir), KOBO_PREF_SUFFIX);
+		kobo_makedirs(config_dir);
+		fmap->addpath("CONFIG", config_dir);
+	}
 	/* In current dir (last resort) */
 	fmap->addpath("CONFIG", "./");
 }
@@ -577,15 +563,19 @@ int KOBO_main::open_logging(prefs_t *p)
 		return -1;
 
 	if(p && p->logfile)
-		switch (p->logformat)
-		{
-		  case 2:
-			logfile = fopen("log.html", "wb");
-			break;
-		  default:
-			logfile = fopen("log.txt", "wb");
-			break;
-		}
+	{
+		const char *name = (p->logformat == 2) ? "log.html" : "log.txt";
+#if defined(KOBO_MAS)
+		/* Bundle Resources are read-only under the sandbox. */
+		char logdir[PATH_MAX];
+		kobo_app_support_dir(logdir, sizeof(logdir));
+		char logpath[PATH_MAX];
+		snprintf(logpath, sizeof(logpath), "%s/%s", logdir, name);
+		logfile = fopen(logpath, "wb");
+#else
+		logfile = fopen(name, "wb");
+#endif
+	}
 
 	if(logfile)
 	{
@@ -1383,7 +1373,9 @@ void KOBO_main::close_js()
 
 void KOBO_main::load_config(prefs_t *p)
 {
-	FILE *f = fmap->fopen(KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE, "r");
+	char path[PATH_MAX];
+	kobo_home_path(path, sizeof(path), KOBO_PREF_SUFFIX "/" KOBO_CONFIG_FILE);
+	FILE *f = fmap->fopen(path, "r");
 	if(f)
 	{
 		p->read(f);
@@ -1394,8 +1386,11 @@ void KOBO_main::load_config(prefs_t *p)
 
 void KOBO_main::save_config(prefs_t *p)
 {
+	char path[PATH_MAX];
 	FILE *f;
-#if defined(HAVE_GETEGID) && defined(HAVE_SETGID)
+	kobo_home_path(path, sizeof(path), KOBO_PREF_SUFFIX "/" KOBO_CONFIG_FILE);
+/* Changing group credentials is not allowed under the App Sandbox. */
+#if defined(HAVE_GETEGID) && defined(HAVE_SETGID) && !defined(KOBO_MAS)
 	gid_t oldgid = getegid();
 	if(setgid(getgid()) != 0)
 	{
@@ -1404,13 +1399,13 @@ void KOBO_main::save_config(prefs_t *p)
 		return;
 	}
 #endif
-	f = fmap->fopen(KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE, "w");
+	f = fmap->fopen(path, "w");
 	if(f)
 	{
 		p->write(f);
 		fclose(f);
 	}
-#if defined(HAVE_GETEGID) && defined(HAVE_SETGID)
+#if defined(HAVE_GETEGID) && defined(HAVE_SETGID) && !defined(KOBO_MAS)
 	if(setgid(oldgid) != 0)
 	{
 		log_printf(ELOG, "Cannot restore GID! (%s)\n",
@@ -2335,7 +2330,7 @@ void kobo_gfxengine_t::post_render()
 
 static void put_usage()
 {
-	printf("\nKobo Deluxe %s\n", KOBO_VERSION);
+	printf("\nKobo Deluxe %s\n%s\n", KOBO_VERSION, KOBO_VERSION_CREDIT);
 	printf("Usage: kobodl [<options>]\n");
 	printf("Recognized options:\n");
 	int s = -1;

@@ -23,7 +23,7 @@
 #ifndef _KOBO_GAMECTL_H_
 #define _KOBO_GAMECTL_H_
 
-#include "glSDL.h"
+#include "SDL.h"
 #include "config.h"
 
 #define KEY_KP_DOWN		SDLK_KP2

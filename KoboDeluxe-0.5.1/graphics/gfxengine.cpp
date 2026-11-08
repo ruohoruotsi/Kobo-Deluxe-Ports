@@ -25,11 +25,13 @@
 
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 #include "gfxengine.h"
+#include "kobopath.h"
 #include "filters.h"
 #include "SDL_image.h"
-#include "glSDL.h"
+#include "SDL.h"
 #include "sofont.h"
 #include "window.h"
 
@@ -423,23 +425,10 @@ void gfxengine_t::dither(int type, int _broken_rgba8)
 
 	if(_dither)
 	{
-		if(_driver == GFX_DRIVER_GLSDL)
-		{
-			//Klugde for glSDL, which doesn't give us a faked
-			//screen surface - while we're interested only in
-			//the *texture* depth; not the display depth!
-			df->args.r = df->args.g = df->args.b = 0;
-			//Another kludge, because some cards support RGB8
-			//(24 bit) textures, but not RGBA8 (32 bit).
-			df->args.x = broken_rgba8;
-		}
-		else
-		{
-			df->args.x = 0;
-			df->args.r = 1<<(screen_surface->format->Rloss-1);
-			df->args.g = 1<<(screen_surface->format->Gloss-1);
-			df->args.b = 1<<(screen_surface->format->Bloss-1);
-		}
+		df->args.x = 0;
+		df->args.r = 1<<(screen_surface->format->Rloss-1);
+		df->args.g = 1<<(screen_surface->format->Gloss-1);
+		df->args.b = 1<<(screen_surface->format->Bloss-1);
 	}
 	else
 		df->args.x = df->args.r = df->args.g = df->args.b = 0;
@@ -772,29 +761,11 @@ int gfxengine_t::show()
 			return -2;
 		}
 
-	switch(_driver)
-	{
-	  case GFX_DRIVER_SDL2D:
-		break;
-	  case GFX_DRIVER_GLSDL:
-		break;
-	}
-
-	switch(_driver)
-	{
-	  case GFX_DRIVER_SDL2D:
-		/* Nothing extra */
-		break;
-	  case GFX_DRIVER_GLSDL:
-	  	flags |= SDL_GLSDL;
-		break;
-	}
-
 	if(_fullscreen)
-		flags |= SDL_WINDOW_FULLSCREEN; // SDL_FULLSCREEN; // IOHAVOC
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP; // SDL_FULLSCREEN; // IOHAVOC
 
-	glSDL_VSync(_vsync);
 	flags |= xflags;
+	flags |= SDL_WINDOW_RESIZABLE;
 
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
@@ -815,17 +786,23 @@ int gfxengine_t::show()
                                           Bmask,
                                           Amask);
     
-    // SDL2 - one stop window and renderer setup
-    SDL_CreateWindowAndRenderer(_width,
-                                _height,
-                                SDL_WINDOW_SHOWN, // SDL_WINDOW_FULLSCREEN_DESKTOP
-                                &sdl2window,
-                                &sdlRenderer);
-    
+    // SDL2 - window + renderer created separately so the renderer can be
+    // created with the vsync flag. The texture keeps the game's logical
+    // size; the renderer scales it to the window, which is freely resizable.
+    sdl2window = SDL_CreateWindow(_title,
+                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                  _width, _height, flags);
+    {
+        Uint32 rflags = 0;
+        if(_vsync)
+            rflags |= SDL_RENDERER_PRESENTVSYNC;
+        sdlRenderer = SDL_CreateRenderer(sdl2window, -1, rflags);
+    }
+
     // SDL2 - make a texture -- with the pixelformat SDL_PIXELFORMAT_ABGR8888
     sdlTexture = SDL_CreateTexture(sdlRenderer,
                                    SDL_PIXELFORMAT_ABGR8888,    // SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGBA8888
-                                   SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC,
+                                   SDL_TEXTUREACCESS_STREAMING, // SDL_TEXTUREACCESS_STATIC
                                    _width, _height);
     if(NULL == sdl2window  ||
        NULL == sdlRenderer ||
@@ -847,8 +824,6 @@ int gfxengine_t::show()
 		return -3;
 	}
 
-    SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), _title);
-    
 	// SDL_SetRelativeMouseMode(SDL_TRUE); // SDL_ShowCursor(_cursor); // IOHAVOC -- update API
 	cs_engine_set_size(csengine, _width, _height);
 	csengine->filter = use_interpolation;
@@ -901,6 +876,21 @@ void gfxengine_t::hide(void)
 		w = w->next;
 	}
     
+	if(sdlTexture)
+	{
+		SDL_DestroyTexture(sdlTexture);
+		sdlTexture = NULL;
+	}
+	if(sdlRenderer)
+	{
+		SDL_DestroyRenderer(sdlRenderer);
+		sdlRenderer = NULL;
+	}
+	if(sdl2window)
+	{
+		SDL_DestroyWindow(sdl2window);
+		sdl2window = NULL;
+	}
 	screen_surface = NULL;
 
 	is_showing = 0;
@@ -1165,7 +1155,16 @@ SDL_Surface *gfxengine_t::surface()
 void gfxengine_t::screenshot()
 {
 	char filename[1024];
-	snprintf(filename, sizeof(filename), "screen%d.bmp", screenshot_count++);
+#if defined(KOBO_MAS)
+	/* Bundle Resources are read-only under the sandbox. */
+	char dir[PATH_MAX];
+	kobo_app_support_dir(dir, sizeof(dir));
+	snprintf(filename, sizeof(filename), "%s/screen%d.bmp",
+			dir, screenshot_count++);
+#else
+	snprintf(filename, sizeof(filename), "screen%d.bmp",
+			screenshot_count++);
+#endif
 	SDL_SaveBMP(screen_surface, filename);
 }
 

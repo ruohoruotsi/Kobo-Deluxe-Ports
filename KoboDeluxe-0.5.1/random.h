@@ -24,7 +24,7 @@
 #define _KOBO_RANDOM_H_
 
 #include <time.h>
-#include "glSDL.h"
+#include "SDL.h"
 
 class rand_num_t
 {

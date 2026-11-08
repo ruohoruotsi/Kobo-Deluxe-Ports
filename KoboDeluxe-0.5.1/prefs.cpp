@@ -41,7 +41,13 @@ void prefs_t::init()
 	key("logverbosity", logverbosity, 2); desc("Log Verbosity Level");
 
 	comment("--- Input options --------------------------");
-	yesno("joystick", use_joystick, 1); desc("Use Joystick");
+#if defined(KOBO_MAS)
+	/* The App Sandbox blocks SDL's IOKit-HID joysticks; default OFF. */
+	yesno("joystick", use_joystick, 0);
+#else
+	yesno("joystick", use_joystick, 1);
+#endif
+	desc("Use Joystick");
 	key("joystick_no", joystick_no, 0); desc("Joystick Number");
 	yesno("mouse", use_mouse, 0); desc("Use Mouse");
 	key("mousemode", mousemode, MMD_CROSSHAIR); desc("Mouse Control Mode");
@@ -174,7 +180,8 @@ void prefs_t::postload()
 		scrollradar = 2;
 	}
 
-	// Some unimplemented enums were removed in 0.4.1
+	// Some unimplemented enums were removed in 0.4.1; the glSDL
+	// (OpenGL) driver was removed entirely in the macOS port.
 	if(videodriver != GFX_DRIVER_SDL2D)
-		videodriver = GFX_DRIVER_GLSDL;
+		videodriver = GFX_DRIVER_SDL2D;
 }
