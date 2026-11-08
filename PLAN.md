@@ -3,7 +3,7 @@
 **Branch:** `feature/repo_cleanup_mas` (macOS/MAS work; small reviewable commits via PR)
 **Branch `ios-port`:** created (iPadOS work, forked from the macOS line)
 **Target:** macOS 26 / Xcode 26 / Apple Silicon (arm64), App Store distribution
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-07
 
 ## Objectives
 
@@ -40,6 +40,7 @@
 | Sandbox code changes | Same codebase, gated by `KOBO_MAS` build flag (default OFF). |
 | GLSDL driver | Removed (Phase 3, commit `083f016`). Default driver was already `GFX_DRIVER_SDL2D`; `HAVE_OPENGL` was never defined, so it compiled as no-op dummies. |
 | SDL2 vs SDL3 | Stay on the **SDL2 API** for 1.0/1.1. Improvements use SDL2 renderer/audio features (vsync, HiDPI, scale quality, audio device/rate). Native SDL3 API migration (~6-file surface) only if a specific feature demands it. |
+| Audio | 1.0 ships with the existing 2013 audio untouched (end-to-end MAS first). The "Make It Slap" rework — live stems, game reactivity, real master bus — is the **1.1 headline** (Phase 4). Owner invests weeks in composing the new music. |
 | Naming | De-spaced: bundle, resource dir, Info.plist all `KoboDeluxe` (done, Phase 2.4). In-game prose keeps the proper noun "Kobo Deluxe". CMake target + bundle ID were already `KoboDeluxe`. |
 | Branch hygiene | macOS/MAS work on this branch. `Kobo Deluxe iOS/` leaves this branch (work continues on `ios-port`). |
 | Per-platform code | Shared game code stays shared; platform quirks behind build flags (`__IPHONEOS__`, `KOBO_MAS`). Bigger platform features go in dedicated per-platform adapter files that plug into existing abstractions — e.g. `ios/iosinput.c` translating gestures into the key/button events `gamectl` already consumes. No `#ifdef` soup in game logic. |
@@ -104,6 +105,15 @@
       credit line in `version.h`; tag `v1.0`.
 - [x] 2.6 Branch hygiene: `ios-port` branch created from this HEAD;
       `Kobo Deluxe iOS/` removed from the macOS branch (commit `ad06bd1`).
+- [ ] 2.7 **Pre-release polish (pulled from Phase 4):** the 1.0 must
+      *feel* right on a modern Mac. In owner QC:
+      - vsync wired (`SDL_RENDERER_PRESENTVSYNC`, was a no-op; pref
+        default ON + "Vertical Retrace Sync" restored to options)
+      - resizable window (renderer scales the 1024×768 texture,
+        nearest-neighbor)
+      - fullscreen fixed: option was dead code (flag never applied); now
+        `SDL_WINDOW_FULLSCREEN_DESKTOP`
+      - texture/renderer/window destroyed on video restart (was a leak)
 
 ## Phase 3 — Cleanup (done)
 
@@ -117,13 +127,16 @@
       (Fresh `cmake -B && cmake --build` from clean tree: 0 errors,
       `kobodl -showcfg` OK. Archive step = Phase 2.2.)
 
-## Phase 4 — Audio & graphics improvements / 1.1 (next after 1.0)
+## Phase 4 — Audio & graphics improvements / 1.1 (after 1.0)
+
+Order (owner): ship 1.0 to MAS first — end-to-end — then come back here
+and invest the weeks.
 
 Graphics (rendering is already SDL2 renderer-based: software surface →
 streaming texture → window):
-- [ ] 4.1 **Wire up vsync**: the `vsync` pref is currently a no-op —
-      `SDL_CreateWindowAndRenderer` is created without
-      `SDL_RENDERER_PRESENTVSYNC`. Add the flag per the pref.
+- [x] 4.1 **Vsync** — pulled forward into 1.0 (Phase 2.7, in owner QC):
+      `SDL_RENDERER_PRESENTVSYNC` per pref, pref default ON, options
+      entry restored.
 - [ ] 4.2 **HiDPI/Retina**: render at drawable (pixel) size, not point size —
       crisp text/sprites on Retina; verify `NSHighResolutionCapable` path.
 - [ ] 4.3 Render scale quality hint (`SDL_HINT_RENDER_SCALE_QUALITY`) matched
@@ -132,13 +145,57 @@ streaming texture → window):
 - [ ] 4.4 Re-evaluate `broken_rgba8`/dither paths on modern GPUs (likely
       deletable).
 
-Audio (a_midisynth software synth via SDL audio callback):
-- [ ] 4.5 Expose/fix audio device selection, sample rate, buffer size
-      (options screen + prefs); verify no dropouts under load.
-- [ ] 4.6 Verify all 51 waveforms load; A/B against the web port's audio
-      (CatBroDev's branch is the reference for "known-good" behavior).
+### Audio — "Make It Slap" (the 1.1 headline)
 
-- [ ] 4.7 Re-run smoke tests; owner playtest. Tag `v1.1`.
+Current state (code-verified 2026-11-07):
+- In-game BGM = **pre-baked rendered loop** — `music.agw` loaded as a
+  plain waveform (`sound.cpp:100`); `music_c.agw` is the alt variant.
+  Not live-synthesized.
+- Live MIDI/sequencer path effectively disabled: `ui_music`
+  (`sound.cpp:605`) forces `AFX_NONE` under a comment reading "KLUDGE
+  UNTIL MIDI SONGS AND FX CONTROL IS FIXED".
+- 16-bit fixed-point internal processing, 44.1 kHz, 2001-era limiter;
+  positional SFX is plain L/R pan + crude attenuation (`g_play`,
+  `sound.cpp:364`).
+- The engine already ships a 16-tap feedback delay w/ LPF (`a_delay.c`)
+  and an echo FX slot (`AFX_ECHO`) — both currently unused.
+- 51 `.agw` SFX waveforms in `data/sfx/`.
+
+Core workstream (scheduled for 1.1):
+- [ ] 4.5 Output pipeline: float32 internal path (SDL `AUDIO_F32` where
+      the engine allows), 48 kHz option; expose device/rate/buffer size
+      in options + prefs; verify no dropouts under load.
+- [ ] 4.6 Master bus: look-ahead limiter (replace the 2001-era one),
+      gentle saturation for glue, reverb + delay sends (enable the
+      existing `a_delay`); **sidechain the music bus to the kick** —
+      the techno pump is 80% of "slap" for this genre.
+- [ ] 4.7 Music: kill the pre-baked loop → live-sequenced layered
+      **stems** (pads → +bass → +drums → +lead/fx). 2–4 new original
+      tracks in the early-90s electronica spirit of `trance1.mid`, or
+      "2026 remix" arrangements of the existing material. Owner
+      composes — the weeks-scale item.
+- [ ] 4.8 Game-reactive layering: stem crossfades on wave transition,
+      boss intro, low health, bomb (duck + fill); pause = filter sweep
+      down, not a hard stop. The single biggest "premium game" tell.
+- [ ] 4.9 SFX pass: A/B all 51 waveforms (verify all load; CatBroDev's
+      web port is the "known-good" reference), re-render the duds with
+      modern synth voices (909-style kick, wide claps, lasers); layered
+      one-shots (explosion = body + crunch + tail); UI juice pass
+      (score pops, combo escalation).
+- [ ] 4.10 Positional upgrade: real distance attenuation curve,
+      low-pass with distance, short stereo early reflections instead of
+      raw pan.
+- [ ] 4.11 Loudness targets (LUFS) per platform; A/B build flag
+      `CLASSIC` vs `DELUXE` audio so the retro feel stays an option.
+- [ ] 4.12 Ship: no clicks on open, underrun log, CPU profile (M1 +
+      iPad), re-run smoke tests, owner playtest. Tag `v1.1`.
+
+Stretch (the 10×-budget fantasy — recorded, not scheduled):
+- Full re-orchestration of the entire soundtrack; music tempo/energy
+  tracking wave progression in real time.
+- HRTF / true binaural spatial audio on the iPad (2.0).
+- Per-object panners and per-sound effect chains.
+- Revisit after 1.1 lands: which stretch items earned their keep.
 
 ## Phase 5 — iPadOS / 2.0 (on `ios-port`)
 
