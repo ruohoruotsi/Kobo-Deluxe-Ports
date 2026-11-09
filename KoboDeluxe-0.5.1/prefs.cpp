@@ -69,7 +69,15 @@ void prefs_t::init()
 	comment("--- Sound settings -------------------------");
 	yesno("sound", use_sound, 1); desc("Enable Sound");
 	yesno("music", use_music, 1); desc("Enable Music");
-	yesno("cached_sounds", cached_sounds, 1); desc("Use Cached Sounds");  // IOHAVOC -- using cached sounds!! not Algorthmically Generated Waveforms (AGW!)
+#if defined(KOBO_MAS)
+	/* The sealed bundle is read-only, so the on-disk sound cache can
+	   never be seeded there; default OFF to skip the doomed load/save
+	   attempts (the AGW path is the original behavior anyway). */
+	yesno("cached_sounds", cached_sounds, 0);
+#else
+	yesno("cached_sounds", cached_sounds, 1);
+#endif
+	desc("Use Cached Sounds");  // IOHAVOC -- using cached sounds!! not Algorthmically Generated Waveforms (AGW!)
 #ifdef HAVE_OSS
 	yesno("oss", use_oss, 0);
 #else
