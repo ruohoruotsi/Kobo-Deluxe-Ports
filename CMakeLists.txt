@@ -35,14 +35,71 @@ set(KOBO_BUNDLE_ID "org.kobodluxe.KoboDeluxe" CACHE STRING
 option(KOBO_MAS "Build KoboDeluxe.app for the Mac App Store (App Sandbox)" OFF)
 
 # --------------------------------------------------------------------------
-# Dependencies (Homebrew)
+# Dependencies
 # --------------------------------------------------------------------------
-list(APPEND CMAKE_PREFIX_PATH
-  "/opt/homebrew/opt/sdl2"
-  "/opt/homebrew/opt/sdl2_image"
-)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
+if(KOBO_MAS)
+  # Mac App Store builds must be self-contained: Homebrew's SDL dylibs are
+  # not distributable (and are built against a newer minimum macOS), so
+  # build SDL2 + SDL2_image from pinned source as static libraries, like
+  # the 2013 port's vendored static SDL. Dev builds (KOBO_MAS=OFF) keep
+  # using Homebrew.
+  include(FetchContent)
+  set(BUILD_SHARED_LIBS    OFF CACHE BOOL "Static SDL libs" FORCE)
+  set(SDL2_WERROR          OFF CACHE BOOL "" FORCE)
+  set(SDL2_TESTS           OFF CACHE BOOL "" FORCE)
+  set(SDL2_SAMPLES         OFF CACHE BOOL "" FORCE)
+  set(SDL2_OPUS            OFF CACHE BOOL "" FORCE)
+  set(SDL2_ALSA            OFF CACHE BOOL "" FORCE)
+  set(SDL2_PULSEAUDIO      OFF CACHE BOOL "" FORCE)
+  set(SDL2_JACK            OFF CACHE BOOL "" FORCE)
+  set(SDL2_SNDIO           OFF CACHE BOOL "" FORCE)
+  set(SDL2_ELM             OFF CACHE BOOL "" FORCE)
+  set(SDL2_X11             OFF CACHE BOOL "" FORCE)
+  set(SDL2_VIVANTE         OFF CACHE BOOL "" FORCE)
+  set(SDL2_WAYLAND         OFF CACHE BOOL "" FORCE)
+  set(SDL2_HIDAPI          OFF CACHE BOOL "" FORCE)
+  # The game only loads PNG (46 files) via IMG_Load; stb (bundled,
+  # header-only) decodes it, so every other format is disabled and no
+  # external image libraries are needed. (The release tarball does not
+  # ship SDL2_image's vendored external/, so the stb path is the only
+  # self-contained one.)
+  set(SDL2IMAGE_DEPS_SHARED OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_AVIF        OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_BMP         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_GIF         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_JPG         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_JXL         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_LBM         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_PCX         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_PNM         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_QOI         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_SVG         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_TGA         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_TIF         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_WEBP        OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_XCF         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_XPM         OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_XV          OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_SAMPLES     OFF CACHE BOOL "" FORCE)
+  set(SDL2IMAGE_TESTS       OFF CACHE BOOL "" FORCE)
+  FetchContent_Declare(SDL2
+    URL https://github.com/libsdl-org/SDL/releases/download/release-2.32.10/SDL2-2.32.10.tar.gz
+  )
+  FetchContent_Declare(SDL2_image
+    URL https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz
+  )
+  FetchContent_MakeAvailable(SDL2 SDL2_image)
+  # Static builds export under the -static alias.
+  set(KOBO_SDL2IMAGE_TARGET "SDL2_image::SDL2_image-static")
+else()
+  set(KOBO_SDL2IMAGE_TARGET "SDL2_image::SDL2_image")
+  list(APPEND CMAKE_PREFIX_PATH
+    "/opt/homebrew/opt/sdl2"
+    "/opt/homebrew/opt/sdl2_image"
+  )
+  find_package(SDL2 REQUIRED)
+  find_package(SDL2_image REQUIRED)
+endif()
 
 # --------------------------------------------------------------------------
 # Sources (shared by the .app and the CLI target)
@@ -142,7 +199,7 @@ function(kobo_add_target name)
   target_include_directories(${name} PRIVATE ${KOBO_INCLUDES})
   target_link_libraries(${name} PRIVATE
     SDL2::SDL2
-    SDL2_image::SDL2_image
+    ${KOBO_SDL2IMAGE_TARGET}
     "-framework CoreFoundation"
     "-framework Accelerate"
     "-framework Cocoa"
