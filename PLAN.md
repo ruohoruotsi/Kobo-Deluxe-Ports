@@ -97,7 +97,13 @@
       self-contained (system frameworks only) and launches. Remaining:
       owner's Apple Team ID + signed-in developer account, run the
       script, verify archived+sandboxed build launches/plays.
-      (Completes Phase 3.3.)
+      (Completes Phase 3.3.) Sandbox behavior itself is verified:
+      ad-hoc-signed `KOBO_MAS` build ran in a live container
+      (`~/Library/Containers/org.kobodluxe.KoboDeluxe`), title screen
+      reached. That run exposed the cached-sounds cache seeding
+      (2003 design: writes `_c.raw` files into the install dir) being
+      denied by the sandbox — `cached_sounds` now defaults OFF under
+      `KOBO_MAS` (commit `94dd0fa`; AGW fallback = original behavior).
 - [x] 2.3 Credits screen: `KoboDeluxe/en.lproj/Credits.rtf` verified/extended
       (SDL2 wording, "SDL2.0 update, MacOS port (2013)" line, Apple Silicon
       platform; commits `1da5196`, `85b118c`). License is declared in the
