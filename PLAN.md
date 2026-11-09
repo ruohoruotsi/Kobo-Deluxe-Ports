@@ -3,7 +3,7 @@
 **Branch:** `feature/repo_cleanup_mas` (macOS/MAS work; small reviewable commits via PR)
 **Branch `ios-port`:** created (iPadOS work, forked from the macOS line)
 **Target:** macOS 26 / Xcode 26 / Apple Silicon (arm64), App Store distribution
-**Last updated:** 2026-11-07
+**Last updated:** 2026-11-09
 
 ## Objectives
 
@@ -45,6 +45,7 @@
 | Branch hygiene | macOS/MAS work on this branch. `Kobo Deluxe iOS/` leaves this branch (work continues on `ios-port`). |
 | Per-platform code | Shared game code stays shared; platform quirks behind build flags (`__IPHONEOS__`, `KOBO_MAS`). Bigger platform features go in dedicated per-platform adapter files that plug into existing abstractions — e.g. `ios/iosinput.c` translating gestures into the key/button events `gamectl` already consumes. No `#ifdef` soup in game logic. |
 | Bundle ID | `org.kobodluxe.KoboDeluxe` (no PII). CMake variable `KOBO_BUNDLE_ID`. |
+| MAS SDL linkage | Homebrew's SDL dylibs are not distributable (`/opt/homebrew` install names, built minos 26.0). `KOBO_MAS=ON` therefore builds SDL2 2.32.10 + SDL2_image 2.8.12 from pinned source as **static** libs via FetchContent (like the 2013 port's vendored static SDL). SDL_image trimmed to PNG-only via the bundled stb backend. Dev builds unchanged. (Commit `4834e3e`.) |
 
 ## Phase 0 — Modern-toolchain fixes (done)
 
@@ -91,13 +92,16 @@
       - Joystick: default OFF (sandbox blocks SDL's IOKit-HID joysticks)
 - [ ] 2.2 Archive flow: `archive-mas.sh <TEAM_ID>` (generated:
       `cmake -G Xcode -DKOBO_MAS=ON` → `xcodebuild archive` →
-      `-exportArchive`, method `app-store`). Needs owner's Apple Team ID /
-      signed-in developer account. Verify archived+sandboxed build
-      launches/plays. (Completes Phase 3.3.)
-- [ ] 2.3 Credits/license screen (Higuchi 1995-96, Olofson 2001-07,
-      Auerswald 2005, port credits; GPL v2 + LGPL notices; public repo = GPL
-      source offer). `Kobo Deluxe/en.lproj/Credits.rtf` already exists and is
-      bundled — verify/extend content.
+      `-exportArchive`, method `app-store`). Static-SDL linkage done
+      (commit `4834e3e`) — the Makefiles MAS build is verified
+      self-contained (system frameworks only) and launches. Remaining:
+      owner's Apple Team ID + signed-in developer account, run the
+      script, verify archived+sandboxed build launches/plays.
+      (Completes Phase 3.3.)
+- [x] 2.3 Credits screen: `KoboDeluxe/en.lproj/Credits.rtf` verified/extended
+      (SDL2 wording, "SDL2.0 update, MacOS port (2013)" line, Apple Silicon
+      platform; commits `1da5196`, `85b118c`). License is declared in the
+      App Store Connect listing (GPL-2.0 + source URL), not in the RTF.
 - [x] 2.4 De-space rename: bundle is now `KoboDeluxe.app` (`OUTPUT_NAME`,
       `CFBundleName`), resource dir `Kobo Deluxe/` → `KoboDeluxe/`. In-game
       display strings keep the proper noun "Kobo Deluxe". (One commit.)
@@ -105,8 +109,9 @@
       credit line in `version.h`; tag `v1.0`.
 - [x] 2.6 Branch hygiene: `ios-port` branch created from this HEAD;
       `Kobo Deluxe iOS/` removed from the macOS branch (commit `ad06bd1`).
-- [ ] 2.7 **Pre-release polish (pulled from Phase 4):** the 1.0 must
-      *feel* right on a modern Mac. In owner QC:
+- [x] 2.7 **Pre-release polish (pulled from Phase 4):** the 1.0 must
+      *feel* right on a modern Mac. Owner playtested and committed
+      (`bb38694`):
       - vsync wired (`SDL_RENDERER_PRESENTVSYNC`, was a no-op; pref
         default ON + "Vertical Retrace Sync" restored to options)
       - resizable window (renderer scales the 1024×768 texture,
