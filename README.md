@@ -1,21 +1,26 @@
 # Kobo Deluxe Ports
 
 
-This is currently a working repository for MacOS, Android and iOS porting work. The primary motivation for this work is simply that I'm a huge fan of this 2D retro space shooter game and thought it would be a good opportunity to learn [SDL](http://www.libsdl.org), while getting it to run on one or more of my mobile tablets.
+This is currently a working repository for MacOS & iPadOS porting work. The primary motivation for this work is that as a huge fan of
+this 2D retro space shooter game, I thought it would be a good opportunity to learn [SDL](http://www.libsdl.org), while getting it to
+run on my desktop & tablet devices.
+
 
 ### Repo structure
 Each port are organized individually on branches as follows:
 
-* **master** - This master branch has the raw Kobo Deluxe 0.5.1 source. It builds a command line app.
-* **macos-port** - MacOS X 10.7+ with SDL v1.2. Dependent on SDLMain
-* **macos-port-SDL2** - MacOS X  10.7+ with the RC for SDL v2.0
-* **ios-port** - iOS 5.0+ port with RC for SDL v2.0 (which has good support for mobile oses)
-* **android-port** - Android 2.3.3+ port, optimized for JellyBean (4.3) and KitKat (4.4)
+* **master** - This master branch has the raw Kobo Deluxe 0.5.1 source. It builds a command line app (2013)
+* **macos-port** - MacOS X 10.7+ with SDL v1.2. Dependent on SDLMain (2013)
+* **macos-port-SDL2** - MacOS X  10.7+ with the RC for SDL v2.0 (2013)
 
 
 ### About
 
-[Kobo Deluxe](http://olofson.net/kobodl/) is an enhanced [SDL](http://www.libsdl.org) port of Akira Higuchi's scrolling 2D space shooter game [XKobo](https://github.com/hatemogi/xkobo), for UN*X X Window systems. Written by [David Olofson](http://olofson.net), [Kobo Deluxe](http://olofson.net/kobodl/) adds sound, smoother animation, high resolution support, OpenGL acceleration, a menu driven user interface, joystick support. Kobo Deluxe includes many updates essential to tackling the enemy ships that shoot at you, chase you, circle around you shooting, or even launch other ships at you, while you try to destroy the labyrinth shaped space bases. 
+[Kobo Deluxe](http://olofson.net/kobodl/) is an enhanced [SDL](http://www.libsdl.org) port of Akira Higuchi's scrolling 2D space shooter
+game [XKobo](https://github.com/hatemogi/xkobo), for UN*X X Window systems. Written by [David Olofson](http://olofson.net), [Kobo Deluxe](http://olofson.net/kobodl/)
+adds sound, smoother animation, high resolution support, OpenGL acceleration, a menu driven user interface, joystick support.
+Kobo Deluxe includes many updates essential to tackling the enemy ships that shoot at you, chase you, circle around you shooting,
+or even launch other ships at you, while you try to destroy the labyrinth shaped space bases. 
 
 [XKobo](https://github.com/hatemogi/xkobo) itself, is a simple open-source X11 video game developed by Akira Higuchi in 1997.
 
