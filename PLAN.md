@@ -13,6 +13,14 @@
    is sdl2-compat: SDL3 runs underneath already). Version **1.1**.
 3. **iPadOS port** — multi-touch gesture input mapped into the existing game
    input layer. Version **2.0**, developed on `ios-port`.
+4. Regarding distribution, we need to check with David Olofson and coordinate any MAS
+release, since there may be other ports he's aware of, and the spirit this work is not
+to profit or take up space on the MAS, but rather use as vehicle for learning, while
+keeping everything free to play, open-source && slop-free. As far as the music & graphics
+I also think it'll be fun to update the visual resolution and music scoring. Olofson has a
+new sound engine, Audality?, not sure how suitable it is, or if deep improvement need to
+be their own fork/branch. TBD
+
 
 ## Versioning
 
