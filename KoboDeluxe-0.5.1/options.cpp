@@ -184,28 +184,11 @@ void video_options_t::build()
 		item("16 bits", 16);
 		item("24 bits", 24);
 		item("32 bits", 32);
-#if defined(HAVE_OPENGL) && !defined(GLSDL_OFF)
-	list("Display Driver", &prf->videodriver, OS_RESTART_VIDEO |
-			OS_REBUILD);
-		item("SDL 2D", GFX_DRIVER_SDL2D);
-		item("OpenGL/glSDL", GFX_DRIVER_GLSDL);
-#else
+	space();
+	yesno("Vertical Retrace Sync", &prf->vsync, OS_RESTART_VIDEO);
 	prf->videodriver = GFX_DRIVER_SDL2D;
-#endif
 	space();
 	xoffs = 0.55;
-	switch(prf->videodriver)
-	{
-	  case GFX_DRIVER_SDL2D:
-//		list("Display Buffering Mode", &prf->doublebuf, OS_RESTART_VIDEO);
-//			item("Single", 0);
-//			item("Double", 1);
-//		yesno("Software Shadow Buffer", &prf->shadow, OS_RESTART_VIDEO);
-		break;
-	  case GFX_DRIVER_GLSDL:
-		yesno("Vertical Retrace Sync", &prf->vsync, OS_RESTART_VIDEO);
-		break;
-	}
 	list("Display Buffer Pages", &prf->pages, OS_UPDATE_ENGINE);
 		item("Assume Standard", -1);
 		item("Always Repaint", 0);
@@ -250,13 +233,6 @@ void graphics_options_t::build()
 		item("2x2 Filter", 0);
 		item("4x4 Filter", 1);
 		item("Random", 2);
-	switch(prf->videodriver)
-	{
-	  case GFX_DRIVER_GLSDL:
-		yesno("Broken RGBA8 (OpenGL)", &prf->broken_rgba8,
-				OS_RELOAD_GRAPHICS);
-		break;
-	}
 	space();
 	yesno("Alpha Blending", &prf->alpha, OS_RELOAD_GRAPHICS);
 	space();

@@ -22,7 +22,7 @@
 #ifndef	_A_TOOLS_H_
 #define	_A_TOOLS_H_
 
-#include "glSDL.h"
+#include "SDL.h"
 #include <string.h>
 #include "kobolog.h"
 #include "a_types.h"

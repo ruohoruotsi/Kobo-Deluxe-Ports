@@ -22,7 +22,7 @@
 #ifndef _A_TYPES_H_
 #define _A_TYPES_H_
 
-#include "glSDL.h"
+#include "SDL.h"
 
 /* Builtin patch drivers */
 typedef enum
